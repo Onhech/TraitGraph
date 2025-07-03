@@ -15,7 +15,6 @@
 remove.packages(TraitGraph)
 remotes::install_github("Onhech/GroupReport/TraitGraph")
 
-https://github.com/Onhech/Group-Personality-Report
 # --- 2. SETUP ---
 
 # Load the TraitGraph package
@@ -56,7 +55,7 @@ for (trait in trait_names) {
 for (i in 1:10) {
   question_name <- paste0("rankedQ_", i)
   # Each person votes for someone else from the group
-  sample_data[[question_name]] <- sample(participant_names, num_participants, replace = TRUE)
+  sample_data[[question_name]] <- round(runif(num_participants, 0, 0.5*num_participants), 0)
 }
 
 
@@ -72,7 +71,7 @@ TG_trait(
 
 # --- Example 2: TG_voting() ---
 # Visualize the results of a ranked-choice question.
-TG_voting(
+TG_votes(
   dataset = sample_data,
   column_name = "rankedQ_1",
   title = "Who would you want on your trivia team?",
