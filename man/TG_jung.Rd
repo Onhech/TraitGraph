@@ -13,6 +13,8 @@ TG_jung(
   name = "names",
   color = "favourite_color",
   group_average_label = "Group Average",
+  title_size = NULL,
+  title_vjust = NULL,
   output_path = "jung_plot.jpg",
   output_width = 7,
   output_height = 6,
@@ -32,11 +34,15 @@ TG_jung(
 
 \item{label_bottom}{The text for the curved label at the bottom of the chart (0\% mark).}
 
-\item{name}{The name of the column containing unique identifiers (e.g., full names). Defaults to "names".}
+\item{name}{The name of the column containing unique identifiers. Defaults to "names".}
 
 \item{color}{The name of the column containing hex color codes. Defaults to "favourite_color".}
 
 \item{group_average_label}{A string for the group average bar's label. Defaults to "Group Average".}
+
+\item{title_size}{An optional numeric value to override the dynamic title font size.}
+
+\item{title_vjust}{An optional numeric value to override the dynamic title vertical adjustment.}
 
 \item{output_path}{The full path where the plot will be saved.}
 
@@ -55,6 +61,5 @@ Invisibly returns the ggplot object.
 }
 \description{
 This function generates a polar bar chart with background color bands and
-curved text labels, ideal for visualizing dichotomous traits (e.g., Introversion/Extroversion).
-It automatically calculates and adds a group average comparison.
+curved text labels, ideal for visualizing dichotomous traits.
 }

@@ -11,6 +11,8 @@ TG_votes(
   name = "names",
   color = "favourite_color",
   sort_order = "desc",
+  title_size = NULL,
+  title_vjust = NULL,
   output_path = "votes_plot.jpg",
   output_width = 7,
   output_height = 6,
@@ -22,18 +24,20 @@ TG_votes(
 \arguments{
 \item{dataset}{A data frame containing the data to plot.}
 
-\item{column_name}{The name of the column containing the numeric values to plot
-(e.g., "opinion_score"). This should be provided as a string.}
+\item{column_name}{The name of the column containing the numeric values to plot.}
 
 \item{title}{A string for the plot's main title. If not provided, the name
 of the \code{column_name} will be used.}
 
-\item{name}{The name of the column containing unique identifiers (e.g., full names). Defaults to "names".}
+\item{name}{The name of the column containing unique identifiers. Defaults to "names".}
 
 \item{color}{The name of the column containing hex color codes. Defaults to "favourite_color".}
 
-\item{sort_order}{The order to sort the results. Can be "desc" (default,
-largest to smallest) or "asc" (smallest to largest).}
+\item{sort_order}{The order to sort the results. Can be "desc" or "asc".}
+
+\item{title_size}{An optional numeric value to override the dynamic title font size.}
+
+\item{title_vjust}{An optional numeric value to override the dynamic title vertical adjustment.}
 
 \item{output_path}{The full path where the plot will be saved.}
 

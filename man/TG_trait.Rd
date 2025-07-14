@@ -11,10 +11,12 @@ TG_trait(
   name = "names",
   color = "favourite_color",
   group_average_label = "Group\\nAverage",
-  y_outer_limit = 200,
+  y_outer_limit = 180,
+  title_size = NULL,
+  title_vjust = NULL,
   output_path = "trait_plot.jpg",
   output_width = 7,
-  output_height = 6,
+  output_height = 5,
   output_dpi = 300,
   save_plot = TRUE,
   show_plot = TRUE
@@ -24,21 +26,23 @@ TG_trait(
 \item{dataset}{A data frame containing the data to plot. This data should NOT
 contain a pre-existing "Group Average" row.}
 
-\item{column_name}{The name of the column to use for the plot values, provided as a string (e.g., "Extroversion").}
+\item{column_name}{The name of the column to use for the plot values.}
 
-\item{title}{A string for the plot's main title. Defaults to the name of the \code{column_name}.}
+\item{title}{A string for the plot's main title. Defaults to the \code{column_name}.}
 
-\item{name}{The name of the column containing unique identifiers (e.g., full names). Defaults to "names".}
+\item{name}{The name of the column containing unique identifiers. Defaults to "names".}
 
 \item{color}{The name of the column containing hex color codes. Defaults to "favourite_color".}
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
 
-\item{y_outer_limit}{A numeric value to control the outer boundary of the plot, creating more
-space for long labels. Increase this value if names are cut off. Defaults to 200.}
+\item{y_outer_limit}{A numeric value to control the outer boundary of the plot. Defaults to 200.}
 
-\item{output_path}{The full path, including filename and extension (e.g., "C:/plots/my_plot.png"),
-where the plot will be saved.}
+\item{title_size}{An optional numeric value to override the dynamic title font size.}
+
+\item{title_vjust}{An optional numeric value to override the dynamic title vertical adjustment.}
+
+\item{output_path}{The full path where the plot will be saved.}
 
 \item{output_width}{The width of the saved image in inches.}
 
