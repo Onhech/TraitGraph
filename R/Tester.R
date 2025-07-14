@@ -50,15 +50,14 @@ sample_data <- data.frame(
   Extroversion = c(75.2, 52.1, 82.6, 22.5, 67.3, 48.9, 59.5, 72.8, 39.6, 85.4, 41.2, 64.7, 99.1)
 )
 
-
 # --- 4. FUNCTION TESTING ---
 
 # --- Trait Example ---
 # This function now handles the group average internally, so we use the raw data.
 TG_trait(
   dataset = sample_data,
-  column_name = "Extroversion",
-  output_path = "ExamplePlots/trait_plot_1.jpg"
+  column_name = "Extroversion",y_outer_limit = 240
+    
 )
 
 # --- Ranked Question Example ---
