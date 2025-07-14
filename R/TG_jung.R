@@ -36,7 +36,7 @@ TG_jung <- function(
     output_width = 7,
     output_height = 6,
     output_dpi = 300,
-    save_plot = TRUE,
+    save_plot = FALSE,
     show_plot = TRUE) {
 
   # --- Data Processing ---
