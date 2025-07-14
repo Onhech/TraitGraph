@@ -6,17 +6,18 @@
 #' Create a Circular Dichotomy Bar Chart (Jungian Style)
 #'
 #' This function generates a polar bar chart with background color bands and
-#' curved text labels, ideal for visualizing dichotomous traits (e.g., Introversion/Extroversion).
-#' It automatically calculates and adds a group average comparison.
+#' curved text labels, ideal for visualizing dichotomous traits.
 #'
 #' @param dataset A data frame containing the data to plot.
 #' @param column_name The name of the column containing the percentile scores to plot.
 #' @param title A string for the plot's main title. Defaults to the `column_name`.
 #' @param label_top The text for the curved label at the top of the chart (100% mark).
 #' @param label_bottom The text for the curved label at the bottom of the chart (0% mark).
-#' @param name The name of the column containing unique identifiers (e.g., full names). Defaults to "names".
+#' @param name The name of the column containing unique identifiers. Defaults to "names".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
 #' @param group_average_label A string for the group average bar's label. Defaults to "Group Average".
+#' @param title_size An optional numeric value to override the dynamic title font size.
+#' @param title_vjust An optional numeric value to override the dynamic title vertical adjustment.
 #' @param output_path The full path where the plot will be saved.
 #' @param output_width The width of the saved image in inches.
 #' @param output_height The height of the saved image in inches.
@@ -37,6 +38,8 @@ TG_jung <- function(
     name = "names",
     color = "favourite_color",
     group_average_label = "Group Average",
+    title_size = NULL,
+    title_vjust = NULL,
     output_path = "jung_plot.jpg",
     output_width = 7,
     output_height = 6,
@@ -81,6 +84,10 @@ TG_jung <- function(
     opacity = c(0.6, 0.4, 0.2, 0.4, 0.6)
   )
   
+  title_params <- get_dynamic_title(title)
+  final_title_size <- if (!is.null(title_size)) title_size else title_params$size
+  final_title_vjust <- if (!is.null(title_vjust)) title_vjust else title_params$vjust
+  
   # --- Plot Creation (ggplot) ---
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_rect(data = color_bands, ggplot2::aes(xmin = -Inf, xmax = Inf, ymin = ystart, ymax = ystop, fill = color, alpha = opacity)) +
@@ -105,11 +112,11 @@ TG_jung <- function(
     ggplot2::theme_void() +
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(0, 0, 0, 0), "cm"),
-      plot.title = ggplot2::element_text(hjust = 0.5, vjust = -1, size = 30, face = "bold"),
+      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold"),
       axis.text.x = ggplot2::element_text(color = plot_data$dark_color, size = 10, face = ifelse(plot_data$id == group_average_label, "bold", "plain"), margin = ggplot2::margin(t = 7, unit = "pt"))
     ) +
     geomtextpath::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
-    ggplot2::ggtitle(title)
+    ggplot2::ggtitle(title_params$text)
   
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")

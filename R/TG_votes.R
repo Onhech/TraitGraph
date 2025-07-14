@@ -9,14 +9,14 @@
 #' based on a specified value column (e.g., vote counts or an opinion score).
 #'
 #' @param dataset A data frame containing the data to plot.
-#' @param column_name The name of the column containing the numeric values to plot
-#'   (e.g., "opinion_score"). This should be provided as a string.
+#' @param column_name The name of the column containing the numeric values to plot.
 #' @param title A string for the plot's main title. If not provided, the name
 #'   of the `column_name` will be used.
-#' @param name The name of the column containing unique identifiers (e.g., full names). Defaults to "names".
+#' @param name The name of the column containing unique identifiers. Defaults to "names".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
-#' @param sort_order The order to sort the results. Can be "desc" (default,
-#'   largest to smallest) or "asc" (smallest to largest).
+#' @param sort_order The order to sort the results. Can be "desc" or "asc".
+#' @param title_size An optional numeric value to override the dynamic title font size.
+#' @param title_vjust An optional numeric value to override the dynamic title vertical adjustment.
 #' @param output_path The full path where the plot will be saved.
 #' @param output_width The width of the saved image in inches.
 #' @param output_height The height of the saved image in inches.
@@ -33,6 +33,8 @@ TG_votes <- function(dataset,
                       name = "names",
                       color = "favourite_color",
                       sort_order = "desc",
+                      title_size = NULL,
+                      title_vjust = NULL,
                       output_path = "votes_plot.jpg",
                       output_width = 7,
                       output_height = 6,
@@ -82,6 +84,8 @@ TG_votes <- function(dataset,
   
   max_score <- max(plot_data$value)
   title_params <- get_dynamic_title(title)
+  final_title_size <- if (!is.null(title_size)) title_size else title_params$size
+  final_title_vjust <- if (!is.null(title_vjust)) title_vjust else title_params$vjust
   
   column_width <- dplyr::case_when(
     nrow(plot_data) <= 8 ~ 0.98 - (nrow(plot_data) * 0.01),
@@ -109,7 +113,7 @@ TG_votes <- function(dataset,
                        )) +
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(-3, -4, -3.5, -4), "cm"),
-      plot.title = ggplot2::element_text(hjust = 0.5, vjust = title_params$vjust, size = title_params$size, face = "bold")
+      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold")
     ) +
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
     ggplot2::ggtitle(title_params$text)

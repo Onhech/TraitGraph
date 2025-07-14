@@ -68,8 +68,8 @@ sample_data <- data.frame(
 TG_trait(
   dataset = sample_data,
   column_name = "Extroversion",
-  y_outer_limit = 240,
-  output_path = "ExamplePlots/trait_plot_1.jpg"
+  save_plot = F,
+  show_plot = T
 )
 
 # --- Ranked Question Example ---

@@ -11,15 +11,15 @@
 #'
 #' @param dataset A data frame containing the data to plot. This data should NOT
 #'   contain a pre-existing "Group Average" row.
-#' @param column_name The name of the column to use for the plot values, provided as a string (e.g., "Extroversion").
-#' @param title A string for the plot's main title. Defaults to the name of the `column_name`.
-#' @param name The name of the column containing unique identifiers (e.g., full names). Defaults to "names".
+#' @param column_name The name of the column to use for the plot values.
+#' @param title A string for the plot's main title. Defaults to the `column_name`.
+#' @param name The name of the column containing unique identifiers. Defaults to "names".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
 #' @param group_average_label A string used to label the group average bar. Defaults to "Group\\nAverage".
-#' @param y_outer_limit A numeric value to control the outer boundary of the plot, creating more
-#'   space for long labels. Increase this value if names are cut off. Defaults to 200.
-#' @param output_path The full path, including filename and extension (e.g., "C:/plots/my_plot.png"),
-#'   where the plot will be saved.
+#' @param y_outer_limit A numeric value to control the outer boundary of the plot. Defaults to 200.
+#' @param title_size An optional numeric value to override the dynamic title font size.
+#' @param title_vjust An optional numeric value to override the dynamic title vertical adjustment.
+#' @param output_path The full path where the plot will be saved.
 #' @param output_width The width of the saved image in inches.
 #' @param output_height The height of the saved image in inches.
 #' @param output_dpi The resolution (dots per inch) for the saved image.
@@ -36,10 +36,12 @@ TG_trait <- function(
     name = "names",
     color = "favourite_color",
     group_average_label = "Group\nAverage",
-    y_outer_limit = 200,
+    y_outer_limit = 180,
+    title_size = NULL,
+    title_vjust = NULL,
     output_path = "trait_plot.jpg",
     output_width = 7,
-    output_height = 6,
+    output_height = 5,
     output_dpi = 300,
     save_plot = TRUE,
     show_plot = TRUE) {
@@ -76,6 +78,13 @@ TG_trait <- function(
       inner_text_color = ifelse(is_light, dark_color, color)
     )
   
+  # --- Dynamic Title Handling ---
+  title_params <- get_dynamic_title(title)
+  # Override with user-provided values if they exist
+  final_title_size <- if (!is.null(title_size)) title_size else title_params$size
+  final_title_vjust <- if (!is.null(title_vjust)) title_vjust else title_params$vjust
+  
+  
   # --- Plot Creation (ggplot) ---
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_hline(yintercept = c(25, 75), color = "black", size = 0.2, alpha = 0.4, lty = 'dashed') +
@@ -107,10 +116,10 @@ TG_trait <- function(
     ) +
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(-1, -1, -1, -1), "cm"),
-      plot.title = ggplot2::element_text(hjust = 0.5, vjust = -15, size = 35, face = "bold")
+      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold")
     ) +
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
-    ggplot2::ggtitle(title)
+    ggplot2::ggtitle(title_params$text)
   
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")
@@ -121,4 +130,3 @@ TG_trait <- function(
   }
   return(invisible(p))
 }
-
