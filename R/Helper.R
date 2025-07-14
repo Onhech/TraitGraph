@@ -13,7 +13,7 @@
 
 # Install the TraitGraph package directly from GitHub.
 remove.packages(TraitGraph)
-remotes::install_github("Onhech/GroupReport/TraitGraph")
+remotes::install_github("Onhech/TraitGraph")
 
 # --- 2. SETUP ---
 
@@ -66,7 +66,7 @@ for (i in 1:10) {
 TG_trait(
   dataset = sample_data,
   column_name = "Conscientiousness",
-  output_path = "ExamplePlots/trait_conscientiousness.jpg"
+    
 )
 
 # --- Example 2: TG_voting() ---

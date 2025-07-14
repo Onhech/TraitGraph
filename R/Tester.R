@@ -14,7 +14,7 @@ library(devtools)
 # IMPORTANT: This needs to be the correct path on your machine.
 # Using RStudio Projects (the .Rproj file) is the best way to manage this
 # automatically and avoid hardcoding the path.
-setwd('/Users/lyndenjensen/Library/CloudStorage/GoogleDrive-lynden.jensen@gmail.com/My Drive/Research/<Coding & Statistics>/R/CustomRPackages/TraitGraph')
+setwd('/Users/lyndenjensen/Library/CloudStorage/GoogleDrive-lynden.jensen@gmail.com/My Drive/Work/PsychologyReports/Product/Reports/TraitGraph')
 
 # Create a directory for example plots if it doesn't already exist
 if (!dir.exists("ExamplePlots")) {
@@ -33,8 +33,6 @@ if (!dir.exists("ExamplePlots")) {
 # --- Option B: Full Rebuild Workflow (Use before pushing to GitHub) ---
 # Uncomment the lines below to do a full documentation and installation cycle.
 # This is slower but is the best way to test the package as a user would.
-
-# remove.packages("TraitGraph") # Optional: for a completely fresh install
 remove.packages(TraitGraph)
 devtools::document()          # Update documentation and NAMESPACE
 devtools::install()           # Build and install the package locally

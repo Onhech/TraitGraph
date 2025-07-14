@@ -30,7 +30,7 @@ TG_trait <- function(
     name = "names",
     color = "favourite_color",
     group_average_label = "Group\nAverage",
-    y_outer_limit = 200, # New parameter for spacing
+    y_outer_limit = 200, 
     output_path = "trait_plot.jpg",
     output_width = 7,
     output_height = 6,
