@@ -34,10 +34,11 @@ if (!dir.exists("ExamplePlots")) {
 # Uncomment the lines below to do a full documentation and installation cycle.
 # This is slower but is the best way to test the package as a user would.
 remove.packages(TraitGraph)
+library(TraitGraph) 
+?TraitGraph
 devtools::document()          # Update documentation and NAMESPACE
 devtools::install()           # Build and install the package locally
 library(TraitGraph)            # Load the newly installed package
-
 
 # --- 3. CREATE SAMPLE DATA ---
 
@@ -59,6 +60,8 @@ TG_trait(
   column_name = "Extroversion",y_outer_limit = 240
     
 )
+?TG_trait()
+
 
 # --- Ranked Question Example ---
 TG_votes(

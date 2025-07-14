@@ -11,11 +11,12 @@ TG_trait(
   name = "names",
   color = "favourite_color",
   group_average_label = "Group\\nAverage",
+  y_outer_limit = 200,
   output_path = "trait_plot.jpg",
   output_width = 7,
   output_height = 6,
   output_dpi = 300,
-  save_plot = TRUE,
+  save_plot = FALSE,
   show_plot = TRUE
 )
 }
@@ -32,6 +33,9 @@ contain a pre-existing "Group Average" row.}
 \item{color}{The name of the column containing hex color codes. Defaults to "favourite_color".}
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
+
+\item{y_outer_limit}{A numeric value to control the outer boundary of the plot, creating more
+space for long labels. Increase this value if names are cut off. Defaults to 200.}
 
 \item{output_path}{The full path, including filename and extension (e.g., "C:/plots/my_plot.png"),
 where the plot will be saved.}
