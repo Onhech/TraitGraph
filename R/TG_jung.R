@@ -1,3 +1,8 @@
+# -----------------------------------------------------------------------------
+# FILE: R/TG_jung.R
+# STATUS: FINAL
+# -----------------------------------------------------------------------------
+
 #' Create a Circular Dichotomy Bar Chart (Jungian Style)
 #'
 #' This function generates a polar bar chart with background color bands and
@@ -20,7 +25,7 @@
 #' @param show_plot A logical value. If TRUE, the plot is displayed.
 #'
 #' @importFrom dplyr %>%
-#' @importFrom geomtextpath geom_textpath
+#' @importFrom geomtextpath geom_textpath coord_radial
 #' @return Invisibly returns the ggplot object.
 #' @export
 TG_jung <- function(
@@ -36,9 +41,9 @@ TG_jung <- function(
     output_width = 7,
     output_height = 6,
     output_dpi = 300,
-    save_plot = FALSE,
+    save_plot = TRUE,
     show_plot = TRUE) {
-
+  
   # --- Data Processing ---
   plot_data <- dataset %>%
     dplyr::rename(
@@ -46,7 +51,7 @@ TG_jung <- function(
       value = !!rlang::sym(column_name),
       color = !!rlang::sym(color)
     )
-
+  
   group_avg <- round(mean(plot_data$value, na.rm = TRUE), 0)
   average_row <- tibble::tibble(
     id    = group_average_label,
@@ -54,13 +59,13 @@ TG_jung <- function(
     color = "black"
   )
   plot_data <- dplyr::bind_rows(average_row, plot_data)
-
+  
   plot_data <- plot_data %>%
     dplyr::mutate(
       value = ifelse(value >= 99, value, round(value, 0)),
       id = factor(id, levels = id)
     )
-
+  
   plot_data <- plot_data %>%
     dplyr::mutate(
       is_light = is_color_light(color),
@@ -68,14 +73,14 @@ TG_jung <- function(
       border_color = ifelse(is_light, dark_color, NA_character_),
       inner_text_color = ifelse(is_light, dark_color, color)
     )
-
+  
   color_bands <- data.frame(
     color = c("#B1C090", "#B1C090", "#B3C0CD", "#B5BEDF", "#B5BEDF"),
     ystart = seq(0, 80, by = 20),
     ystop = seq(20, 100, by = 20),
     opacity = c(0.6, 0.4, 0.2, 0.4, 0.6)
   )
-
+  
   # --- Plot Creation (ggplot) ---
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_rect(data = color_bands, ggplot2::aes(xmin = -Inf, xmax = Inf, ymin = ystart, ymax = ystop, fill = color, alpha = opacity)) +
@@ -103,9 +108,9 @@ TG_jung <- function(
       plot.title = ggplot2::element_text(hjust = 0.5, vjust = -1, size = 30, face = "bold"),
       axis.text.x = ggplot2::element_text(color = plot_data$dark_color, size = 10, face = ifelse(plot_data$id == group_average_label, "bold", "plain"), margin = ggplot2::margin(t = 7, unit = "pt"))
     ) +
-    ggplot2::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
+    geomtextpath::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
     ggplot2::ggtitle(title)
-
+  
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")
     message("Plot saved to: ", output_path)

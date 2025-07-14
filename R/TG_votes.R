@@ -1,10 +1,16 @@
-#' Create and Save a Circular Bar Chart for Voting Data
+# -----------------------------------------------------------------------------
+# FILE: R/TG_votes.R
+# STATUS: FINAL
+# -----------------------------------------------------------------------------
+
+#' Create and Save a Circular Bar Chart for votes/Opinion Data
 #'
 #' This function takes a dataframe and generates a customized polar bar chart
-#' based on a specified value column (e.g., vote counts).
+#' based on a specified value column (e.g., vote counts or an opinion score).
 #'
 #' @param dataset A data frame containing the data to plot.
-#' @param column_name The name of the column containing the numeric voting score to plot.
+#' @param column_name The name of the column containing the numeric values to plot
+#'   (e.g., "opinion_score"). This should be provided as a string.
 #' @param title A string for the plot's main title. If not provided, the name
 #'   of the `column_name` will be used.
 #' @param name The name of the column containing unique identifiers (e.g., full names). Defaults to "names".
@@ -31,43 +37,41 @@ TG_votes <- function(dataset,
                       output_width = 7,
                       output_height = 6,
                       output_dpi = 300,
-                      save_plot = FALSE,
+                      save_plot = TRUE,
                       show_plot = TRUE) {
-
+  
   if (is.null(title)) {
     title <- column_name
   }
-
-  # Add input validation for sort_order
+  
   if (!sort_order %in% c("desc", "asc")) {
     stop("`sort_order` must be either 'desc' or 'asc'.")
   }
-
+  
   plot_data <- dataset %>%
     dplyr::rename(
       id    = !!rlang::sym(name),
       value = !!rlang::sym(column_name),
       color = !!rlang::sym(color)
     )
-
-  # Filter and arrange data based on the sort_order parameter
+  
   plot_data <- plot_data %>%
     dplyr::filter(value > 0)
-
+  
   if (sort_order == "desc") {
     plot_data <- plot_data %>% dplyr::arrange(dplyr::desc(value))
   } else {
     plot_data <- plot_data %>% dplyr::arrange(value)
   }
-
+  
   plot_data <- plot_data %>%
     dplyr::mutate(id = factor(id, levels = id))
-
+  
   if (nrow(plot_data) == 0) {
     message("No data with scores greater than 0 to plot.")
     return(invisible(NULL))
   }
-
+  
   plot_data <- plot_data %>%
     dplyr::mutate(
       is_light = is_color_light(color),
@@ -75,15 +79,15 @@ TG_votes <- function(dataset,
       border_color = ifelse(is_light, dark_color, NA_character_),
       inner_text_color = ifelse(is_light, dark_color, color)
     )
-
+  
   max_score <- max(plot_data$value)
   title_params <- get_dynamic_title(title)
-
+  
   column_width <- dplyr::case_when(
     nrow(plot_data) <= 8 ~ 0.98 - (nrow(plot_data) * 0.01),
     TRUE ~ 0.90
   )
-
+  
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), width = column_width, stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
     ggplot2::geom_hline(yintercept = max_score + 1, color = "black", size = 0.6, alpha = 0.5) +
@@ -109,7 +113,7 @@ TG_votes <- function(dataset,
     ) +
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
     ggplot2::ggtitle(title_params$text)
-
+  
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")
     message("Plot saved to: ", output_path)

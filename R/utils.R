@@ -1,5 +1,6 @@
 # -----------------------------------------------------------------------------
-# TraitGraph Package - Utility Functions
+# FILE: R/utils.R
+# STATUS: FINAL
 # -----------------------------------------------------------------------------
 # This script contains internal helper functions used by the main plotting
 # functions in the package. These functions are not exported for users.
@@ -36,7 +37,7 @@ darken_color <- function(hex, factor = 0.5) {
 #' @return A list containing the wrapped text, calculated size, and vjust.
 get_dynamic_title <- function(title_text) {
   title_length <- nchar(title_text)
-
+  
   # Determine title size
   if (title_length <= 25) {
     title_size <- 23
@@ -45,7 +46,7 @@ get_dynamic_title <- function(title_text) {
   } else {
     title_size <- 15
   }
-
+  
   # Determine wrap width based on size
   if (title_size == 23) {
     calculated_max_char_per_line <- 35
@@ -54,10 +55,10 @@ get_dynamic_title <- function(title_text) {
   } else {
     calculated_max_char_per_line <- 65
   }
-
+  
   wrapped_title <- stringr::str_wrap(title_text, width = calculated_max_char_per_line)
   num_lines <- stringr::str_count(wrapped_title, "\n") + 1
-
+  
   # Determine vertical adjustment based on line count
   if (num_lines == 1) {
     title_vjust <- -21
@@ -66,6 +67,6 @@ get_dynamic_title <- function(title_text) {
   } else {
     title_vjust <- -28
   }
-
+  
   return(list(text = wrapped_title, size = title_size, vjust = title_vjust))
 }

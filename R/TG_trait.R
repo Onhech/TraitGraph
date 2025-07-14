@@ -1,3 +1,8 @@
+# -----------------------------------------------------------------------------
+# FILE: R/TG_trait.R
+# STATUS: FINAL
+# -----------------------------------------------------------------------------
+
 #' Create a Circular Percentile Bar Chart
 #'
 #' This function generates a polar bar chart to visualize percentile scores for
@@ -36,9 +41,9 @@ TG_trait <- function(
     output_width = 7,
     output_height = 6,
     output_dpi = 300,
-    save_plot = FALSE,
+    save_plot = TRUE,
     show_plot = TRUE) {
-
+  
   # --- Data Processing ---
   plot_data <- dataset %>%
     dplyr::rename(
@@ -46,23 +51,23 @@ TG_trait <- function(
       value = !!rlang::sym(column_name),
       color = !!rlang::sym(color)
     )
-
+  
   group_avg <- round(mean(plot_data$value, na.rm = TRUE), 0)
-
+  
   average_row <- tibble::tibble(
     id    = group_average_label,
     value = group_avg,
     color = "black"
   )
-
+  
   plot_data <- dplyr::bind_rows(average_row, plot_data)
-
+  
   plot_data <- plot_data %>%
     dplyr::mutate(
       value = ifelse(value >= 99, value, round(value, 0)),
       id = factor(id, levels = id)
     )
-
+  
   plot_data <- plot_data %>%
     dplyr::mutate(
       is_light = is_color_light(color),
@@ -70,7 +75,7 @@ TG_trait <- function(
       border_color = ifelse(is_light, dark_color, NA_character_),
       inner_text_color = ifelse(is_light, dark_color, color)
     )
-
+  
   # --- Plot Creation (ggplot) ---
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_hline(yintercept = c(25, 75), color = "black", size = 0.2, alpha = 0.4, lty = 'dashed') +
@@ -101,12 +106,12 @@ TG_trait <- function(
       )
     ) +
     ggplot2::theme(
-      plot.margin = ggplot2::unit(c(-4, -5, -5, -5), "cm"),
+      plot.margin = ggplot2::unit(c(-1, -1, -1, -1), "cm"),
       plot.title = ggplot2::element_text(hjust = 0.5, vjust = -15, size = 35, face = "bold")
     ) +
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
     ggplot2::ggtitle(title)
-
+  
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")
     message("Plot saved to: ", output_path)
@@ -116,3 +121,4 @@ TG_trait <- function(
   }
   return(invisible(p))
 }
+

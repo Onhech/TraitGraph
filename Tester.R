@@ -60,7 +60,6 @@ TG_trait(
   column_name = "Extroversion",y_outer_limit = 240
     
 )
-?TG_trait()
 
 
 # --- Ranked Question Example ---
