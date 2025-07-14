@@ -17,7 +17,7 @@ TG_jung(
   output_width = 7,
   output_height = 6,
   output_dpi = 300,
-  save_plot = FALSE,
+  save_plot = TRUE,
   show_plot = TRUE
 )
 }

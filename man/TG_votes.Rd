@@ -2,7 +2,7 @@
 % Please edit documentation in R/TG_votes.R
 \name{TG_votes}
 \alias{TG_votes}
-\title{Create and Save a Circular Bar Chart for Voting Data}
+\title{Create and Save a Circular Bar Chart for votes/Opinion Data}
 \usage{
 TG_votes(
   dataset,
@@ -15,14 +15,15 @@ TG_votes(
   output_width = 7,
   output_height = 6,
   output_dpi = 300,
-  save_plot = FALSE,
+  save_plot = TRUE,
   show_plot = TRUE
 )
 }
 \arguments{
 \item{dataset}{A data frame containing the data to plot.}
 
-\item{column_name}{The name of the column containing the numeric voting score to plot.}
+\item{column_name}{The name of the column containing the numeric values to plot
+(e.g., "opinion_score"). This should be provided as a string.}
 
 \item{title}{A string for the plot's main title. If not provided, the name
 of the \code{column_name} will be used.}
@@ -51,5 +52,5 @@ Invisibly returns the ggplot object.
 }
 \description{
 This function takes a dataframe and generates a customized polar bar chart
-based on a specified value column (e.g., vote counts).
+based on a specified value column (e.g., vote counts or an opinion score).
 }
