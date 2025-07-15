@@ -12,10 +12,11 @@ TG_jung(
   label_bottom = "Trait B",
   name = "names",
   color = "favourite_color",
-  group_average_label = "Group Average",
+  group_average_label = "Group\\nAverage",
+  plot_zoom_mod = 0,
   name_size_mod = 0,
-  title_size = NULL,
-  title_vjust = NULL,
+  title_size_mod = 0,
+  title_vjust_mod = 0,
   output_path = "jung_plot.jpg",
   output_width = 7,
   output_height = 6,
@@ -41,11 +42,13 @@ TG_jung(
 
 \item{group_average_label}{A string for the group average bar's label. Defaults to "Group Average".}
 
+\item{plot_zoom_mod}{A numeric value (in cm) to add to the top and bottom plot margins for extra space.}
+
 \item{name_size_mod}{A numeric value to add or subtract from the name label font size.}
 
-\item{title_size}{An optional numeric value to override the dynamic title font size.}
+\item{title_size_mod}{A numeric value to add or subtract from the dynamic title font size.}
 
-\item{title_vjust}{An optional numeric value to override the dynamic title vertical adjustment.}
+\item{title_vjust_mod}{A numeric value to add or subtract from the dynamic title vertical adjustment.}
 
 \item{output_path}{The full path where the plot will be saved.}
 
