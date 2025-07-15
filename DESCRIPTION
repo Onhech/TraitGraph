@@ -16,6 +16,5 @@ Imports:
     ggplot2,
     rlang,
     stringr,
-    stringi,
     geomtextpath,
     tibble

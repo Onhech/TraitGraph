@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # FILE: R/TG_jung.R
-# STATUS: FINAL - Corrected
+# STATUS: FINAL - UPDATED
 # -----------------------------------------------------------------------------
 
 #' Create a Circular Dichotomy Bar Chart (Jungian Style)
@@ -16,9 +16,10 @@
 #' @param name The name of the column containing unique identifiers. Defaults to "names".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
 #' @param group_average_label A string for the group average bar's label. Defaults to "Group Average".
+#' @param plot_zoom_mod A numeric value (in cm) to add to the top and bottom plot margins for extra space.
 #' @param name_size_mod A numeric value to add or subtract from the name label font size.
-#' @param title_size An optional numeric value to override the dynamic title font size.
-#' @param title_vjust An optional numeric value to override the dynamic title vertical adjustment.
+#' @param title_size_mod A numeric value to add or subtract from the dynamic title font size.
+#' @param title_vjust_mod A numeric value to add or subtract from the dynamic title vertical adjustment.
 #' @param output_path The full path where the plot will be saved.
 #' @param output_width The width of the saved image in inches.
 #' @param output_height The height of the saved image in inches.
@@ -38,10 +39,11 @@ TG_jung <- function(
     label_bottom = "Trait B",
     name = "names",
     color = "favourite_color",
-    group_average_label = "Group Average",
+    group_average_label = "Group\nAverage",
+    plot_zoom_mod = 0,
     name_size_mod = 0,
-    title_size = NULL,
-    title_vjust = NULL,
+    title_size_mod = 0,
+    title_vjust_mod = 0,
     output_path = "jung_plot.jpg",
     output_width = 7,
     output_height = 6,
@@ -62,8 +64,7 @@ TG_jung <- function(
       id = factor(id, levels = id),
       is_light = is_color_light(color),
       dark_color = sapply(color, darken_color),
-      border_color = ifelse(is_light, dark_color, NA_character_),
-      inner_text_color = ifelse(is_light, dark_color, color)
+      border_color = ifelse(is_light, dark_color, NA_character_)
     )
   
   color_bands <- data.frame(
@@ -74,8 +75,8 @@ TG_jung <- function(
   )
   
   title_params <- get_dynamic_title(title)
-  final_title_size <- if (!is.null(title_size)) title_size else title_params$size
-  final_title_vjust <- if (!is.null(title_vjust)) title_vjust else title_params$vjust
+  final_title_size <- title_params$size + title_size_mod
+  final_title_vjust <- title_params$vjust + title_vjust_mod + 21
   
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_rect(data = color_bands, ggplot2::aes(xmin = -Inf, xmax = Inf, ymin = ystart, ymax = ystop, fill = color, alpha = opacity)) +
@@ -99,12 +100,11 @@ TG_jung <- function(
     ggplot2::scale_y_continuous(limits = c(0, 100), expand = c(0, 0)) +
     ggplot2::theme_void() +
     ggplot2::theme(
-      plot.margin = ggplot2::unit(c(0, 0, 0, 0), "cm"),
+      plot.margin = ggplot2::unit(c((0.3 + plot_zoom_mod), 0, (0.3 + plot_zoom_mod), 0), "cm"),
       plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold"),
       axis.text.x = ggplot2::element_text(color = plot_data$dark_color, size = 10 + name_size_mod, face = ifelse(plot_data$id == group_average_label, "bold", "plain"), margin = ggplot2::margin(t = 7, unit = "pt"))
     ) +
-    # Note: coord_radial is not exported from geomtextpath, so we use ::: to access it
-    geomtextpath:::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
+    ggplot2:::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
     ggplot2::ggtitle(title_params$text)
   
   if (save_plot) {
