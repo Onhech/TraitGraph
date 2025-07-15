@@ -15,9 +15,9 @@ TG_trait(
   inner_hole_size_mod = 0,
   margin_y_mod = 0,
   margin_x_mod = 0,
-  name_size_mod = 0,
   title_size_mod = 0,
   title_vjust_mod = 0,
+  name_size_mod = 0,
   output_path = "trait_plot.jpg",
   output_width = 7,
   output_height = 5,
@@ -27,32 +27,31 @@ TG_trait(
 )
 }
 \arguments{
-\item{dataset}{A data frame containing the data to plot. This data should NOT
-contain a pre-existing "Group Average" row.}
+\item{dataset}{A data frame containing the data to plot.}
 
 \item{column_name}{The name of the column to use for the plot values.}
 
 \item{title}{A string for the plot's main title. Defaults to the \code{column_name}.}
 
-\item{name}{The name of the column containing unique identifiers. Defaults to "names".}
+\item{name}{The name of the column containing unique identifiers.}
 
-\item{color}{The name of the column containing hex color codes. Defaults to "favourite_color".}
+\item{color}{The name of the column containing hex color codes.}
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
 
-\item{plot_zoom_mod}{A numeric value to add or subtract from the default outer plot boundary (180).}
+\item{plot_zoom_mod}{A numeric value to add/subtract from the outer plot boundary.}
 
-\item{inner_hole_size_mod}{A positive numeric value to reduce the inner hole size (making the plot less tall).}
+\item{inner_hole_size_mod}{A positive numeric value to reduce the inner hole size.}
 
-\item{margin_y_mod}{A numeric value (in cm) to add or subtract from the top and bottom plot margins.}
+\item{margin_y_mod}{A numeric value (in cm) to add/subtract from top/bottom margins.}
 
-\item{margin_x_mod}{A numeric value (in cm) to add or subtract from the left and right plot margins.}
+\item{margin_x_mod}{A numeric value (in cm) to add/subtract from left/right margins.}
 
-\item{name_size_mod}{A numeric value to add or subtract from the name label font size.}
+\item{title_size_mod}{A numeric value to add/subtract from the title font size.}
 
-\item{title_size_mod}{A numeric value to add or subtract from the dynamic title font size.}
+\item{title_vjust_mod}{A numeric value to add/subtract from the title vertical adjustment.}
 
-\item{title_vjust_mod}{A numeric value to add or subtract from the dynamic title vertical adjustment.}
+\item{name_size_mod}{A numeric value to add/subtract from the name label font size.}
 
 \item{output_path}{The full path where the plot will be saved.}
 

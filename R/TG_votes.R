@@ -1,33 +1,9 @@
 # -----------------------------------------------------------------------------
 # FILE: R/TG_votes.R
-# STATUS: UPDATED
+# STATUS: FINAL - Corrected
 # -----------------------------------------------------------------------------
 
 #' Create and Save a Circular Bar Chart for Votes/Opinion Data
-#'
-#' This function takes a dataframe and generates a customized polar bar chart
-#' based on a specified value column (e.g., vote counts or an opinion score).
-#'
-#' @param dataset A data frame containing the data to plot.
-#' @param column_name The name of the column containing the numeric values to plot.
-#' @param title A string for the plot's main title. If not provided, the name
-#'   of the `column_name` will be used.
-#' @param name The name of the column containing unique identifiers. Defaults to "names".
-#' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
-#' @param sort_order The order to sort the results. Can be "desc" or "asc".
-#' @param plot_zoom_mod A numeric value to add or subtract from the default outer plot boundary.
-#' @param name_size_mod A numeric value to add or subtract from the name label font size.
-#' @param title_size An optional numeric value to override the dynamic title font size.
-#' @param title_vjust An optional numeric value to override the dynamic title vertical adjustment.
-#' @param output_path The full path where the plot will be saved.
-#' @param output_width The width of the saved image in inches.
-#' @param output_height The height of the saved image in inches.
-#' @param output_dpi The resolution (dots per inch) for the saved image.
-#' @param save_plot A logical value. If TRUE, the plot is saved to disk.
-#' @param show_plot A logical value. If TRUE, the plot is displayed.
-#'
-#' @importFrom dplyr %>%
-#' @return Invisibly returns the ggplot object.
 #' @export
 TG_votes <- function(dataset,
                      column_name,
@@ -46,22 +22,11 @@ TG_votes <- function(dataset,
                      save_plot = TRUE,
                      show_plot = TRUE) {
   
-  if (is.null(title)) {
-    title <- column_name
-  }
-  
-  if (!sort_order %in% c("desc", "asc")) {
-    stop("`sort_order` must be either 'desc' or 'asc'.")
-  }
+  if (is.null(title)) { title <- column_name }
+  if (!sort_order %in% c("desc", "asc")) { stop("`sort_order` must be either 'desc' or 'asc'.") }
   
   plot_data <- dataset %>%
-    dplyr::rename(
-      id    = !!rlang::sym(name),
-      value = !!rlang::sym(column_name),
-      color = !!rlang::sym(color)
-    )
-  
-  plot_data <- plot_data %>%
+    dplyr::rename(id = !!rlang::sym(name), value = !!rlang::sym(column_name), color = !!rlang::sym(color)) %>%
     dplyr::filter(value > 0)
   
   if (sort_order == "desc") {
@@ -71,32 +36,21 @@ TG_votes <- function(dataset,
   }
   
   plot_data <- plot_data %>%
-    dplyr::mutate(id = factor(id, levels = id))
-  
-  if (nrow(plot_data) == 0) {
-    message("No data with scores greater than 0 to plot.")
-    return(invisible(NULL))
-  }
-  
-  plot_data <- plot_data %>%
     dplyr::mutate(
+      id = factor(id, levels = id),
       is_light = is_color_light(color),
       dark_color = sapply(color, darken_color),
-      border_color = ifelse(is_light, dark_color, NA_character_),
-      inner_text_color = ifelse(is_light, dark_color, color)
+      border_color = ifelse(is_light, dark_color, NA_character_)
     )
+  
+  if (nrow(plot_data) == 0) { message("No data with scores greater than 0 to plot."); return(invisible(NULL)) }
   
   max_score <- max(plot_data$value)
   title_params <- get_dynamic_title(title)
   final_title_size <- if (!is.null(title_size)) title_size else title_params$size
   final_title_vjust <- if (!is.null(title_vjust)) title_vjust else title_params$vjust
-  
-  column_width <- dplyr::case_when(
-    nrow(plot_data) <= 8 ~ 0.98 - (nrow(plot_data) * 0.01),
-    TRUE ~ 0.90
-  )
-  
-  final_y_outer_limit <- ((max_score + 1) * 1.7) + plot_zoom_mod +1
+  column_width <- dplyr::case_when(nrow(plot_data) <= 8 ~ 0.98 - (nrow(plot_data) * 0.01), TRUE ~ 0.90)
+  final_y_outer_limit <- ((max_score + 1) * 1.7) + plot_zoom_mod
   
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), width = column_width, stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
@@ -124,12 +78,7 @@ TG_votes <- function(dataset,
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
     ggplot2::ggtitle(title_params$text)
   
-  if (save_plot) {
-    ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")
-    message("Plot saved to: ", output_path)
-  }
-  if (show_plot) {
-    print(p)
-  }
+  if (save_plot) { ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in"); message("Plot saved to: ", output_path) }
+  if (show_plot) { print(p) }
   return(invisible(p))
 }

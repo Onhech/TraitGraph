@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # FILE: R/TG_jung.R
-# STATUS: CORRECTED
+# STATUS: FINAL - Corrected
 # -----------------------------------------------------------------------------
 
 #' Create a Circular Dichotomy Bar Chart (Jungian Style)
@@ -49,30 +49,17 @@ TG_jung <- function(
     save_plot = TRUE,
     show_plot = TRUE) {
   
-  # --- Data Processing ---
   plot_data <- dataset %>%
-    dplyr::rename(
-      id    = !!rlang::sym(name),
-      value = !!rlang::sym(column_name),
-      color = !!rlang::sym(color)
-    )
+    dplyr::rename(id = !!rlang::sym(name), value = !!rlang::sym(column_name), color = !!rlang::sym(color))
   
   group_avg <- round(mean(plot_data$value, na.rm = TRUE), 0)
-  average_row <- tibble::tibble(
-    id    = group_average_label,
-    value = group_avg,
-    color = "black"
-  )
+  average_row <- tibble::tibble(id = group_average_label, value = group_avg, color = "black")
   plot_data <- dplyr::bind_rows(average_row, plot_data)
   
   plot_data <- plot_data %>%
     dplyr::mutate(
       value = ifelse(value >= 99, value, round(value, 0)),
-      id = factor(id, levels = id)
-    )
-  
-  plot_data <- plot_data %>%
-    dplyr::mutate(
+      id = factor(id, levels = id),
       is_light = is_color_light(color),
       dark_color = sapply(color, darken_color),
       border_color = ifelse(is_light, dark_color, NA_character_),
@@ -90,7 +77,6 @@ TG_jung <- function(
   final_title_size <- if (!is.null(title_size)) title_size else title_params$size
   final_title_vjust <- if (!is.null(title_vjust)) title_vjust else title_params$vjust
   
-  # --- Plot Creation (ggplot) ---
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_rect(data = color_bands, ggplot2::aes(xmin = -Inf, xmax = Inf, ymin = ystart, ymax = ystop, fill = color, alpha = opacity)) +
     ggplot2::scale_fill_identity() +
@@ -117,7 +103,8 @@ TG_jung <- function(
       plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold"),
       axis.text.x = ggplot2::element_text(color = plot_data$dark_color, size = 10 + name_size_mod, face = ifelse(plot_data$id == group_average_label, "bold", "plain"), margin = ggplot2::margin(t = 7, unit = "pt"))
     ) +
-    geomtextpath::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
+    # Note: coord_radial is not exported from geomtextpath, so we use ::: to access it
+    geomtextpath:::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
     ggplot2::ggtitle(title_params$text)
   
   if (save_plot) {

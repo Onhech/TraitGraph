@@ -23,44 +23,6 @@ TG_votes(
   show_plot = TRUE
 )
 }
-\arguments{
-\item{dataset}{A data frame containing the data to plot.}
-
-\item{column_name}{The name of the column containing the numeric values to plot.}
-
-\item{title}{A string for the plot's main title. If not provided, the name
-of the \code{column_name} will be used.}
-
-\item{name}{The name of the column containing unique identifiers. Defaults to "names".}
-
-\item{color}{The name of the column containing hex color codes. Defaults to "favourite_color".}
-
-\item{sort_order}{The order to sort the results. Can be "desc" or "asc".}
-
-\item{plot_zoom_mod}{A numeric value to add or subtract from the default outer plot boundary.}
-
-\item{name_size_mod}{A numeric value to add or subtract from the name label font size.}
-
-\item{title_size}{An optional numeric value to override the dynamic title font size.}
-
-\item{title_vjust}{An optional numeric value to override the dynamic title vertical adjustment.}
-
-\item{output_path}{The full path where the plot will be saved.}
-
-\item{output_width}{The width of the saved image in inches.}
-
-\item{output_height}{The height of the saved image in inches.}
-
-\item{output_dpi}{The resolution (dots per inch) for the saved image.}
-
-\item{save_plot}{A logical value. If TRUE, the plot is saved to disk.}
-
-\item{show_plot}{A logical value. If TRUE, the plot is displayed.}
-}
-\value{
-Invisibly returns the ggplot object.
-}
 \description{
-This function takes a dataframe and generates a customized polar bar chart
-based on a specified value column (e.g., vote counts or an opinion score).
+Create and Save a Circular Bar Chart for Votes/Opinion Data
 }
