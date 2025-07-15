@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # FILE: R/TG_jung.R
-# STATUS: FINAL
+# STATUS: CORRECTED
 # -----------------------------------------------------------------------------
 
 #' Create a Circular Dichotomy Bar Chart (Jungian Style)
@@ -16,6 +16,7 @@
 #' @param name The name of the column containing unique identifiers. Defaults to "names".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
 #' @param group_average_label A string for the group average bar's label. Defaults to "Group Average".
+#' @param name_size_mod A numeric value to add or subtract from the name label font size.
 #' @param title_size An optional numeric value to override the dynamic title font size.
 #' @param title_vjust An optional numeric value to override the dynamic title vertical adjustment.
 #' @param output_path The full path where the plot will be saved.
@@ -26,7 +27,7 @@
 #' @param show_plot A logical value. If TRUE, the plot is displayed.
 #'
 #' @importFrom dplyr %>%
-#' @importFrom geomtextpath geom_textpath coord_radial
+#' @importFrom geomtextpath geom_textpath
 #' @return Invisibly returns the ggplot object.
 #' @export
 TG_jung <- function(
@@ -38,6 +39,7 @@ TG_jung <- function(
     name = "names",
     color = "favourite_color",
     group_average_label = "Group Average",
+    name_size_mod = 0,
     title_size = NULL,
     title_vjust = NULL,
     output_path = "jung_plot.jpg",
@@ -113,7 +115,7 @@ TG_jung <- function(
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(0, 0, 0, 0), "cm"),
       plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold"),
-      axis.text.x = ggplot2::element_text(color = plot_data$dark_color, size = 10, face = ifelse(plot_data$id == group_average_label, "bold", "plain"), margin = ggplot2::margin(t = 7, unit = "pt"))
+      axis.text.x = ggplot2::element_text(color = plot_data$dark_color, size = 10 + name_size_mod, face = ifelse(plot_data$id == group_average_label, "bold", "plain"), margin = ggplot2::margin(t = 7, unit = "pt"))
     ) +
     geomtextpath::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
     ggplot2::ggtitle(title_params$text)

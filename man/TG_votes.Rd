@@ -2,7 +2,7 @@
 % Please edit documentation in R/TG_votes.R
 \name{TG_votes}
 \alias{TG_votes}
-\title{Create and Save a Circular Bar Chart for votes/Opinion Data}
+\title{Create and Save a Circular Bar Chart for Votes/Opinion Data}
 \usage{
 TG_votes(
   dataset,
@@ -11,6 +11,8 @@ TG_votes(
   name = "names",
   color = "favourite_color",
   sort_order = "desc",
+  plot_zoom_mod = 0,
+  name_size_mod = 0,
   title_size = NULL,
   title_vjust = NULL,
   output_path = "votes_plot.jpg",
@@ -34,6 +36,10 @@ of the \code{column_name} will be used.}
 \item{color}{The name of the column containing hex color codes. Defaults to "favourite_color".}
 
 \item{sort_order}{The order to sort the results. Can be "desc" or "asc".}
+
+\item{plot_zoom_mod}{A numeric value to add or subtract from the default outer plot boundary.}
+
+\item{name_size_mod}{A numeric value to add or subtract from the name label font size.}
 
 \item{title_size}{An optional numeric value to override the dynamic title font size.}
 

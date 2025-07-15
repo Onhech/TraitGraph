@@ -11,14 +11,18 @@ TG_trait(
   name = "names",
   color = "favourite_color",
   group_average_label = "Group\\nAverage",
-  y_outer_limit = 180,
-  title_size = NULL,
-  title_vjust = NULL,
+  plot_zoom_mod = 0,
+  inner_hole_size_mod = 0,
+  margin_y_mod = 0,
+  margin_x_mod = 0,
+  name_size_mod = 0,
+  title_size_mod = 0,
+  title_vjust_mod = 0,
   output_path = "trait_plot.jpg",
   output_width = 7,
   output_height = 5,
   output_dpi = 300,
-  save_plot = TRUE,
+  save_plot = FALSE,
   show_plot = TRUE
 )
 }
@@ -36,11 +40,19 @@ contain a pre-existing "Group Average" row.}
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
 
-\item{y_outer_limit}{A numeric value to control the outer boundary of the plot. Defaults to 200.}
+\item{plot_zoom_mod}{A numeric value to add or subtract from the default outer plot boundary (180).}
 
-\item{title_size}{An optional numeric value to override the dynamic title font size.}
+\item{inner_hole_size_mod}{A positive numeric value to reduce the inner hole size (making the plot less tall).}
 
-\item{title_vjust}{An optional numeric value to override the dynamic title vertical adjustment.}
+\item{margin_y_mod}{A numeric value (in cm) to add or subtract from the top and bottom plot margins.}
+
+\item{margin_x_mod}{A numeric value (in cm) to add or subtract from the left and right plot margins.}
+
+\item{name_size_mod}{A numeric value to add or subtract from the name label font size.}
+
+\item{title_size_mod}{A numeric value to add or subtract from the dynamic title font size.}
+
+\item{title_vjust_mod}{A numeric value to add or subtract from the dynamic title vertical adjustment.}
 
 \item{output_path}{The full path where the plot will be saved.}
 

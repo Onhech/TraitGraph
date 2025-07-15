@@ -16,9 +16,13 @@
 #' @param name The name of the column containing unique identifiers. Defaults to "names".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
 #' @param group_average_label A string used to label the group average bar. Defaults to "Group\\nAverage".
-#' @param y_outer_limit A numeric value to control the outer boundary of the plot. Defaults to 200.
-#' @param title_size An optional numeric value to override the dynamic title font size.
-#' @param title_vjust An optional numeric value to override the dynamic title vertical adjustment.
+#' @param plot_zoom_mod A numeric value to add or subtract from the default outer plot boundary (180).
+#' @param inner_hole_size_mod A positive numeric value to reduce the inner hole size (making the plot less tall).
+#' @param margin_y_mod A numeric value (in cm) to add or subtract from the top and bottom plot margins.
+#' @param margin_x_mod A numeric value (in cm) to add or subtract from the left and right plot margins.
+#' @param name_size_mod A numeric value to add or subtract from the name label font size.
+#' @param title_size_mod A numeric value to add or subtract from the dynamic title font size.
+#' @param title_vjust_mod A numeric value to add or subtract from the dynamic title vertical adjustment.
 #' @param output_path The full path where the plot will be saved.
 #' @param output_width The width of the saved image in inches.
 #' @param output_height The height of the saved image in inches.
@@ -36,14 +40,18 @@ TG_trait <- function(
     name = "names",
     color = "favourite_color",
     group_average_label = "Group\nAverage",
-    y_outer_limit = 180,
-    title_size = NULL,
-    title_vjust = NULL,
+    plot_zoom_mod = 0,
+    inner_hole_size_mod = 0,
+    margin_y_mod = 0,
+    margin_x_mod = 0,
+    name_size_mod = 0,
+    title_size_mod = 0,
+    title_vjust_mod = 0,
     output_path = "trait_plot.jpg",
     output_width = 7,
     output_height = 5,
     output_dpi = 300,
-    save_plot = TRUE,
+    save_plot = FALSE,
     show_plot = TRUE) {
   
   # --- Data Processing ---
@@ -78,11 +86,12 @@ TG_trait <- function(
       inner_text_color = ifelse(is_light, dark_color, color)
     )
   
-  # --- Dynamic Title Handling ---
+  # --- Dynamic Title and Y-Axis Handling ---
   title_params <- get_dynamic_title(title)
-  # Override with user-provided values if they exist
-  final_title_size <- if (!is.null(title_size)) title_size else title_params$size
-  final_title_vjust <- if (!is.null(title_vjust)) title_vjust else title_params$vjust
+  final_title_size <- 8 + title_params$size + title_size_mod
+  final_title_vjust <- 16 + title_params$vjust + title_vjust_mod
+  final_y_outer_limit <- 135 + plot_zoom_mod
+  final_y_inner_limit <- -40 + inner_hole_size_mod
   
   
   # --- Plot Creation (ggplot) ---
@@ -92,7 +101,7 @@ TG_trait <- function(
     ggplot2::geom_hline(yintercept = c(100), color = "black", size = 0.6, alpha = .5) +
     ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
     ggplot2::scale_fill_identity() +
-    ggplot2::scale_y_continuous(limits = c(-40, y_outer_limit)) +
+    ggplot2::scale_y_continuous(limits = c(final_y_inner_limit, final_y_outer_limit)) +
     ggplot2::theme_void() +
     ggplot2::geom_label(
       data = plot_data,
@@ -105,7 +114,7 @@ TG_trait <- function(
     ggplot2::geom_text(
       data = plot_data,
       ggplot2::aes(x = id, y = ifelse(id == group_average_label, 120, 110), label = id, fontface = ifelse(id == group_average_label, "bold", "plain")),
-      size = ifelse(plot_data$id == group_average_label, 5, 4),
+      size = (ifelse(plot_data$id == group_average_label, 5, 4)) + name_size_mod,
       color = plot_data$dark_color, angle = 0, lineheight = 0.8,
       hjust = dplyr::case_when(
         plot_data$id == group_average_label ~ 0.5,
@@ -115,7 +124,7 @@ TG_trait <- function(
       )
     ) +
     ggplot2::theme(
-      plot.margin = ggplot2::unit(c(-1, -1, -1, -1), "cm"),
+      plot.margin = ggplot2::unit(c(-1 + margin_y_mod, -1 + margin_x_mod, -1 + margin_y_mod, -1 + margin_x_mod), "cm"),
       plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold")
     ) +
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +

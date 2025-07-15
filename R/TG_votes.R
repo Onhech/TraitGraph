@@ -1,9 +1,9 @@
 # -----------------------------------------------------------------------------
 # FILE: R/TG_votes.R
-# STATUS: FINAL
+# STATUS: UPDATED
 # -----------------------------------------------------------------------------
 
-#' Create and Save a Circular Bar Chart for votes/Opinion Data
+#' Create and Save a Circular Bar Chart for Votes/Opinion Data
 #'
 #' This function takes a dataframe and generates a customized polar bar chart
 #' based on a specified value column (e.g., vote counts or an opinion score).
@@ -15,6 +15,8 @@
 #' @param name The name of the column containing unique identifiers. Defaults to "names".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
 #' @param sort_order The order to sort the results. Can be "desc" or "asc".
+#' @param plot_zoom_mod A numeric value to add or subtract from the default outer plot boundary.
+#' @param name_size_mod A numeric value to add or subtract from the name label font size.
 #' @param title_size An optional numeric value to override the dynamic title font size.
 #' @param title_vjust An optional numeric value to override the dynamic title vertical adjustment.
 #' @param output_path The full path where the plot will be saved.
@@ -28,19 +30,21 @@
 #' @return Invisibly returns the ggplot object.
 #' @export
 TG_votes <- function(dataset,
-                      column_name,
-                      title = NULL,
-                      name = "names",
-                      color = "favourite_color",
-                      sort_order = "desc",
-                      title_size = NULL,
-                      title_vjust = NULL,
-                      output_path = "votes_plot.jpg",
-                      output_width = 7,
-                      output_height = 6,
-                      output_dpi = 300,
-                      save_plot = TRUE,
-                      show_plot = TRUE) {
+                     column_name,
+                     title = NULL,
+                     name = "names",
+                     color = "favourite_color",
+                     sort_order = "desc",
+                     plot_zoom_mod = 0,
+                     name_size_mod = 0,
+                     title_size = NULL,
+                     title_vjust = NULL,
+                     output_path = "votes_plot.jpg",
+                     output_width = 7,
+                     output_height = 6,
+                     output_dpi = 300,
+                     save_plot = TRUE,
+                     show_plot = TRUE) {
   
   if (is.null(title)) {
     title <- column_name
@@ -92,19 +96,21 @@ TG_votes <- function(dataset,
     TRUE ~ 0.90
   )
   
+  final_y_outer_limit <- ((max_score + 1) * 1.7) + plot_zoom_mod +1
+  
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), width = column_width, stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
     ggplot2::geom_hline(yintercept = max_score + 1, color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_hline(yintercept = 0, color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_hline(yintercept = 1:max_score, color = "black", size = 0.1, alpha = 0.25, linetype = 'dashed') +
     ggplot2::scale_fill_identity() +
-    ggplot2::scale_y_continuous(limits = c(-0.4 * (max_score + 1), (max_score + 1) * 1.7)) +
+    ggplot2::scale_y_continuous(limits = c(-0.4 * (max_score + 1), final_y_outer_limit)) +
     ggplot2::theme_void() +
     ggplot2::geom_label(ggplot2::aes(x = id, y = pmax(value - (max_score * 0.15), (max_score * 0.1)), label = value),
                         size = 3, fontface = "plain", fill = "white", alpha = 0.99,
                         color = plot_data$dark_color, label.size = 0.2, show.legend = FALSE) +
     ggplot2::geom_text(ggplot2::aes(x = id, y = max_score * 1.25, label = id),
-                       size = 4, color = plot_data$dark_color, angle = 0, lineheight = 0.8,
+                       size = 4 + name_size_mod, color = plot_data$dark_color, angle = 0, lineheight = 0.8,
                        hjust = dplyr::case_when(
                          plot_data$id == plot_data$id[1] ~ 0.5,
                          c(FALSE, seq_along(plot_data$id[-1]) == ceiling(length(plot_data$id[-1]) / 2)) ~ 0.5,

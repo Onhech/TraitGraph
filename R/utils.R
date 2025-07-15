@@ -31,42 +31,36 @@ darken_color <- function(hex, factor = 0.5) {
   grDevices::rgb(dark_rgb[1], dark_rgb[2], dark_rgb[3], maxColorValue = 1)
 }
 
-
 #' Dynamically adjust title properties based on text length
 #' @param title_text The raw string for the title.
 #' @return A list containing the wrapped text, calculated size, and vjust.
 get_dynamic_title <- function(title_text) {
   title_length <- nchar(title_text)
   
-  # Determine title size
-  if (title_length <= 25) {
-    title_size <- 23
-  } else if (title_length <= 60) {
-    title_size <- 21
+  # Make an initial guess at the size and wrap width based on total characters
+  if (title_length <= 30) {
+    font_size <- 23
+    wrap_width <- 30
+  } else if (title_length <= 70) {
+    font_size <- 21
+    wrap_width <- 45
   } else {
-    title_size <- 15
+    font_size <- 16
+    wrap_width <- 55
   }
   
-  # Determine wrap width based on size
-  if (title_size == 23) {
-    calculated_max_char_per_line <- 35
-  } else if (title_size == 21) {
-    calculated_max_char_per_line <- 45
-  } else {
-    calculated_max_char_per_line <- 65
-  }
-  
-  wrapped_title <- stringr::str_wrap(title_text, width = calculated_max_char_per_line)
+  # Wrap the text and count the resulting number of lines
+  wrapped_title <- stringr::str_wrap(title_text, width = wrap_width)
   num_lines <- stringr::str_count(wrapped_title, "\n") + 1
   
-  # Determine vertical adjustment based on line count
+  # Refine the size and vertical adjustment based on the number of lines
   if (num_lines == 1) {
-    title_vjust <- -21
+    final_vjust <- -21
   } else if (num_lines == 2) {
-    title_vjust <- -29
-  } else {
-    title_vjust <- -28
+    final_vjust <- -29
+  } else { # 3 or more lines
+    final_vjust <- -28.5 # Push it further down
   }
   
-  return(list(text = wrapped_title, size = title_size, vjust = title_vjust))
+  return(list(text = wrapped_title, size = font_size, vjust = final_vjust))
 }

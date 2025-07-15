@@ -67,6 +67,8 @@ TG_trait(
   dataset = sample_data,
   column_name = "Conscientiousness"
 )
+
+
 TG_trait()
 # --- Example 2: TG_voting() ---
 # Visualize the results of a ranked-choice question.

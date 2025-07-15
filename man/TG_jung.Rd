@@ -13,6 +13,7 @@ TG_jung(
   name = "names",
   color = "favourite_color",
   group_average_label = "Group Average",
+  name_size_mod = 0,
   title_size = NULL,
   title_vjust = NULL,
   output_path = "jung_plot.jpg",
@@ -39,6 +40,8 @@ TG_jung(
 \item{color}{The name of the column containing hex color codes. Defaults to "favourite_color".}
 
 \item{group_average_label}{A string for the group average bar's label. Defaults to "Group Average".}
+
+\item{name_size_mod}{A numeric value to add or subtract from the name label font size.}
 
 \item{title_size}{An optional numeric value to override the dynamic title font size.}
 
