@@ -8,7 +8,7 @@
 TG_votes <- function(dataset,
                      column_name,
                      title = NULL,
-                     name = "names",
+                     name = "name",
                      color = "favourite_color",
                      sort_order = "desc",
                      plot_zoom_mod = 0,

@@ -36,7 +36,7 @@ TG_trait <- function(
     dataset,
     column_name,
     title = column_name,
-    name = "names",
+    name = "name",
     color = "favourite_color",
     group_average_label = "Group\nAverage",
     plot_zoom_mod = 0,
@@ -75,7 +75,7 @@ TG_trait <- function(
   
   title_params <- get_dynamic_title(title)
   final_title_size <- 8 + title_params$size + title_size_mod
-  final_title_vjust <- 16 + title_params$vjust + title_vjust_mod
+  final_title_vjust <- 17.5 + title_params$vjust + title_vjust_mod
   final_y_outer_limit <- 135 + plot_zoom_mod
   final_y_inner_limit <- -40 + inner_hole_size_mod
   

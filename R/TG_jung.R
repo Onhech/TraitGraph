@@ -37,7 +37,7 @@ TG_jung <- function(
     title = column_name,
     label_top = "Trait A",
     label_bottom = "Trait B",
-    name = "names",
+    name = "name",
     color = "favourite_color",
     group_average_label = "Group\nAverage",
     plot_zoom_mod = 0,
