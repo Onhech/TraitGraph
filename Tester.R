@@ -36,9 +36,11 @@
   # Use this workflow occasionally, especially before pushing to GitHub, to ensure
   # the complete package builds correctly from start to finish.
   # remove.packages("TraitGraph") # Optional: for a completely fresh install
-  # devtools::document()          # Update documentation and NAMESPACE
-  # devtools::install()           # Build and install the package locally
+  #in term you can delete using % rm -rf /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/TraitGraph
+  # devtools::clean_dll()
+  # devtools::document()
   # devtools::load_all()
+  # devtools::install()           # Build and install the package locally
   # library(TraitGraph)            # Load the newly installed package
 
 
@@ -102,15 +104,15 @@
 
   # --- Similarity Network Example ---
   # Define the columns to be used for the similarity calculation
-  #TG_similarity(
-  #  dataset = sample_data[1:8,],
-  #  connection_threshold = .5,
-  #  columns = c("HonestyHumility", "Emotionality", "Extroversion", "Agreeableness","Conscientiousness", "Openness"),
-  #  name = "name",
-  #  use_initials = T, # Use full names for clarity
-  #  save_plot = T,
-  #  output_path = 'ExamplePlots/similarity_graph_example.png',
-  #  zoom_out_factor = 1.2
-  #)
+  TG_similarity(
+    dataset = sample_data[1:8,],
+    connection_threshold = .5,
+    columns = c("HonestyHumility", "Emotionality", "Extroversion", "Agreeableness","Conscientiousness", "Openness"),
+    name = "name",
+    use_initials = T, # Use full names for clarity
+    save_plot = T,
+    output_path = 'ExamplePlots/similarity_graph_example.png',
+    zoom_out_factor = 1.2
+  )
 
   message("Testing script finished.")

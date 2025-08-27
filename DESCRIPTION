@@ -17,4 +17,8 @@ Imports:
     rlang,
     stringr,
     geomtextpath,
-    tibble
+    tibble,
+    igraph,
+    ggraph,
+    stats,
+    grDevices
