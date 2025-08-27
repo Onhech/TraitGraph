@@ -8,7 +8,7 @@ TG_trait(
   dataset,
   column_name,
   title = column_name,
-  name = "names",
+  name = "name",
   color = "favourite_color",
   group_average_label = "Group\\nAverage",
   plot_zoom_mod = 0,

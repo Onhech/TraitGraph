@@ -1,4 +1,3 @@
-
 # -----------------------------------------------------------------------------
 # FILE: R/TG_trait.R
 # STATUS: FINAL - Corrected
@@ -52,18 +51,18 @@ TG_trait <- function(
     output_dpi = 300,
     save_plot = FALSE,
     show_plot = TRUE) {
-  
+
   plot_data <- dataset %>%
     dplyr::rename(
       id    = !!rlang::sym(name),
       value = !!rlang::sym(column_name),
       color = !!rlang::sym(color)
     )
-  
+
   group_avg <- round(mean(plot_data$value, na.rm = TRUE), 0)
   average_row <- tibble::tibble(id = group_average_label, value = group_avg, color = "black")
   plot_data <- dplyr::bind_rows(average_row, plot_data)
-  
+
   plot_data <- plot_data %>%
     dplyr::mutate(
       value = ifelse(value >= 99, value, round(value, 0)),
@@ -72,13 +71,13 @@ TG_trait <- function(
       dark_color = sapply(color, darken_color),
       border_color = ifelse(is_light, dark_color, NA_character_)
     )
-  
+
   title_params <- get_dynamic_title(title)
   final_title_size <- 8 + title_params$size + title_size_mod
   final_title_vjust <- 17.5 + title_params$vjust + title_vjust_mod
   final_y_outer_limit <- 135 + plot_zoom_mod
   final_y_inner_limit <- -40 + inner_hole_size_mod
-  
+
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_hline(yintercept = c(25, 75), color = "black", size = 0.2, alpha = 0.4, lty = 'dashed') +
     ggplot2::geom_hline(yintercept = 50, color = "black", size = 0.6, alpha = 0.5) +
@@ -113,7 +112,7 @@ TG_trait <- function(
     ) +
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
     ggplot2::ggtitle(title_params$text)
-  
+
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")
     message("Plot saved to: ", output_path)
