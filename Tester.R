@@ -58,16 +58,16 @@
   set.seed(42) # for reproducibility
   sample_data <- tibble::tribble(
     ~name,    ~favourite_color, ~HonestyHumility, ~Emotionality, ~Extroversion, ~Agreeableness, ~Conscientiousness, ~Openness,
-    "Alice",   "#FF6B6B",         75,               40,            80,            85,             90,                 70,
-    "Bob",     "#4ECDC4",         80,               45,            75,            90,             85,                 65,
-    "Frank",   "#45B7D1",         70,               50,            85,            80,             95,                 75,
-    "Eve",     "#F7B801",         85,               70,            75,            80,             40,                 95,
-    "Grace",   "#FAD390",         90,               65,            80,            75,             35,                 90,
-    "Heidi",   "#FF8C61",         80,               75,            70,            85,             45,                 85,
-    "Charlie", "#3D5A80",         40,               80,            30,            50,             60,                 45,
-    "David",   "#98C1D9",         45,               75,            35,            55,             65,                 50,
-    "Ivan",    "#E0FBFC",         35,               85,            25,            45,             55,                 40,
-    "Judy",    "#293241",         50,               70,            40,            60,             70,                 55
+    "Alice Frank",   "#FF6B6B",         75,               40,            80,            85,             90,                 70,
+    "Bob Steward",     "#4ECDC4",         80,               45,            75,            90,             85,                 65,
+    "Frank Bobby",   "#45B7D1",         70,               50,            85,            80,             95,                 75,
+    "Eve Twingle",     "#F7B801",         85,               70,            75,            80,             40,                 95,
+    "Grace Hunter",   "#FAD390",         90,               65,            80,            75,             35,                 90,
+    "Heidi Probosky",   "#FF8C61",         80,               75,            70,            85,             45,                 85,
+    "Charlie Kane", "#3D5A80",         40,               80,            30,            50,             60,                 45,
+    "David Turner",   "#98C1D9",         45,               75,            35,            55,             65,                 50,
+    "Ivan Evans",    "#E0FBFC",         35,               85,            25,            45,             55,                 40,
+    "Judy Perch",    "#293241",         50,               70,            40,            60,             70,                 55
   ) %>%
     dplyr::mutate(rankedQ_1 = sample(0:10, 10, replace = TRUE))
 
@@ -115,4 +115,16 @@
     zoom_out_factor = 1.2
   )
 
-  message("Testing script finished.")
+  # --- Similarity Table Example with Custom Threshold ---
+  # Create a tidy table of pairwise similarities, bolding and coloring
+  # correlations with an absolute value greater than 0.7.
+  similarity_table_custom_threshold <- TG_similarity_table(
+    dataset = sample_data[1:8,],
+    columns = c("HonestyHumility", "Emotionality", "Extroversion", "Agreeableness", "Conscientiousness", "Openness"),
+    name = "name",
+    format = "html", # Tell the function to return an HTML table
+    threshold = 0.7 # Set the threshold for bolding and color
+  )
+
+  # Render the table in the RStudio Viewer
+  htmltools::html_print(similarity_table_custom_threshold)

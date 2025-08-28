@@ -12,18 +12,18 @@
 #'
 #' @param dataset A data frame (or tibble) containing the data to plot.
 #' @param columns A character vector of column names to use for the similarity
-#'   calculation (traits/opinions measured for each person).
+#'     calculation (traits/opinions measured for each person).
 #' @param name The name of the column containing unique identifiers (e.g., full names).
-#'   Defaults to `"names"`.
+#'     Defaults to `"names"`.
 #' @param color The name of the column containing hex color codes (e.g., `#AABBCC`)
-#'   used to color nodes. Defaults to `"favourite_color"`.
+#'     used to color nodes. Defaults to `"favourite_color"`.
 #' @param use_initials Logical. If `TRUE`, nodes are labeled with initials
-#'   (first + last initial when available; falls back to first letter for single names).
+#'     (first + last initial when available; falls back to first letter for single names).
 #' @param connection_threshold Numeric in `[0, 1]`. Only edges with absolute
-#'   correlation above this value are drawn. Defaults to `0.3`.
+#'     correlation above this value are drawn. Defaults to `0.3`.
 #' @param name_size_mod Numeric value added to the base label font size (6).
 #' @param zoom_out_factor Numeric scaling for plot limits (prevents clipping).
-#'   Defaults to `1.2` (20% margin).
+#'     Defaults to `1.2` (20% margin).
 #' @param title Plot title.
 #' @param subtitle Plot subtitle.
 #' @param output_path File path for saving the plot (e.g., `"similarity_plot.jpg"`).
@@ -38,21 +38,21 @@
 #' @examples
 #' \dontrun{
 #' df <- data.frame(
-#'   names = c("Ada Lovelace", "Grace Hopper", "Marie"),
-#'   favourite_color = c("#1f77b4", "#ff7f0e", "#2ca02c"),
-#'   TraitA = c(3, 4, 5),
-#'   TraitB = c(1, 2, 1),
-#'   TraitC = c(5, 3, 4)
+#'    names = c("Ada Lovelace", "Grace Hopper", "Marie"),
+#'    favourite_color = c("#1f77b4", "#ff7f0e", "#2ca02c"),
+#'    TraitA = c(3, 4, 5),
+#'    TraitB = c(1, 2, 1),
+#'    TraitC = c(5, 3, 4)
 #' )
 #'
 #' TG_similarity(
-#'   dataset = df,
-#'   columns = c("TraitA", "TraitB", "TraitC"),
-#'   name = "names",
-#'   color = "favourite_color",
-#'   use_initials = TRUE,
-#'   connection_threshold = 0.3,
-#'   save_plot = FALSE
+#'    dataset = df,
+#'    columns = c("TraitA", "TraitB", "TraitC"),
+#'    name = "names",
+#'    color = "favourite_color",
+#'    use_initials = TRUE,
+#'    connection_threshold = 0.3,
+#'    save_plot = FALSE
 #' )
 #' }
 #'
@@ -65,15 +65,15 @@ TG_similarity <- function(dataset,
                           connection_threshold = 0.3,
                           name_size_mod = 0,
                           zoom_out_factor = 1.2,
-                          title = "Psychological Similarity Network",
-                          subtitle = "Green lines connect similar people, red lines connect dissimilar people.",
+                          title = "Psychological Similarity",
+                          subtitle = NULL, # The subtitle parameter is now set to NULL by default
                           output_path = "similarity_plot.jpg",
                           output_width = 8,
                           output_height = 8,
                           output_dpi = 300,
                           save_plot = TRUE,
                           show_plot = TRUE) {
-  
+
   # ---- Helper: Extract initials ---------------------------------------------
   .tg_initials <- function(names_vec) {
     vapply(names_vec, function(x) {
@@ -86,7 +86,7 @@ TG_similarity <- function(dataset,
       }
     }, character(1))
   }
-  
+
   # ---- 0) Validate inputs ----------------------------------------------------
   if (!is.data.frame(dataset)) {
     rlang::abort("`dataset` must be a data.frame or tibble.")
@@ -111,30 +111,30 @@ TG_similarity <- function(dataset,
       connection_threshold < 0 || connection_threshold > 1) {
     rlang::abort("`connection_threshold` must be a single numeric value in [0, 1].")
   }
-  
+
   # ---- 1) Prepare & scale the data ------------------------------------------
   similarity_data <- dataset %>%
     dplyr::select(dplyr::all_of(columns))
-  
+
   n_people <- nrow(similarity_data)
   if (n_people == 0) {
     rlang::abort("`dataset` has 0 rows; nothing to plot.")
   }
-  
+
   scaled_data <- base::suppressWarnings(base::scale(similarity_data))
   if (n_people == 1) {
     scaled_data[is.na(scaled_data)] <- 0
   }
-  
+
   # Build node labels: initials or full
   node_labels <- if (use_initials) {
     .tg_initials(dataset[[name]])
   } else {
     as.character(dataset[[name]])
   }
-  
+
   rownames(scaled_data) <- node_labels
-  
+
   # ---- 2) Correlation matrix & graph ----------------------------------------
   if (n_people == 1) {
     graph <- igraph::make_empty_graph(n = 1)
@@ -150,17 +150,23 @@ TG_similarity <- function(dataset,
       mode = "undirected"
     )
   }
-  
+
   # ---- 3) Node attributes ----------------------------------------------------
   net_sim <- if (n_people == 1) 0 else igraph::strength(graph, weights = igraph::E(graph)$weight)
   node_colors <- as.character(dataset[[color]])
+  # is_color_light helper is not in the original code, but is needed for text color
+  is_color_light <- function(hex_color) {
+    rgb <- grDevices::col2rgb(hex_color)
+    brightness <- (0.299 * rgb[1,] + 0.587 * rgb[2,] + 0.114 * rgb[3,]) / 255
+    brightness > 0.5
+  }
   text_is_light <- is_color_light(node_colors)
   text_colors <- ifelse(text_is_light, "black", "white")
-  
+
   igraph::V(graph)$net_similarity <- net_sim
   igraph::V(graph)$node_color    <- node_colors
   igraph::V(graph)$text_color    <- text_colors
-  
+
   # ---- 4) Layout -------------------------------------------------------------
   if (n_people == 1) {
     layout <- ggraph::create_layout(graph, layout = "manual", x = 0, y = 0)
@@ -171,10 +177,10 @@ TG_similarity <- function(dataset,
       weights = abs(igraph::E(graph)$weight)
     )
   }
-  
+
   layout$x <- layout$x - mean(range(layout$x))
   layout$y <- layout$y - mean(range(layout$y))
-  
+
   # ---- 5) Plot ---------------------------------------------------------------
   p <- ggraph::ggraph(layout) +
     ggraph::geom_edge_link(
@@ -183,7 +189,8 @@ TG_similarity <- function(dataset,
         color  = weight,
         filter = abs(weight) > connection_threshold
       ),
-      alpha = 0.7
+      alpha = 0.7,
+      show.legend = FALSE # This removes the legend
     ) +
     ggraph::scale_edge_width(range = c(0.5, 4), guide = "none") +
     ggraph::scale_edge_color_gradient2(
@@ -191,7 +198,7 @@ TG_similarity <- function(dataset,
       mid = "lightgray",
       high = "seagreen4",
       midpoint = 0,
-      name = "Similarity"
+      guide = "none" # This also removes the legend
     ) +
     ggraph::geom_node_point(
       ggplot2::aes(size = net_similarity, color = node_color)
@@ -209,14 +216,16 @@ TG_similarity <- function(dataset,
     ) +
     ggraph::theme_graph(base_family = "sans") +
     ggplot2::theme(
-      legend.position = "right",
-      plot.margin = ggplot2::margin(20, 20, 20, 20)
+      legend.position = "none", # And this final line ensures it's gone
+      plot.margin = ggplot2::margin(20, 20, 20, 20),
+      plot.title = ggplot2::element_text(hjust = 0.5), # This centers the title
+      plot.subtitle = ggplot2::element_blank() # This removes the subtitle
     ) +
     ggplot2::labs(
       title = title,
-      subtitle = subtitle
+      subtitle = subtitle # The subtitle argument is now passed as NULL
     )
-  
+
   if (save_plot) {
     ggplot2::ggsave(
       filename = output_path,
@@ -228,10 +237,10 @@ TG_similarity <- function(dataset,
     )
     message("Plot saved to: ", output_path)
   }
-  
+
   if (show_plot) {
     print(p)
   }
-  
+
   invisible(p)
 }

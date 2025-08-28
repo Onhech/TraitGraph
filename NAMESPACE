@@ -2,6 +2,7 @@
 
 export(TG_jung)
 export(TG_similarity)
+export(TG_similarity_table)
 export(TG_trait)
 export(TG_votes)
 importFrom(dplyr,"%>%")

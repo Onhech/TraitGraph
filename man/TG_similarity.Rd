@@ -13,8 +13,8 @@ TG_similarity(
   connection_threshold = 0.3,
   name_size_mod = 0,
   zoom_out_factor = 1.2,
-  title = "Psychological Similarity Network",
-  subtitle = "Green lines connect similar people, red lines connect dissimilar people.",
+  title = "Psychological Similarity",
+  subtitle = NULL,
   output_path = "similarity_plot.jpg",
   output_width = 8,
   output_height = 8,
@@ -74,21 +74,21 @@ positive similarity, and redder edges indicate dissimilarity.
 \examples{
 \dontrun{
 df <- data.frame(
-  names = c("Ada Lovelace", "Grace Hopper", "Marie"),
-  favourite_color = c("#1f77b4", "#ff7f0e", "#2ca02c"),
-  TraitA = c(3, 4, 5),
-  TraitB = c(1, 2, 1),
-  TraitC = c(5, 3, 4)
+   names = c("Ada Lovelace", "Grace Hopper", "Marie"),
+   favourite_color = c("#1f77b4", "#ff7f0e", "#2ca02c"),
+   TraitA = c(3, 4, 5),
+   TraitB = c(1, 2, 1),
+   TraitC = c(5, 3, 4)
 )
 
 TG_similarity(
-  dataset = df,
-  columns = c("TraitA", "TraitB", "TraitC"),
-  name = "names",
-  color = "favourite_color",
-  use_initials = TRUE,
-  connection_threshold = 0.3,
-  save_plot = FALSE
+   dataset = df,
+   columns = c("TraitA", "TraitB", "TraitC"),
+   name = "names",
+   color = "favourite_color",
+   use_initials = TRUE,
+   connection_threshold = 0.3,
+   save_plot = FALSE
 )
 }
 
