@@ -68,7 +68,7 @@ TG_similarity <- function(dataset,
                           title = "Psychological Similarity",
                           subtitle = NULL, # The subtitle parameter is now set to NULL by default
                           output_path = "similarity_plot.jpg",
-                          output_width = 8,
+                          output_width = 12,
                           output_height = 8,
                           output_dpi = 300,
                           save_plot = TRUE,
@@ -187,11 +187,11 @@ TG_similarity <- function(dataset,
       ggplot2::aes(
         width  = abs(weight),
         color  = weight,
-        filter = abs(weight) > connection_threshold
+        alpha  = ifelse(abs(weight) > connection_threshold, 0.7, 0)
       ),
-      alpha = 0.7,
       show.legend = FALSE # This removes the legend
     ) +
+    ggraph::scale_edge_alpha_identity() +
     ggraph::scale_edge_width(range = c(0.5, 4), guide = "none") +
     ggraph::scale_edge_color_gradient2(
       low = "firebrick3",
