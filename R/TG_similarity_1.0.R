@@ -185,7 +185,7 @@ TG_similarity <- function(dataset,
   p <- ggraph::ggraph(layout) +
     ggraph::geom_edge_link(
       ggplot2::aes(
-        width  = abs(weight),
+        width  = abs(weight)^2,
         color  = weight,
         alpha  = ifelse(abs(weight) > connection_threshold, 0.7, 0)
       ),
