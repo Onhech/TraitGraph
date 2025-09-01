@@ -13,6 +13,7 @@
 #' @param sort_order The order to sort the results. Can be "desc" or "asc".
 #' @param plot_zoom_mod A numeric value to add or subtract from the default outer plot boundary.
 #' @param name_size_mod A numeric value to add or subtract from the name label font size.
+#' @param name_position_mod A numeric value to modify the vertical position of the individual names.
 #' @param title_size_mod A numeric value to add or subtract from the dynamic title font size.
 #' @param title_vjust_mod A numeric value to add or subtract from the dynamic title vertical adjustment.
 #' @param output_path The full path where the plot will be saved.
@@ -32,6 +33,7 @@ TG_votes <- function(dataset,
                      sort_order = "desc",
                      plot_zoom_mod = 0,
                      name_size_mod = 0,
+                     name_position_mod = 1,
                      title_size_mod = 0,
                      title_vjust_mod = 0,
                      output_path = "votes_plot.jpg",
@@ -83,7 +85,7 @@ TG_votes <- function(dataset,
     ggplot2::geom_label(ggplot2::aes(x = id, y = pmax(value - (max_score * 0.15), (max_score * 0.1)), label = value),
                         size = 3, fontface = "plain", fill = "white", alpha = 0.99,
                         color = plot_data$dark_color, label.size = 0.2, show.legend = FALSE) +
-    ggplot2::geom_text(ggplot2::aes(x = id, y = max_score * 1.25, label = id),
+    ggplot2::geom_text(ggplot2::aes(x = id, y = (max_score * 1.25) * name_position_mod, label = id),
                        size = 4 + name_size_mod, color = plot_data$dark_color, angle = 0, lineheight = 0.8,
                        hjust = dplyr::case_when(
                          plot_data$id == plot_data$id[1] ~ 0.5,

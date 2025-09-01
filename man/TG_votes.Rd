@@ -13,6 +13,7 @@ TG_votes(
   sort_order = "desc",
   plot_zoom_mod = 0,
   name_size_mod = 0,
+  name_position_mod = 1,
   title_size_mod = 0,
   title_vjust_mod = 0,
   output_path = "votes_plot.jpg",
@@ -40,6 +41,8 @@ of the \code{column_name} will be used.}
 \item{plot_zoom_mod}{A numeric value to add or subtract from the default outer plot boundary.}
 
 \item{name_size_mod}{A numeric value to add or subtract from the name label font size.}
+
+\item{name_position_mod}{A numeric value to modify the vertical position of the individual names.}
 
 \item{title_size_mod}{A numeric value to add or subtract from the dynamic title font size.}
 

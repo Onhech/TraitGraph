@@ -15,6 +15,7 @@
 #' @param name The name of the column containing unique identifiers.
 #' @param color The name of the column containing hex color codes.
 #' @param group_average_label A string used to label the group average bar. Defaults to "Group\\nAverage".
+#' @param group_average_position_mod A numeric value to modify the vertical position of the group average label.
 #' @param plot_zoom_mod A numeric value to add/subtract from the outer plot boundary.
 #' @param inner_hole_size_mod A positive numeric value to reduce the inner hole size.
 #' @param margin_y_mod A numeric value (in cm) to add/subtract from top/bottom margins.
@@ -22,6 +23,7 @@
 #' @param title_size_mod A numeric value to add/subtract from the title font size.
 #' @param title_vjust_mod A numeric value to add/subtract from the title vertical adjustment.
 #' @param name_size_mod A numeric value to add/subtract from the name label font size.
+#' @param name_position_mod A numeric value to modify the vertical position of the individual names.
 #' @param output_path The full path where the plot will be saved.
 #' @param output_width The width of the saved image in inches.
 #' @param output_height The height of the saved image in inches.
@@ -38,6 +40,7 @@ TG_trait <- function(
     name = "name",
     color = "favourite_color",
     group_average_label = "Group\nAverage",
+    group_average_position_mod = 1,
     plot_zoom_mod = 0,
     inner_hole_size_mod = 0,
     margin_y_mod = 0,
@@ -97,7 +100,7 @@ TG_trait <- function(
     ) +
     ggplot2::geom_text(
       data = plot_data,
-      ggplot2::aes(x = id, y = ifelse(id == group_average_label, 120, 112 * name_position_mod), label = id, fontface = ifelse(id == group_average_label, "bold", "plain")),
+      ggplot2::aes(x = id, y = ifelse(id == group_average_label, 120 * group_average_position_mod, 113 * name_position_mod), label = id, fontface = ifelse(id == group_average_label, "bold", "plain")),
       size = (ifelse(plot_data$id == group_average_label, 5, 4)) + name_size_mod,
       color = plot_data$dark_color, angle = 0, lineheight = 0.8,
       hjust = dplyr::case_when(

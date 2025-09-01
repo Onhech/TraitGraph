@@ -10,6 +10,7 @@
   # Load devtools for package management
   # install.packages("devtools") # Run once if not installed
   library(devtools)
+  library(tidyverse)
 
   # Set the working directory to the package's root folder.
   # IMPORTANT: This needs to be the correct path on your machine.
@@ -79,7 +80,7 @@
   TG_trait(
     dataset = sample_data,
     column_name = "Extroversion",
-    save_plot = FALSE
+    save_plot = FALSE,
   )
 
   # --- Ranked Question Example ---

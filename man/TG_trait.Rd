@@ -11,6 +11,7 @@ TG_trait(
   name = "name",
   color = "favourite_color",
   group_average_label = "Group\\nAverage",
+  group_average_position_mod = 1,
   plot_zoom_mod = 0,
   inner_hole_size_mod = 0,
   margin_y_mod = 0,
@@ -18,6 +19,7 @@ TG_trait(
   title_size_mod = 0,
   title_vjust_mod = 0,
   name_size_mod = 0,
+  name_position_mod = 1,
   output_path = "trait_plot.jpg",
   output_width = 7,
   output_height = 5,
@@ -39,6 +41,8 @@ TG_trait(
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
 
+\item{group_average_position_mod}{A numeric value to modify the vertical position of the group average label.}
+
 \item{plot_zoom_mod}{A numeric value to add/subtract from the outer plot boundary.}
 
 \item{inner_hole_size_mod}{A positive numeric value to reduce the inner hole size.}
@@ -52,6 +56,8 @@ TG_trait(
 \item{title_vjust_mod}{A numeric value to add/subtract from the title vertical adjustment.}
 
 \item{name_size_mod}{A numeric value to add/subtract from the name label font size.}
+
+\item{name_position_mod}{A numeric value to modify the vertical position of the individual names.}
 
 \item{output_path}{The full path where the plot will be saved.}
 

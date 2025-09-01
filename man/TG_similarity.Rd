@@ -16,7 +16,7 @@ TG_similarity(
   title = "Psychological Similarity",
   subtitle = NULL,
   output_path = "similarity_plot.jpg",
-  output_width = 8,
+  output_width = 12,
   output_height = 8,
   output_dpi = 300,
   save_plot = TRUE,
