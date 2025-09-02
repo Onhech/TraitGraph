@@ -120,7 +120,7 @@ TG_trait <- function(
     ) +
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
     ggplot2::ggtitle(title_params$text) +
-    coord_cartesian(clip = "off")
+    ggplot2::coord_cartesian(clip = "off")
 
 
   if (save_plot) {
