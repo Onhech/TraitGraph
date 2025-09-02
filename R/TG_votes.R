@@ -8,6 +8,8 @@
 #' @param column_name The name of the column containing the numeric values to plot.
 #' @param title A string for the plot's main title. If not provided, the name
 #'   of the `column_name` will be used.
+#' @param title_face The font style of the title (e.g., `plain`, `bold`, or `bold.italic`). Defaalts to `bold`.
+#' @param color The color of the tile.
 #' @param name The name of the column containing unique identifiers. Defaults to "names".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
 #' @param sort_order The order to sort the results. Can be "desc" or "asc".
@@ -28,6 +30,8 @@
 TG_votes <- function(dataset,
                      column_name,
                      title = NULL,
+                     title_face = "bold",
+                     title_color = "black",
                      name = "name",
                      color = "favourite_color",
                      sort_order = "desc",
@@ -95,7 +99,7 @@ TG_votes <- function(dataset,
                        )) +
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(-3, -4, -3.5, -4), "cm"),
-      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold")
+      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = title_face, color = title_color)
     ) +
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
     ggplot2::ggtitle(title_params$text)

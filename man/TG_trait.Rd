@@ -8,6 +8,8 @@ TG_trait(
   dataset,
   column_name,
   title = column_name,
+  title_face = "bold",
+  title_color = "black",
   name = "name",
   color = "favourite_color",
   group_average_label = "Group\\nAverage",
@@ -34,6 +36,8 @@ TG_trait(
 \item{column_name}{The name of the column to use for the plot values.}
 
 \item{title}{A string for the plot's main title. Defaults to the \code{column_name}.}
+
+\item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaalts to \code{bold}.}
 
 \item{name}{The name of the column containing unique identifiers.}
 

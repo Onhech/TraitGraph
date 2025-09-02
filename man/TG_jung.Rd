@@ -8,6 +8,8 @@ TG_jung(
   dataset,
   column_name,
   title = column_name,
+  title_face = "bold",
+  title_color = "black",
   label_top = "Trait A",
   label_bottom = "Trait B",
   name = "name",
@@ -31,6 +33,8 @@ TG_jung(
 \item{column_name}{The name of the column containing the percentile scores to plot.}
 
 \item{title}{A string for the plot's main title. Defaults to the \code{column_name}.}
+
+\item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaalts to \code{bold}.}
 
 \item{label_top}{The text for the curved label at the top of the chart (100\% mark).}
 

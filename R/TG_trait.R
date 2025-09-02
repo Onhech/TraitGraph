@@ -12,6 +12,8 @@
 #' @param dataset A data frame containing the data to plot.
 #' @param column_name The name of the column to use for the plot values.
 #' @param title A string for the plot's main title. Defaults to the `column_name`.
+#' @param title_face The font style of the title (e.g., `plain`, `bold`, or `bold.italic`). Defaalts to `bold`.
+#' @param color The color of the tile.
 #' @param name The name of the column containing unique identifiers.
 #' @param color The name of the column containing hex color codes.
 #' @param group_average_label A string used to label the group average bar. Defaults to "Group\\nAverage".
@@ -37,6 +39,8 @@ TG_trait <- function(
     dataset,
     column_name,
     title = column_name,
+    title_face = "bold",
+    title_color = "black",
     name = "name",
     color = "favourite_color",
     group_average_label = "Group\nAverage",
@@ -112,10 +116,12 @@ TG_trait <- function(
     ) +
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(-1 + margin_y_mod, -1 + margin_x_mod, -1 + margin_y_mod, -1 + margin_x_mod), "cm"),
-      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold")
+      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = title_face, color = title_color)
     ) +
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
-    ggplot2::ggtitle(title_params$text)
+    ggplot2::ggtitle(title_params$text) +
+    coord_cartesian(clip = "off")
+
 
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")

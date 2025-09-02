@@ -11,6 +11,8 @@
 #' @param dataset A data frame containing the data to plot.
 #' @param column_name The name of the column containing the percentile scores to plot.
 #' @param title A string for the plot's main title. Defaults to the `column_name`.
+#' @param title_face The font style of the title (e.g., `plain`, `bold`, or `bold.italic`). Defaalts to `bold`.
+#' @param color The color of the tile.
 #' @param label_top The text for the curved label at the top of the chart (100% mark).
 #' @param label_bottom The text for the curved label at the bottom of the chart (0% mark).
 #' @param name The name of the column containing unique identifiers. Defaults to "names".
@@ -35,6 +37,8 @@ TG_jung <- function(
     dataset,
     column_name,
     title = column_name,
+    title_face = "bold",
+    title_color = "black",
     label_top = "Trait A",
     label_bottom = "Trait B",
     name = "name",
@@ -50,14 +54,14 @@ TG_jung <- function(
     output_dpi = 300,
     save_plot = TRUE,
     show_plot = TRUE) {
-  
+
   plot_data <- dataset %>%
     dplyr::rename(id = !!rlang::sym(name), value = !!rlang::sym(column_name), color = !!rlang::sym(color))
-  
+
   group_avg <- round(mean(plot_data$value, na.rm = TRUE), 0)
   average_row <- tibble::tibble(id = group_average_label, value = group_avg, color = "black")
   plot_data <- dplyr::bind_rows(average_row, plot_data)
-  
+
   plot_data <- plot_data %>%
     dplyr::mutate(
       value = ifelse(value >= 99, value, round(value, 0)),
@@ -66,18 +70,18 @@ TG_jung <- function(
       dark_color = sapply(color, darken_color),
       border_color = ifelse(is_light, dark_color, NA_character_)
     )
-  
+
   color_bands <- data.frame(
     color = c("#B1C090", "#B1C090", "#B3C0CD", "#B5BEDF", "#B5BEDF"),
     ystart = seq(0, 80, by = 20),
     ystop = seq(20, 100, by = 20),
     opacity = c(0.6, 0.4, 0.2, 0.4, 0.6)
   )
-  
+
   title_params <- get_dynamic_title(title)
   final_title_size <- title_params$size + title_size_mod
   final_title_vjust <- title_params$vjust + title_vjust_mod + 21
-  
+
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_rect(data = color_bands, ggplot2::aes(xmin = -Inf, xmax = Inf, ymin = ystart, ymax = ystop, fill = color, alpha = opacity)) +
     ggplot2::scale_fill_identity() +
@@ -101,12 +105,12 @@ TG_jung <- function(
     ggplot2::theme_void() +
     ggplot2::theme(
       plot.margin = ggplot2::unit(c((0.3 + plot_zoom_mod), 0, (0.3 + plot_zoom_mod), 0), "cm"),
-      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold"),
+      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = title_face, color = title_color),
       axis.text.x = ggplot2::element_text(color = plot_data$dark_color, size = 10 + name_size_mod, face = ifelse(plot_data$id == group_average_label, "bold", "plain"), margin = ggplot2::margin(t = 7, unit = "pt"))
     ) +
     ggplot2:::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
     ggplot2::ggtitle(title_params$text)
-  
+
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")
     message("Plot saved to: ", output_path)

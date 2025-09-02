@@ -36,8 +36,9 @@
   # --- Workflow B: Full Rebuild and Install ---
   # Use this workflow occasionally, especially before pushing to GitHub, to ensure
   # the complete package builds correctly from start to finish.
-  # remove.packages("TraitGraph") # Optional: for a completely fresh install
-  #in term you can delete using % rm -rf /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/TraitGraph
+  # remove.packages("TraitGraph")
+  # in terminal you can delete cache using
+  # % rm -rf /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/TraitGraph
   # devtools::clean_dll()
   # devtools::document()
   # devtools::load_all()
@@ -64,7 +65,7 @@
     "Frank Bobby",   "#45B7D1",         70,               50,            85,            80,             95,                 75,
     "Eve Twingle",     "#F7B801",         85,               70,            75,            80,             40,                 95,
     "Grace Hunter",   "#FAD390",         90,               65,            80,            75,             35,                 90,
-    "Heidi Probosky",   "#FF8C61",         80,               75,            70,            85,             45,                 85,
+    "Heidi Probosky Salvadora III",   "#FF8C61",         80,               75,            70,            85,             45,                 85,
     "Charlie Kane", "#3D5A80",         40,               80,            30,            50,             60,                 45,
     "David Turner",   "#98C1D9",         45,               75,            35,            55,             65,                 50,
     "Ivan Evans",    "#E0FBFC",         35,               85,            25,            45,             55,                 40,
@@ -89,7 +90,7 @@
     column_name = "rankedQ_1",
     title = "Who would you choose as a partner for the impending Zombie Apocalypse?",
     save_plot = T,
-    output_path = 'ExamplePlots/trait_graph_example.png',
+    output_path = 'ExamplePlots/trait_graph_example.jpg',
   )
 
   # --- Jungian Dichotomy Example ---

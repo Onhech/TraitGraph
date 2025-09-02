@@ -8,6 +8,8 @@ TG_votes(
   dataset,
   column_name,
   title = NULL,
+  title_face = "bold",
+  title_color = "black",
   name = "name",
   color = "favourite_color",
   sort_order = "desc",
@@ -31,6 +33,8 @@ TG_votes(
 
 \item{title}{A string for the plot's main title. If not provided, the name
 of the \code{column_name} will be used.}
+
+\item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaalts to \code{bold}.}
 
 \item{name}{The name of the column containing unique identifiers. Defaults to "names".}
 
