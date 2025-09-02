@@ -13,6 +13,7 @@
 #' @param name The name of the column containing unique identifiers. Defaults to "names".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
 #' @param sort_order The order to sort the results. Can be "desc" or "asc".
+#' @param minor_ticks The number of minor y-axis ticks you want to display. Defaults to none.
 #' @param plot_zoom_mod A numeric value to add or subtract from the default outer plot boundary.
 #' @param name_size_mod A numeric value to add or subtract from the name label font size.
 #' @param name_position_mod A numeric value to modify the vertical position of the individual names.
@@ -35,6 +36,7 @@ TG_votes <- function(dataset,
                      name = "name",
                      color = "favourite_color",
                      sort_order = "desc",
+                     minor_ticks = 0,
                      plot_zoom_mod = 0,
                      name_size_mod = 0,
                      name_position_mod = 1,
@@ -82,7 +84,7 @@ TG_votes <- function(dataset,
     ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), width = column_width, stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
     ggplot2::geom_hline(yintercept = max_score + 1, color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_hline(yintercept = 0, color = "black", size = 0.6, alpha = 0.5) +
-    ggplot2::geom_hline(yintercept = 1:max_score, color = "black", size = 0.1, alpha = 0.25, linetype = 'dashed') +
+    ggplot2::geom_hline(yintercept = seq(from = 0, to = max_score, by = max_score/(1 + minor_ticks)), color = "black", size = 0.1, alpha = 0.25, linetype = 'dashed') +
     ggplot2::scale_fill_identity() +
     ggplot2::scale_y_continuous(limits = c(-0.4 * (max_score + 1), final_y_outer_limit)) +
     ggplot2::theme_void() +

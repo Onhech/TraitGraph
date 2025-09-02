@@ -13,6 +13,7 @@ TG_votes(
   name = "name",
   color = "favourite_color",
   sort_order = "desc",
+  minor_ticks = 0,
   plot_zoom_mod = 0,
   name_size_mod = 0,
   name_position_mod = 1,
@@ -41,6 +42,8 @@ of the \code{column_name} will be used.}
 \item{color}{The name of the column containing hex color codes. Defaults to "favourite_color".}
 
 \item{sort_order}{The order to sort the results. Can be "desc" or "asc".}
+
+\item{minor_ticks}{The number of minor y-axis ticks you want to display. Defaults to none.}
 
 \item{plot_zoom_mod}{A numeric value to add or subtract from the default outer plot boundary.}
 
