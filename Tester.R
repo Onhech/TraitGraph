@@ -81,7 +81,7 @@
     dataset = sample_data,
     column_name = "Extroversion",
     save_plot = T,
-    output_path = 'ExamplePlots/trait_graph_example.jpg',
+    output_path = 'ExamplePlots/trait_graph_example.jpg'
   )
   # --- Voting Question Example ---
   TG_votes(

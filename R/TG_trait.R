@@ -18,6 +18,7 @@
 #' @param color The name of the column containing hex color codes.
 #' @param group_average_label A string used to label the group average bar. Defaults to "Group\\nAverage".
 #' @param group_average_position_mod A numeric value to modify the vertical position of the group average label.
+#' @param callout_size_mod A numeric value to modify the callout box and inner text.  Defaults to `1` (100%).
 #' @param plot_zoom_mod A numeric value to add/subtract from the outer plot boundary.
 #' @param inner_hole_size_mod A positive numeric value to reduce the inner hole size.
 #' @param margin_y_mod A numeric value (in cm) to add/subtract from top/bottom margins.
@@ -45,6 +46,7 @@ TG_trait <- function(
     color = "favourite_color",
     group_average_label = "Group\nAverage",
     group_average_position_mod = 1,
+    callout_size_mod = 1,
     plot_zoom_mod = 0,
     inner_hole_size_mod = 0,
     margin_y_mod = 0,
@@ -97,7 +99,7 @@ TG_trait <- function(
     ggplot2::geom_label(
       data = plot_data,
       ggplot2::aes(x = id, y = pmax(value - 18, 12), label = paste0(value, "%")),
-      size = ifelse(plot_data$id == group_average_label, 3.2, 3),
+      size = ifelse(plot_data$id == group_average_label, 3.2, 3) * callout_size_mod,
       fontface = ifelse(plot_data$id == group_average_label, "bold", "plain"),
       fill = "white", alpha = 0.99, color = plot_data$dark_color,
       label.size = 0.2, show.legend = FALSE

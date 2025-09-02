@@ -14,6 +14,7 @@ TG_trait(
   color = "favourite_color",
   group_average_label = "Group\\nAverage",
   group_average_position_mod = 1,
+  callout_size_mod = 1,
   plot_zoom_mod = 0,
   inner_hole_size_mod = 0,
   margin_y_mod = 0,
@@ -46,6 +47,8 @@ TG_trait(
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
 
 \item{group_average_position_mod}{A numeric value to modify the vertical position of the group average label.}
+
+\item{callout_size_mod}{A numeric value to modify the callout box and inner text.  Defaults to \code{1} (100\%).}
 
 \item{plot_zoom_mod}{A numeric value to add/subtract from the outer plot boundary.}
 
