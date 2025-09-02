@@ -25,15 +25,7 @@
 
 
   # --- 2. PACKAGE WORKFLOWS ---
-
-  # --- Workflow A: Fast, Interactive Development (RECOMMENDED) ---
-  # Use this workflow 99% of the time. It loads all your functions directly
-  # into memory, which is extremely fast for testing changes.
-  # Simply run this line after you save a change in any of your R/ files.
-  devtools::load_all()
-
-
-  # --- Workflow B: Full Rebuild and Install ---
+  # --- Workflow A: Full Rebuild and Install ---
   # Use this workflow occasionally, especially before pushing to GitHub, to ensure
   # the complete package builds correctly from start to finish.
   # remove.packages("TraitGraph")
@@ -44,6 +36,13 @@
   # devtools::load_all()
   # devtools::install()           # Build and install the package locally
   # library(TraitGraph)            # Load the newly installed package
+
+
+  # --- Workflow B: Fast, Interactive Development (RECOMMENDED) ---
+  # Use this workflow 99% of the time. It loads all your functions directly
+  # into memory, which is extremely fast for testing changes.
+  # Simply run this line after you save a change in any of your R/ files.
+  devtools::load_all()
 
 
   # --- Workflow C: Test GitHub Installation ---
@@ -65,9 +64,9 @@
     "Frank Bobby",   "#45B7D1",         70,               50,            85,            80,             95,                 75,
     "Eve Twingle",     "#F7B801",         85,               70,            75,            80,             40,                 95,
     "Grace Hunter",   "#FAD390",         90,               65,            80,            75,             35,                 90,
-    "Heidi Probosky Salvadora III",   "#FF8C61",         80,               75,            70,            85,             45,                 85,
+    "Heidi Probosky",   "#FF8C61",         80,               75,            70,            85,             45,                 85,
     "Charlie Kane", "#3D5A80",         40,               80,            30,            50,             60,                 45,
-    "David Turner",   "#98C1D9",         45,               75,            35,            55,             65,                 50,
+    "David Turner Salvadora III",   "#98C1D9",         45,               75,            35,            55,             65,                 50,
     "Ivan Evans",    "#E0FBFC",         35,               85,            25,            45,             55,                 40,
     "Judy Perch",    "#293241",         50,               70,            40,            60,             70,                 55
   ) %>%
@@ -81,7 +80,8 @@
   TG_trait(
     dataset = sample_data,
     column_name = "Extroversion",
-    save_plot = FALSE,
+    save_plot = T,
+    output_path = 'ExamplePlots/trait_graph_example.jpg',
   )
 
   # --- Ranked Question Example ---
