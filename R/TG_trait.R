@@ -118,7 +118,7 @@ TG_trait <- function(
       plot.margin = ggplot2::unit(c(-1 + margin_y_mod, -1 + margin_x_mod, -1 + margin_y_mod, -1 + margin_x_mod), "cm"),
       plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = title_face, color = title_color)
     ) +
-    ggplot2::coord_polar(start = -pi / (nrow(plot_data)),clip = "off") +
+    ggplot2::coord_polar(start = -pi / (nrow(plot_data)), clip = "off") +
     ggplot2::ggtitle(title_params$text)
 
   if (save_plot) {
