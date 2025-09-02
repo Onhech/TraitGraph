@@ -42,7 +42,7 @@
   # Use this workflow 99% of the time. It loads all your functions directly
   # into memory, which is extremely fast for testing changes.
   # Simply run this line after you save a change in any of your R/ files.
-  # devtools::load_all()
+   devtools::load_all()
 
 
   # --- Workflow C: Test GitHub Installation ---
@@ -50,7 +50,7 @@
   # It's best to run this in a completely fresh R session.
   # remove.packages("TraitGraph") # Ensure no local version is present
   # remotes::install_github("Onhech/TraitGraph")
-  # library(TraitGraph)
+   library(TraitGraph)
 
 
   # --- 3. CREATE SAMPLE DATA ---
@@ -83,14 +83,13 @@
     save_plot = T,
     output_path = 'ExamplePlots/trait_graph_example.jpg',
   )
-
-  # --- Ranked Question Example ---
+  # --- Voting Question Example ---
   TG_votes(
     dataset = sample_data,
     column_name = "rankedQ_1",
     title = "Who would you choose as a partner for the impending Zombie Apocalypse?",
     save_plot = T,
-    output_path = 'ExamplePlots/trait_graph_example.jpg',
+    output_path = 'ExamplePlots/voting_graph_example.jpg',
   )
 
   # --- Jungian Dichotomy Example ---

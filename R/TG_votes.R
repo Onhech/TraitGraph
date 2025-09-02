@@ -88,7 +88,7 @@ TG_votes <- function(dataset,
     ggplot2::scale_fill_identity() +
     ggplot2::scale_y_continuous(limits = c(-0.4 * (max_score + 1), final_y_outer_limit)) +
     ggplot2::theme_void() +
-    ggplot2::geom_label(ggplot2::aes(x = id, y = pmax(value - (max_score * 0.15), (max_score * 0.1)), label = round(value,0),
+    ggplot2::geom_label(ggplot2::aes(x = id, y = pmax(value - (max_score * 0.15), (max_score * 0.1)), label = round(value,0)),
                         size = 3, fontface = "plain", fill = "white", alpha = 0.99,
                         color = plot_data$dark_color, label.size = 0.2, show.legend = FALSE) +
     ggplot2::geom_text(ggplot2::aes(x = id, y = (max_score * 1.25) * name_position_mod, label = id),
