@@ -12,6 +12,7 @@ TG_trait(
   title_color = "black",
   name = "name",
   color = "favourite_color",
+  add_group_avg = TRUE,
   group_average_label = "Group\\nAverage",
   group_average_position_mod = 1,
   callout_size_mod = 1,
@@ -43,6 +44,8 @@ TG_trait(
 \item{name}{The name of the column containing unique identifiers.}
 
 \item{color}{The name of the column containing hex color codes.}
+
+\item{add_group_avg}{A logical value. If TRUE, calculates and adds a group average bar. Default is \code{TRUE}.}
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
 
