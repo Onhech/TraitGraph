@@ -2,8 +2,12 @@
 
 export(TG_jung)
 export(TG_similarity)
+export(TG_similarity_plot)
 export(TG_similarity_table)
 export(TG_trait)
 export(TG_votes)
 importFrom(dplyr,"%>%")
 importFrom(geomtextpath,geom_textpath)
+importFrom(tibble,as_tibble)
+importFrom(tibble,rownames_to_column)
+importFrom(tidyr,pivot_longer)

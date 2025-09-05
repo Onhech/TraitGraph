@@ -103,29 +103,70 @@
     output_path = 'ExamplePlots/jung_graph_example.png',
   )
 
-  # --- Similarity Network Example ---
-  # Define the columns to be used for the similarity calculation
-  TG_similarity(
-    dataset = sample_data[1:8,],
-    connection_threshold = .5,
-    columns = c("HonestyHumility", "Emotionality", "Extroversion", "Agreeableness","Conscientiousness", "Openness"),
-    name = "name",
-    use_initials = T, # Use full names for clarity
-    save_plot = T,
-    output_path = 'ExamplePlots/similarity_graph_example.png',
-    zoom_out_factor = 1.2
+# --- Similarity Network Example ---
+similarity_columns <- c("HonestyHumility", "Emotionality", "Extroversion", "Agreeableness","Conscientiousness", "Openness")
+
+# Define the columns to be used for the similarity calculation
+TG_similarity(
+  dataset = sample_data[1:8,],
+  connection_threshold = .5,
+  columns = similarity_columns,
+  name = "name",
+  use_initials = T, # Use full names for clarity
+  save_plot = T,
+  output_path = 'ExamplePlots/similarity_graph_example.png',
+  zoom_out_factor = 1.2
+)
+
+# --- Similarity Table Example with Custom Threshold ---
+# Create a tidy table of pairwise similarities, bolding and coloring
+# correlations with an absolute value greater than 0.7.
+similarity_table_custom_threshold <- TG_similarity_table(
+  dataset = sample_data[1:8,],
+  columns = similarity_columns,
+  name = "name",
+  format = "html"
+)
+
+# Render the table in the RStudio Viewer
+htmltools::html_print(similarity_table_custom_threshold)
+
+# --- Similarity Plot (Heatmap) Example ---
+similarity_heatmap <- TG_similarity_plot(
+  dataset = sample_data[1:8,],
+  columns = similarity_columns,
+  name = "name"
+)
+
+  # Print the plot to the Viewer
+  print(similarity_heatmap)
+
+  # Save the plot to a file
+  ggplot2::ggsave(
+    filename = "ExamplePlots/similarity_heatmap_example.png",
+    plot = similarity_heatmap,
+    width = 8,
+    height = 7,
+    dpi = 300
   )
 
-  # --- Similarity Table Example with Custom Threshold ---
-  # Create a tidy table of pairwise similarities, bolding and coloring
-  # correlations with an absolute value greater than 0.7.
-  similarity_table_custom_threshold <- TG_similarity_table(
-    dataset = sample_data[1:8,],
-    columns = c("HonestyHumility", "Emotionality", "Extroversion", "Agreeableness", "Conscientiousness", "Openness"),
-    name = "name",
-    format = "html", # Tell the function to return an HTML table
-    threshold = 0.7 # Set the threshold for bolding and color
-  )
 
-  # Render the table in the RStudio Viewer
-  htmltools::html_print(similarity_table_custom_threshold)
+# --- Similarity Plot (Heatmap) Example ---
+similarity_heatmap <- TG_similarity_plot(
+  dataset = sample_data[1:8,],
+  columns = similarity_columns,
+  name = "name",
+  show_legend = F
+)
+
+# Print the plot to the Viewer
+print(similarity_heatmap)
+
+# Save the plot to a file
+ggplot2::ggsave(
+  filename = "ExamplePlots/similarity_heatmap_example.jpg",
+  plot = similarity_heatmap,
+  width = 10,
+  height = 5,
+  dpi = 300
+)
