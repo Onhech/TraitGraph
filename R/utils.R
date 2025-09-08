@@ -31,36 +31,34 @@ is_color_light <- function(hex) {
     grDevices::rgb(dark_rgb[1], dark_rgb[2], dark_rgb[3], maxColorValue = 1)
   }
 
-#' Dynamically adjust title properties based on text length
-#' @param title_text The raw string for the title.
-#' @return A list containing the wrapped text, calculated size, and vjust.
-get_dynamic_title <- function(title_text) {
-  title_length <- nchar(title_text)
+  #' Dynamically adjust title properties based on text length
+  #' @param title_text The raw string for the title.
+  #' @return A list containing the wrapped text, calculated size, and vjust.
+  get_dynamic_title <- function(title_text) {
+    title_length <- nchar(title_text)
 
-  # Make an initial guess at the size and wrap width based on total characters
-  if (title_length <= 30) {
-    font_size <- 23
-    wrap_width <- 30
-  } else if (title_length <= 70) {
-    font_size <- 21
-    wrap_width <- 45
-  } else {
-    font_size <- 16
-    wrap_width <- 55
+    # Determine font size, wrap width, and vertical justification based on character length
+    if (title_length <= 40) {
+      font_size <- 23
+      wrap_width <- 40
+      final_vjust <- -19
+    } else if (title_length <= 85) {
+      font_size <- 19
+      wrap_width <- 42
+      final_vjust <- -23
+    } else if (title_length <= 120) {
+      font_size <- 16
+      wrap_width <- 60
+      final_vjust <- -28
+    } else {
+      font_size <- 12
+      wrap_width <- 60
+      final_vjust <- -36
+    }
+
+    # Wrap the text
+    wrapped_title <- stringr::str_wrap(title_text, width = wrap_width)
+
+    return(list(text = wrapped_title, size = font_size, vjust = final_vjust))
   }
 
-  # Wrap the text and count the resulting number of lines
-  wrapped_title <- stringr::str_wrap(title_text, width = wrap_width)
-  num_lines <- stringr::str_count(wrapped_title, "\n") + 1
-
-  # Refine the size and vertical adjustment based on the number of lines
-  if (num_lines == 1) {
-    final_vjust <- -21
-  } else if (num_lines == 2) {
-    final_vjust <- -29
-  } else { # 3 or more lines
-    final_vjust <- -28.5 # Push it further down
-  }
-
-  return(list(text = wrapped_title, size = font_size, vjust = final_vjust))
-}

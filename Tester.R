@@ -87,10 +87,11 @@
   TG_votes(
     dataset = sample_data,
     column_name = "rankedQ_1",
-    title = "Who would you choose as a partner for the impending Zombie Apocalypse?",
+    title = "Who would you choose as a partner for the upcoming zombie appocolypse?",
     save_plot = T,
     output_path = 'ExamplePlots/voting_graph_example.jpg',
   )
+
 
   # --- Jungian Dichotomy Example ---
   TG_jung(
