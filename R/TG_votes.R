@@ -90,8 +90,8 @@ TG_votes <- function(dataset,
     ggplot2::theme_void() +
     ggplot2::geom_label(ggplot2::aes(x = id, y = pmax(value - (max_score * 0.15), (max_score * 0.1)), label = round(value,0)),
                         size = 6, fontface = "plain", fill = "white", alpha = 0.99,
-                        color = plot_data$dark_color, label.size = 0.2, show.legend = FALSE) +
-    ggplot2::geom_text(ggplot2::aes(x = id, y = (max_score * 1.32) * name_position_mod, label = id),
+                        color = plot_data$dark_color, label.size = 0.2, show.legend = FALSE, label.r = ggplot2::unit(8, "pt")) +
+    ggplot2::geom_text(ggplot2::aes(x = id, y = (max_score * 1.18) * name_position_mod, label = id),
                        size = 6 + name_size_mod, color = plot_data$dark_color, angle = 0, lineheight = 0.8,
                        hjust = dplyr::case_when(
                          plot_data$id == plot_data$id[1] ~ 0.5,
