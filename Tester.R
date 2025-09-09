@@ -70,7 +70,7 @@
     "Ivan Evans",    "#E0FBFC",         35,               85,            25,            45,             55,                 40,
     "Judy Perch",    "#293241",         50,               70,            40,            60,             70,                 55
   ) %>%
-    dplyr::mutate(rankedQ_1 = sample(0:10, 10, replace = TRUE))
+    dplyr::mutate(rankedQ_1 = sample(0:100, 10, replace = TRUE))
 
 
   # --- 4. FUNCTION TESTING ---

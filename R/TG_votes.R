@@ -82,9 +82,9 @@ TG_votes <- function(dataset,
 
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), width = column_width, stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
-    ggplot2::geom_hline(yintercept = max_score + 1, color = "black", size = 0.6, alpha = 0.5) +
+    ggplot2::geom_hline(yintercept = max_score*1.05, color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_hline(yintercept = 0, color = "black", size = 0.6, alpha = 0.5) +
-    ggplot2::geom_hline(yintercept = seq(from = 0, to = max_score, by = (max_score*1.05)/(1 + minor_ticks)), color = "black", size = 0.1, alpha = 0.25, linetype = 'dashed') +
+    ggplot2::geom_hline(yintercept = seq(from = 0, to = max_score*1.05, by = (max_score*1.05)/(1 + minor_ticks)), color = "black", size = 0.1, alpha = 0.25, linetype = 'dashed') +
     ggplot2::scale_fill_identity() +
     ggplot2::scale_y_continuous(limits = c(-0.4 * (max_score*1.05), final_y_outer_limit)) +
     ggplot2::theme_void() +
