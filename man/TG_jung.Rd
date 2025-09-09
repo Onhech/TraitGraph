@@ -15,10 +15,16 @@ TG_jung(
   name = "name",
   color = "favourite_color",
   group_average_label = "Group\\nAverage",
-  plot_zoom_mod = 0,
-  name_size_mod = 0,
+  plot_zoom_mod = 1,
+  name_size_mod = 1,
   title_size_mod = 0,
-  title_vjust_mod = 0,
+  title_vjust_mod = 1,
+  color_bars = "sunset",
+  color_bars_opacity = c(0.6, 0.4, 0.2, 0.4, 0.6),
+  callout_size_mod = 1,
+  callout_text_color = "dark_color",
+  callout_text_face = "plain",
+  callout_background = T,
   output_path = "jung_plot.jpg",
   output_width = 7,
   output_height = 6,
@@ -34,25 +40,40 @@ TG_jung(
 
 \item{title}{A string for the plot's main title. Defaults to the \code{column_name}.}
 
-\item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaalts to \code{bold}.}
+\item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaults to \code{bold}.}
 
 \item{label_top}{The text for the curved label at the top of the chart (100\% mark).}
 
 \item{label_bottom}{The text for the curved label at the bottom of the chart (0\% mark).}
 
-\item{name}{The name of the column containing unique identifiers. Defaults to "names".}
+\item{name}{The name of the column containing unique identifiers. Defaults to "name".}
 
 \item{color}{The name of the column containing hex color codes. Defaults to "favourite_color".}
 
 \item{group_average_label}{A string for the group average bar's label. Defaults to "Group Average".}
 
-\item{plot_zoom_mod}{A numeric value (in cm) to add to the top and bottom plot margins for extra space.}
+\item{plot_zoom_mod}{A numeric value that is a percentage modifier for the plot zoom (size * mod). Default is \code{1}.}
 
-\item{name_size_mod}{A numeric value to add or subtract from the name label font size.}
+\item{name_size_mod}{A numeric value that is a percentage modifier for the name sizes (size * mod). Default is \code{1}.}
 
 \item{title_size_mod}{A numeric value to add or subtract from the dynamic title font size.}
 
 \item{title_vjust_mod}{A numeric value to add or subtract from the dynamic title vertical adjustment.}
+
+\item{color_bars}{Either:
+\itemize{
+\item A string naming one of the built-in palettes (i.e.,  \code{sunset}, \code{coastal}, \code{autumn}, \code{twilight}, \code{regal}, \code{cyber}, \code{blaze}, \code{earth}, \code{vaporwave}, \code{oceanic}, \code{vibrant}, \code{volcano}, \code{forest}), OR
+\item A vector of exactly five hex color codes.
+Defaults to \code{"sunset"}.
+}}
+
+\item{color_bars_opacity}{A vector of five opacity (alpha) numbers to determine bar color solidity. Default = \code{c(0.6, 0.4, 0.2, 0.4, 0.6)}.}
+
+\item{callout_size_mod}{A numeric value that is a percentage modifier for the callout sizes (size * mod). Default is \code{1}.}
+
+\item{callout_text_color}{Toggles the callout background. Defaults to \code{TRUE}, \code{FALSE} removes callout background.}
+
+\item{callout_text_face}{The font style of the callout (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaults to \code{bold}.}
 
 \item{output_path}{The full path where the plot will be saved.}
 

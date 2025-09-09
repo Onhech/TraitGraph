@@ -22,7 +22,10 @@
 #' @param name_size_mod A numeric value that is a percentage modifier for the name sizes (size * mod). Default is `1`.
 #' @param title_size_mod A numeric value to add or subtract from the dynamic title font size.
 #' @param title_vjust_mod A numeric value to add or subtract from the dynamic title vertical adjustment.
-#' @param color_bars A vector of five hex color codes to define the colors of the background bands. Default = `c("#B1C090", "#B1C090", "#B3C0CD", "#B5BEDF", "#B5BEDF")`.
+#' @param color_bars Either:
+#'   - A string naming one of the built-in palettes (i.e.,  `sunset`, `coastal`, `autumn`, `twilight`, `regal`, `cyber`, `blaze`, `earth`, `vaporwave`, `oceanic`, `vibrant`, `volcano`, `forest`), OR
+#'   - A vector of exactly five hex color codes.
+#'   Defaults to `"sunset"`.
 #' @param color_bars_opacity A vector of five opacity (alpha) numbers to determine bar color solidity. Default = `c(0.6, 0.4, 0.2, 0.4, 0.6)`.
 #' @param callout_size_mod A numeric value that is a percentage modifier for the callout sizes (size * mod). Default is `1`.
 #' @param callout_text_color Toggles the callout background. Defaults to `TRUE`, `FALSE` removes callout background.
@@ -53,7 +56,7 @@ TG_jung <- function(
     name_size_mod = 1,
     title_size_mod = 0,
     title_vjust_mod = 1,
-    color_bars = c("#B5BEDF", "#B5BEDF", "#B3C0CD","#B1C090", "#B1C090" ),
+    color_bars = "sunset",
     color_bars_opacity = c(0.6, 0.4, 0.2, 0.4, 0.6),
     callout_size_mod = 1,
     callout_text_color = "dark_color",
@@ -82,8 +85,54 @@ TG_jung <- function(
       border_color = ifelse(is_light, dark_color, NA_character_)
     )
 
+# Determine color palette
+  #  `sunset`, `coastal`, `autumn`, `twilight`, `regal`, `cyber`, `blaze`, `earth`, `vaporwave`, `oceanic`, `vibrant`, `volcano`, `forest`
+  # --- Define palette presets ---
+  color_presets <- list(
+    # 🌟 Top 4 — visually appealing & maximally distinct
+    sunset    = c("#FBC34B", "#FBC34B", "#F7826E", "#F14293", "#F14293"),
+    coastal   = c("#1871C2", "#1871C2", "#32826A", "#4B9311", "#4B9311"),
+    aurora    = c("#E0F7FA", "#E0F7FA", "#80DEEA", "#00796B", "#00796B"),
+    solar     = c("#FFD700", "#FFD700", "#FF8C00", "#D72638", "#D72638"),
+    # 🟢 Second tier — good palettes but closer in tone to top picks
+    twilight  = c("#7F0D0D", "#7F0D0D", "#430F5A", "#0611A7", "#0611A7"),
+    forest    = c("#004225", "#004225", "#2C6E49", "#7BA05B", "#7BA05B"),
+    regal     = c("#087F8C", "#087F8C", "#629064", "#BCA136", "#BCA136"),
+    vibrant   = c("#FBEB5A", "#FBEB5A", "#4CE259", "#35D8A3", "#35D8A3"),
+    # 🔵 Third tier — good but visually closer to something above
+    oceanic   = c("#005C7A", "#005C7A", "#3E92B1", "#78C0A8", "#78C0A8"),
+    blaze     = c("#F97316", "#F97316", "#C4407B", "#6D28D9", "#6D28D9"),
+    autumn    = c("#3D5941", "#3D5941", "#845837", "#CA562C", "#CA562C"),
+    # 🟣 Lower tier — niche or redundant palettes
+    vaporwave = c("#9e0142", "#9e0142", "#7E2872", "#5e4fa2", "#5e4fa2"),
+    cyber     = c("#64748B", "#64748B", "#9F4A8F", "#D9006C", "#D9006C"),
+    volcano   = c("#D91E18", "#D91E18", "#A31621", "#421C52", "#421C52"),
+    neonnight = c("#39FF14", "#39FF14", "#00E5FF", "#FF00FF", "#FF00FF"),
+    earth     = c("#E5E0D8", "#E5E0D8", "#988681", "#4A2C2A", "#4A2C2A")
+  )
+
+  # --- Resolve chosen color bars ---
+  color_bars_final <- if (is.character(color_bars) && length(color_bars) == 1) {
+    if (color_bars %in% names(color_presets)) {
+      color_presets[[color_bars]]
+    } else {
+      warning(sprintf(
+        "Palette '%s' not found. Defaulting to 'sunset'. Valid options: %s",
+        color_bars,
+        paste(names(color_presets), collapse = ", ")
+      ))
+      color_presets[["sunset"]]
+    }
+  } else if (is.vector(color_bars) && length(color_bars) == 5) {
+    color_bars
+  } else {
+    warning("Invalid color_bars provided. Defaulting to 'sunset'.")
+    color_presets[["sunset"]]
+  }
+
+  # --- Build color bands for background ---
   color_bands <- data.frame(
-    color = color_bars,
+    color = color_bars_final,
     ystart = seq(0, 80, by = 20),
     ystop = seq(20, 100, by = 20),
     opacity = rev(color_bars_opacity)
