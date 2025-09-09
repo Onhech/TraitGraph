@@ -92,10 +92,10 @@ TG_jung <- function(
     # 🌟 Top 4 — visually appealing & maximally distinct
     sunset    = c("#FBC34B", "#FBC34B", "#F7826E", "#F14293", "#F14293"),
     coastal   = c("#1871C2", "#1871C2", "#32826A", "#4B9311", "#4B9311"),
-    aurora    = c("#E0F7FA", "#E0F7FA", "#80DEEA", "#00796B", "#00796B"),
+    twilight  = c("#7F0D0D", "#7F0D0D", "#430F5A", "#0611A7", "#0611A7"),
     solar     = c("#FFD700", "#FFD700", "#FF8C00", "#D72638", "#D72638"),
     # 🟢 Second tier — good palettes but closer in tone to top picks
-    twilight  = c("#7F0D0D", "#7F0D0D", "#430F5A", "#0611A7", "#0611A7"),
+    aurora    = c("#E0F7FA", "#E0F7FA", "#80DEEA", "#00796B", "#00796B"),
     forest    = c("#004225", "#004225", "#2C6E49", "#7BA05B", "#7BA05B"),
     regal     = c("#087F8C", "#087F8C", "#629064", "#BCA136", "#BCA136"),
     vibrant   = c("#FBEB5A", "#FBEB5A", "#4CE259", "#35D8A3", "#35D8A3"),
