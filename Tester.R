@@ -87,7 +87,7 @@
   TG_votes(
     dataset = sample_data,
     column_name = "rankedQ_1",
-    title = "Who would you choose as a partner for the upcoming zombie appocolypse?",
+    title = "Who apologizes even when someone else bumps into them?",
     save_plot = T,
     output_path = 'ExamplePlots/voting_graph_example.jpg',
   )
@@ -100,9 +100,113 @@
     title = "Team Extroversion Profile",
     label_top = "Introversion",
     label_bottom = "Extroversion",
+    callout_text_color = "other",
     save_plot = T,
-    output_path = 'ExamplePlots/jung_graph_example.png',
+    output_path = 'ExamplePlots/jung_graph_example_0.jpg',
   )
+
+# Sunset 🌅: A warm gradient from gold to magenta.
+  pal_sunset <- c("#FBC34B", "#FBC34B", "#F7826E", "#F14293", "#F14293")
+# Coastal 🌊: A cool gradient from deep ocean blue to shoreline green.
+  pal_coastal <- c("#1871C2", "#1871C2", "#32826A", "#4B9311", "#4B9311")
+# Autumn 🍂: A rustic gradient from deep forest green to burnt orange.
+  pal_autumn <- c("#3D5941", "#3D5941", "#845837", "#CA562C", "#CA562C")
+# Twilight 🌃: A deep gradient from rich crimson to midnight blue.
+  pal_twilight <- c("#7F0D0D", "#7F0D0D", "#430F5A", "#0611A7", "#0611A7")
+# Regal ⚜️: A sophisticated gradient from rich teal to antique gold.
+  pal_regal <- c("#087F8C", "#087F8C", "#629064", "#BCA136", "#BCA136")
+# Cyber 👾: A modern, high-contrast gradient from cool slate to electric magenta.
+  pal_cyber <- c("#64748B", "#64748B", "#9F4A8F", "#D9006C", "#D9006C")
+# Blaze 🔥: A fiery gradient from bright orange to deep violet.
+  pal_blaze <- c("#F97316", "#F97316", "#C4407B", "#6D28D9", "#6D28D9")
+# Earth ☕: A neutral, high-contrast gradient from light stone to dark espresso.
+  pal_earth <- c("#E5E0D8", "#E5E0D8", "#988681", "#4A2C2A", "#4A2C2A")
+  color_set <- list(
+    sunset = pal_sunset,
+    coastal = pal_coastal,
+    autumn = pal_autumn,
+    twilight = pal_twilight,
+    regal = pal_regal,
+    cyber = pal_cyber,
+    blaze = pal_blaze,
+    earth = pal_earth
+  )
+
+
+  TG_jung(
+    dataset = sample_data,
+    column_name = "Extroversion",
+    title = "Introversion vs Extroversion",
+    label_top = "Introversion",
+    label_bottom = "Extroversion",
+    callout_text_color = "other",
+    save_plot = T,
+    color_bars = color_set$sunset,
+    color_bars_opacity = c(0.4, 0.2, 0.2, 0.5, 0.7),
+    output_path = 'ExamplePlots/jung_graph_example_1a.jpg',
+  )
+
+    TG_jung(
+      dataset = sample_data,
+      column_name = "Extroversion",
+      title = "Introversion vs Extroversion",
+      label_top = "Introversion",
+      label_bottom = "Extroversion",
+      callout_text_color = "other",
+      save_plot = T,
+      color_bars = color_set$sunset,
+      color_bars_opacity = c(0.4, 0.2, 0.1, 0.35, 0.65),
+      output_path = 'ExamplePlots/jung_graph_example_1b.jpg',
+      callout_background = F,
+      callout_text_face = 'bold'
+    )
+
+
+  TG_jung(
+    dataset = sample_data,
+    column_name = "Extroversion",
+    title = "Introversion vs Extroversion",
+    label_top = "Introversion",
+    label_bottom = "Extroversion",
+    callout_text_color = "other",
+    save_plot = T,
+    color_bars = rev(color_set$coastal),
+    color_bars_opacity = c(.5, 0.3, 0.15, 0.3, 0.5),
+    output_path = 'ExamplePlots/jung_graph_example_2a.jpg',
+    callout_background = F,
+    callout_text_face = 'bold'
+  )
+
+  TG_jung(
+    dataset = sample_data,
+    column_name = "Extroversion",
+    title = "Introversion vs Extroversion",
+    label_top = "Introversion",
+    label_bottom = "Extroversion",
+    callout_text_color = "other",
+    save_plot = T,
+    color_bars = rev(color_set$autumn),
+    color_bars_opacity = c(.5, 0.3, 0.15, 0.3, 0.5),
+    output_path = 'ExamplePlots/jung_graph_example_3a.jpg',
+    callout_background = F,
+    callout_text_face = 'bold'
+  )
+
+  TG_jung(
+    dataset = sample_data,
+    column_name = "Extroversion",
+    title = "Introversion vs Extroversion",
+    label_top = "Introversion",
+    label_bottom = "Extroversion",
+    callout_text_color = "other",
+    save_plot = T,
+    color_bars = color_set$twilight,
+    color_bars_opacity = c(.6, 0.38, 0.22, 0.38, 0.65),
+    output_path = 'ExamplePlots/jung_graph_example_4a.jpg',
+    callout_background = F,
+    callout_text_face = 'bold'
+  )
+
 
 # --- Similarity Network Example ---
 similarity_columns <- c("HonestyHumility", "Emotionality", "Extroversion", "Agreeableness","Conscientiousness", "Openness")
