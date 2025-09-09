@@ -78,21 +78,21 @@ TG_votes <- function(dataset,
   final_title_size <- title_params$size + title_size_mod
   final_title_vjust <- title_params$vjust + title_vjust_mod
   column_width <- dplyr::case_when(nrow(plot_data) <= 8 ~ 0.98 - (nrow(plot_data) * 0.01), TRUE ~ 0.90)
-  final_y_outer_limit <- ((max_score + 1) * 1.7) + plot_zoom_mod
+  final_y_outer_limit <- ((max_score*1.05) * 2.0) + plot_zoom_mod
 
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), width = column_width, stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
     ggplot2::geom_hline(yintercept = max_score + 1, color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_hline(yintercept = 0, color = "black", size = 0.6, alpha = 0.5) +
-    ggplot2::geom_hline(yintercept = seq(from = 0, to = max_score, by = max_score/(1 + minor_ticks)), color = "black", size = 0.1, alpha = 0.25, linetype = 'dashed') +
+    ggplot2::geom_hline(yintercept = seq(from = 0, to = max_score, by = (max_score*1.05)/(1 + minor_ticks)), color = "black", size = 0.1, alpha = 0.25, linetype = 'dashed') +
     ggplot2::scale_fill_identity() +
-    ggplot2::scale_y_continuous(limits = c(-0.4 * (max_score + 1), final_y_outer_limit)) +
+    ggplot2::scale_y_continuous(limits = c(-0.4 * (max_score*1.05), final_y_outer_limit)) +
     ggplot2::theme_void() +
     ggplot2::geom_label(ggplot2::aes(x = id, y = pmax(value - (max_score * 0.15), (max_score * 0.1)), label = round(value,0)),
-                        size = 3, fontface = "plain", fill = "white", alpha = 0.99,
+                        size = 6, fontface = "plain", fill = "white", alpha = 0.99,
                         color = plot_data$dark_color, label.size = 0.2, show.legend = FALSE) +
-    ggplot2::geom_text(ggplot2::aes(x = id, y = (max_score * 1.25) * name_position_mod, label = id),
-                       size = 4 + name_size_mod, color = plot_data$dark_color, angle = 0, lineheight = 0.8,
+    ggplot2::geom_text(ggplot2::aes(x = id, y = (max_score * 1.32) * name_position_mod, label = id),
+                       size = 6 + name_size_mod, color = plot_data$dark_color, angle = 0, lineheight = 0.8,
                        hjust = dplyr::case_when(
                          plot_data$id == plot_data$id[1] ~ 0.5,
                          c(FALSE, seq_along(plot_data$id[-1]) == ceiling(length(plot_data$id[-1]) / 2)) ~ 0.5,

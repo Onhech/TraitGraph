@@ -83,6 +83,8 @@
     save_plot = T,
     output_path = 'ExamplePlots/trait_graph_example.jpg'
   )
+
+
   # --- Voting Question Example ---
   TG_votes(
     dataset = sample_data,
@@ -118,66 +120,6 @@
     output_path = 'ExamplePlots/jung_graph_example_1a.jpg',
   )
 
-    TG_jung(
-      dataset = sample_data,
-      column_name = "Extroversion",
-      title = "Introversion vs Extroversion",
-      label_top = "Introversion",
-      label_bottom = "Extroversion",
-      callout_text_color = "other",
-      save_plot = T,
-      color_bars = color_set$sunset,
-      color_bars_opacity = c(0.4, 0.2, 0.1, 0.35, 0.65),
-      output_path = 'ExamplePlots/jung_graph_example_1b.jpg',
-      callout_background = F,
-      callout_text_face = 'bold'
-    )
-
-
-  TG_jung(
-    dataset = sample_data,
-    column_name = "Extroversion",
-    title = "Introversion vs Extroversion",
-    label_top = "Introversion",
-    label_bottom = "Extroversion",
-    callout_text_color = "other",
-    save_plot = T,
-    color_bars = rev(color_set$coastal),
-    color_bars_opacity = c(.5, 0.3, 0.15, 0.3, 0.5),
-    output_path = 'ExamplePlots/jung_graph_example_2a.jpg',
-    callout_background = F,
-    callout_text_face = 'bold'
-  )
-
-  TG_jung(
-    dataset = sample_data,
-    column_name = "Extroversion",
-    title = "Introversion vs Extroversion",
-    label_top = "Introversion",
-    label_bottom = "Extroversion",
-    callout_text_color = "other",
-    save_plot = T,
-    color_bars = rev(color_set$autumn),
-    color_bars_opacity = c(.5, 0.3, 0.15, 0.3, 0.5),
-    output_path = 'ExamplePlots/jung_graph_example_3a.jpg',
-    callout_background = F,
-    callout_text_face = 'bold'
-  )
-
-  TG_jung(
-    dataset = sample_data,
-    column_name = "Extroversion",
-    title = "Introversion vs Extroversion",
-    label_top = "Introversion",
-    label_bottom = "Extroversion",
-    callout_text_color = "other",
-    save_plot = T,
-    color_bars = color_set$twilight,
-    color_bars_opacity = c(.6, 0.38, 0.22, 0.38, 0.65),
-    output_path = 'ExamplePlots/jung_graph_example_4a.jpg',
-    callout_background = F,
-    callout_text_face = 'bold'
-  )
 
 
 # --- Similarity Network Example ---
