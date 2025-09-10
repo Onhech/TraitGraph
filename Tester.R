@@ -91,7 +91,7 @@
     column_name = "rankedQ_1",
     title = "Who apologizes even when someone else bumps into them?",
     save_plot = T,
-    output_path = 'ExamplePlots/voting_graph_example.jpg',
+    output_path = 'ExamplePlots/voting_graph_example.jpg',title_size_mod = 1.6
   )
 
 

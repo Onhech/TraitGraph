@@ -75,7 +75,7 @@ TG_votes <- function(dataset,
 
   max_score <- max(plot_data$value)
   title_params <- get_dynamic_title(title)
-  final_title_size <- title_params$size + title_size_mod
+  final_title_size <- (title_params$size * 1.6)+ title_size_mod
   final_title_vjust <- title_params$vjust + title_vjust_mod
   column_width <- dplyr::case_when(nrow(plot_data) <= 8 ~ 0.98 - (nrow(plot_data) * 0.01), TRUE ~ 0.90)
   final_y_outer_limit <- ((max_score*1.05) * 2.0) + plot_zoom_mod
@@ -88,7 +88,7 @@ TG_votes <- function(dataset,
     ggplot2::scale_fill_identity() +
     ggplot2::scale_y_continuous(limits = c(-0.4 * (max_score*1.05), final_y_outer_limit)) +
     ggplot2::theme_void() +
-    ggplot2::geom_label(ggplot2::aes(x = id, y = pmax(value - (max_score * 0.15), (max_score * 0.1)), label = paste0(round(value,0), "%")) ),
+    ggplot2::geom_label(ggplot2::aes(x = id, y = pmax(value - (max_score * 0.15), (max_score * 0.1)), label = paste0(round(value,0), "%")),
                         size = 6, fontface = "plain", fill = "white", alpha = 0.99,
                         color = plot_data$dark_color, label.size = 0.2, show.legend = FALSE, label.r = ggplot2::unit(8, "pt")) +
     ggplot2::geom_text(ggplot2::aes(x = id, y = (max_score * 1.18) * name_position_mod, label = id),
