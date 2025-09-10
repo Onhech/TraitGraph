@@ -31,29 +31,48 @@ is_color_light <- function(hex) {
     grDevices::rgb(dark_rgb[1], dark_rgb[2], dark_rgb[3], maxColorValue = 1)
   }
 
-  #' Dynamically adjust title properties based on text length
+  #' Adjust title properties based on text length
   #' @param title_text The raw string for the title.
   #' @return A list containing the wrapped text, calculated size, and vjust.
   get_dynamic_title <- function(title_text) {
     title_length <- nchar(title_text)
 
     # Determine font size, wrap width, and vertical justification based on character length
-    if (title_length <= 40) {
-      font_size <- 23
-      wrap_width <- 40
-      final_vjust <- -19
-    } else if (title_length <= 85) {
-      font_size <- 19
-      wrap_width <- 42
-      final_vjust <- -23
+  # Largest font, 1 line
+    if (title_length <= 24) {
+      font_size <- 35
+      wrap_width <- 24
+      final_vjust <- -12.5
+  # Smaller font, 1 lines
+    } else if (title_length <= 28) {
+      font_size <- 28
+      wrap_width <- 28
+      final_vjust <- -16
+  # Smaller font, 2 lines
+    } else if (title_length <= 52) {
+      font_size <- 28
+      wrap_width <- 26
+      final_vjust <- -15.5
+  # Small font, 2 lines
+    } else if (title_length <= 70) {
+      font_size <- 24
+      wrap_width <- 35
+      final_vjust <- -18
+  # Small font, 3 lines
+    } else if (title_length <= 105) {
+      font_size <- 24
+      wrap_width <- 35
+      final_vjust <- -17
+  # Smallest font, 3 lines
     } else if (title_length <= 120) {
-      font_size <- 16
-      wrap_width <- 60
-      final_vjust <- -28
+      font_size <- 20
+      wrap_width <- 40
+      final_vjust <- -21
+  # Smallest font, 4 lines
     } else {
-      font_size <- 12
-      wrap_width <- 60
-      final_vjust <- -36
+      font_size <- 20
+      wrap_width <- 40
+      final_vjust <- -20
     }
 
     # Wrap the text

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_dynamic_title}
 \alias{get_dynamic_title}
-\title{Dynamically adjust title properties based on text length}
+\title{Adjust title properties based on text length}
 \usage{
 get_dynamic_title(title_text)
 }
@@ -13,5 +13,5 @@ get_dynamic_title(title_text)
 A list containing the wrapped text, calculated size, and vjust.
 }
 \description{
-Dynamically adjust title properties based on text length
+Adjust title properties based on text length
 }

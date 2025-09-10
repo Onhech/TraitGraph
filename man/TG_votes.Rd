@@ -33,7 +33,7 @@ TG_votes(
 \item{column_name}{The name of the column containing the numeric values to plot.}
 
 \item{title}{A string for the plot's main title. If not provided, the name
-of the \code{column_name} will be used.}
+of the \code{column_name} will be used. 160 Character limit.}
 
 \item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaalts to \code{bold}.}
 

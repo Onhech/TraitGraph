@@ -84,18 +84,199 @@
     output_path = 'ExamplePlots/trait_graph_example.jpg'
   )
 
-
-  # --- Voting Question Example ---
+# ####
+# Voting ####
+# ####
   TG_votes(
     dataset = sample_data,
     column_name = "rankedQ_1",
-    title = "Who apologizes even when someone else bumps into them?",
+    title = "1234 6789.",
     save_plot = T,
-    output_path = 'ExamplePlots/voting_graph_example.jpg',title_size_mod = 1.6
+    output_path = 'ExamplePlots/voting_graph_example_10.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_15.jpg',title_size_mod = 1.6
   )
 
 
-  # --- Jungian Dichotomy Example ---
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_20.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_25.jpg',title_size_mod = 1.6
+  )
+
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_30.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_35.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_40.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_45.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_50.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_55.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_60.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234.",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_65.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_70.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789 1234",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_75.jpg',title_size_mod = 1.6
+  )
+
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789 1234 6789",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_80.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789 1234 6789 1234",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_85.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789 1234 6789",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_90.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789 1234 6789 1234",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_95.jpg',title_size_mod = 1.6
+  )
+
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789 1234 6789",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_100.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789 1234 6789",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_110.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789 1234 6789",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_120.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789 1234 6789",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_130.jpg',title_size_mod = 1.6
+  )
+
+  TG_votes(
+    dataset = sample_data,
+    column_name = "rankedQ_1",
+    title = "1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789 1234 6789  1234 6789 1234 6789 1234",
+    save_plot = T,
+    output_path = 'ExamplePlots/voting_graph_example_135.jpg',title_size_mod = 1.6
+  )
+ # ####
+ # --- Jungian ####
+ # ####
   TG_jung(
     dataset = sample_data,
     column_name = "Extroversion",

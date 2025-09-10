@@ -7,7 +7,7 @@
 #' @param dataset A data frame containing the data to plot.
 #' @param column_name The name of the column containing the numeric values to plot.
 #' @param title A string for the plot's main title. If not provided, the name
-#'   of the `column_name` will be used.
+#'   of the `column_name` will be used. 160 Character limit.
 #' @param title_face The font style of the title (e.g., `plain`, `bold`, or `bold.italic`). Defaalts to `bold`.
 #' @param color The color of the tile.
 #' @param name The name of the column containing unique identifiers. Defaults to "names".
@@ -75,7 +75,7 @@ TG_votes <- function(dataset,
 
   max_score <- max(plot_data$value)
   title_params <- get_dynamic_title(title)
-  final_title_size <- (title_params$size * 1.6)+ title_size_mod
+  final_title_size <- (title_params$size)+ title_size_mod
   final_title_vjust <- title_params$vjust + title_vjust_mod
   column_width <- dplyr::case_when(nrow(plot_data) <= 8 ~ 0.98 - (nrow(plot_data) * 0.01), TRUE ~ 0.90)
   final_y_outer_limit <- ((max_score*1.05) * 2.0) + plot_zoom_mod
