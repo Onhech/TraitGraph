@@ -74,7 +74,7 @@ TG_votes <- function(dataset,
   if (nrow(plot_data) == 0) { message("No data with scores greater than 0 to plot."); return(invisible(NULL)) }
 
   max_score <- max(plot_data$value)
-  title_params <- get_dynamic_title(title)
+  title_params <- get_dynamic_title_votes(title)
   final_title_size <- (title_params$size)+ title_size_mod
   final_title_vjust <- title_params$vjust + title_vjust_mod
   column_width <- dplyr::case_when(nrow(plot_data) <= 8 ~ 0.98 - (nrow(plot_data) * 0.01), TRUE ~ 0.90)

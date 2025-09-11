@@ -38,6 +38,39 @@ is_color_light <- function(hex) {
     title_length <- nchar(title_text)
 
     # Determine font size, wrap width, and vertical justification based on character length
+    if (title_length <= 40) {
+      font_size <- 23
+      wrap_width <- 40
+      final_vjust <- -19
+    } else if (title_length <= 85) {
+      font_size <- 19
+      wrap_width <- 42
+      final_vjust <- -23
+    } else if (title_length <= 120) {
+      font_size <- 16
+      wrap_width <- 60
+      final_vjust <- -28
+    } else {
+      font_size <- 12
+      wrap_width <- 60
+      final_vjust <- -36
+    }
+
+    # Wrap the text
+    wrapped_title <- stringr::str_wrap(title_text, width = wrap_width)
+
+    return(list(text = wrapped_title, size = font_size, vjust = final_vjust))
+  }
+
+
+
+  #' Version for voting title
+  #' @param title_text The raw string for the title.
+  #' @return A list containing the wrapped text, calculated size, and vjust.
+  get_dynamic_title_votes <- function(title_text) {
+    title_length <- nchar(title_text)
+
+    # Determine font size, wrap width, and vertical justification based on character length
   # Largest font, 1 line
     if (title_length <= 24) {
       font_size <- 35
@@ -80,4 +113,6 @@ is_color_light <- function(hex) {
 
     return(list(text = wrapped_title, size = font_size, vjust = final_vjust))
   }
+
+
 
