@@ -2,16 +2,20 @@
 % Please edit documentation in R/utils.R
 \name{get_dynamic_title_votes}
 \alias{get_dynamic_title_votes}
-\title{Version for voting title}
+\title{Adjust voting title properties based on text length}
 \usage{
 get_dynamic_title_votes(title_text)
 }
 \arguments{
-\item{title_text}{The raw string for the title.}
+\item{title_text}{The character string for the title.}
 }
 \value{
-A list containing the wrapped text, calculated size, and vjust.
+A list containing the wrapped text (\code{text}), the calculated font size (\code{size}), and the vertical justification value (\code{vjust}).
 }
 \description{
-Version for voting title
+A specialized version of get_dynamic_title tailored to the larger font sizes
+and different layout requirements of the voting graphs.
+}
+\examples{
+get_dynamic_title_votes("Who is the most likely to lead a Martian colony?")
 }

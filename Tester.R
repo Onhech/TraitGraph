@@ -34,7 +34,7 @@
    devtools::clean_dll()
    devtools::document()
    devtools::load_all()
-   devtools::install()           # Build and install the package locally
+   devtools::install(upgrade = 'always')           # Build and install the package locally
    library(TraitGraph)            # Load the newly installed package
 
 

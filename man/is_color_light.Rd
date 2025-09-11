@@ -4,14 +4,20 @@
 \alias{is_color_light}
 \title{Check if a color is light}
 \usage{
-is_color_light(hex)
+is_color_light(hex, threshold = 0.85)
 }
 \arguments{
-\item{hex}{A vector of hex color codes.}
+\item{hex}{A character vector of hex color codes or R color names.}
+
+\item{threshold}{A numeric value between 0 and 1. Colors with luminance above this value are considered light. Defaults to 0.85.}
 }
 \value{
-A logical vector, TRUE if the color is considered light.
+A logical vector, \code{TRUE} for each color that is considered light.
 }
 \description{
-Check if a color is light
+Calculates the perceived luminance of a color and compares it to a threshold.
+}
+\examples{
+is_color_light("#fefb41") # Bright yellow, should be TRUE
+is_color_light("blue") # Dark color, should be FALSE
 }

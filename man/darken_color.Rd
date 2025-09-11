@@ -2,18 +2,21 @@
 % Please edit documentation in R/utils.R
 \name{darken_color}
 \alias{darken_color}
-\title{Darken colors}
+\title{Darken a color}
 \usage{
 darken_color(hex, factor = 0.5)
 }
 \arguments{
-\item{hex}{A hex color code.}
+\item{hex}{A character vector of hex color codes or R color names.}
 
-\item{factor}{A number between 0 and 1 for darkening.}
+\item{factor}{A number between 0 and 1 for darkening (e.g., 0.5 makes the color 50\% darker).}
 }
 \value{
-A darkened hex color code.
+A character vector of the darkened hex color codes.
 }
 \description{
-Darken colors
+Reduces the brightness of a color by a given factor.
+}
+\examples{
+darken_color("yellow", factor = 0.7)
 }

@@ -6,34 +6,64 @@
 # functions in the package. These functions are not exported for users.
 # -----------------------------------------------------------------------------
 
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Color Formatter Function ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 #' Check if a color is light
-#' @param hex A vector of hex color codes.
-#' @return A logical vector, TRUE if the color is considered light.
-is_color_light <- function(hex) {
+#'
+#' Calculates the perceived luminance of a color and compares it to a threshold.
+#'
+#' @param hex A character vector of hex color codes or R color names.
+#' @param threshold A numeric value between 0 and 1. Colors with luminance above this value are considered light. Defaults to 0.85.
+#' @return A logical vector, \code{TRUE} for each color that is considered light.
+#' @export
+#' @examples
+#' is_color_light("#fefb41") # Bright yellow, should be TRUE
+#' is_color_light("blue") # Dark color, should be FALSE
+is_color_light <- function(hex, threshold = 0.85) {
   # Handle color names by converting them to hex first
   hex_codes <- sapply(hex, function(x) {
     tryCatch(grDevices::rgb(t(grDevices::col2rgb(x))), error = function(e) x)
   })
   rgb_matrix <- grDevices::col2rgb(hex_codes) / 255
   luminance <- 0.299 * rgb_matrix[1, ] + 0.587 * rgb_matrix[2, ] + 0.114 * rgb_matrix[3, ]
-  luminance > 0.95 # Threshold for "too light"
+  luminance > threshold
+}
+
+#' Darken a color
+#'
+#' Reduces the brightness of a color by a given factor.
+#'
+#' @param hex A character vector of hex color codes or R color names.
+#' @param factor A number between 0 and 1 for darkening (e.g., 0.5 makes the color 50% darker).
+#' @return A character vector of the darkened hex color codes.
+#' @export
+#' @examples
+#' darken_color("yellow", factor = 0.7)
+darken_color <- function(hex, factor = 0.5) {
+  rgb_matrix <- grDevices::col2rgb(hex)
+  dark_rgb <- rgb_matrix * factor
+  dark_rgb <- pmax(0, pmin(dark_rgb, 255))
+  grDevices::rgb(dark_rgb[1], dark_rgb[2], dark_rgb[3], maxColorValue = 255)
 }
 
 
-  #' Darken colors
-  #' @param hex A hex color code.
-  #' @param factor A number between 0 and 1 for darkening.
-  #' @return A darkened hex color code.
-  darken_color <- function(hex, factor = 0.5) {
-    rgb_matrix <- grDevices::col2rgb(hex) / 255
-    dark_rgb <- rgb_matrix * factor
-    dark_rgb <- pmax(0, pmin(dark_rgb, 1))
-    grDevices::rgb(dark_rgb[1], dark_rgb[2], dark_rgb[3], maxColorValue = 1)
-  }
 
-  #' Adjust title properties based on text length
-  #' @param title_text The raw string for the title.
-  #' @return A list containing the wrapped text, calculated size, and vjust.
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Dynamic Text Function ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+#' Adjust title properties based on text length
+#'
+#' Dynamically calculates the appropriate font size, wrap width, and vertical
+#' justification for a main title based on its character count.
+#'
+#' @param title_text The character string for the title.
+#' @return A list containing the wrapped text (`text`), the calculated font size (`size`), and the vertical justification value (`vjust`).
+#' @export
+#' @examples
+#' get_dynamic_title("A very long title that will need to be wrapped and resized.")
+
   get_dynamic_title <- function(title_text) {
     title_length <- nchar(title_text)
 
@@ -63,10 +93,20 @@ is_color_light <- function(hex) {
   }
 
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Dynamic Text Function for Voting   ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+#' Adjust voting title properties based on text length
+#'
+#' A specialized version of get_dynamic_title tailored to the larger font sizes
+#' and different layout requirements of the voting graphs.
+#'
+#' @param title_text The character string for the title.
+#' @return A list containing the wrapped text (`text`), the calculated font size (`size`), and the vertical justification value (`vjust`).
+#' @export
+#' @examples
+#' get_dynamic_title_votes("Who is the most likely to lead a Martian colony?")
 
-  #' Version for voting title
-  #' @param title_text The raw string for the title.
-  #' @return A list containing the wrapped text, calculated size, and vjust.
   get_dynamic_title_votes <- function(title_text) {
     title_length <- nchar(title_text)
 

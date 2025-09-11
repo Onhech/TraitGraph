@@ -7,11 +7,15 @@
 get_dynamic_title(title_text)
 }
 \arguments{
-\item{title_text}{The raw string for the title.}
+\item{title_text}{The character string for the title.}
 }
 \value{
-A list containing the wrapped text, calculated size, and vjust.
+A list containing the wrapped text (\code{text}), the calculated font size (\code{size}), and the vertical justification value (\code{vjust}).
 }
 \description{
-Adjust title properties based on text length
+Dynamically calculates the appropriate font size, wrap width, and vertical
+justification for a main title based on its character count.
+}
+\examples{
+get_dynamic_title("A very long title that will need to be wrapped and resized.")
 }
