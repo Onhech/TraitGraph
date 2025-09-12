@@ -149,7 +149,7 @@ TG_similarity_table <- function(dataset,
 
 
 # -----------------------------------------------------------------------------
-# FILE: R/TG_similarity_plot.R (New Function)
+# FILE: R/TG_similarity_plot.R
 # -----------------------------------------------------------------------------
 
 #' Create a Psychological Similarity Heatmap

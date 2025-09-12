@@ -87,110 +87,6 @@
 # ####
 # Voting ####
 # ####
-TG_votes(dataset = sample_data,
-                       column_name = "rankedQ_1",
-                       title = "If your haircut looked genuinely awful, who would tell you the truth?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = T,
-                       minor_ticks = 3,
-                       output_path = "vote_CQ_HEX_Hon_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_2",
-                       title = "Who would win a Nobel Prize and then apologize for taking up everyone's time?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_HEX_Hum_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_3",
-                       title = "Who would you choose to be the voice of reason during a high-pressure escape room?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_HEX_E_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_4",
-                       title = "If the plan changes to a massive rave, who suddenly develops a mysterious cough?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_HEX_X_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_5",
-                       title = "Who apologizes even when someone else bumps into them?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_HEX_A_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_6",
-                       title = "Who would you trust to design a clever, multi-room escape room from scratch?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_HEX_C_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_7",
-                       title = "In a game, who would choose to be the cackling villain over the noble hero?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_HEX_O_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_8",
-                       title = "Who is best at planting an idea in someone's head and making them think it was theirs?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_DT_M_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_9",
-                       title = "Who would press a big red button labelled 'DO NOT PRESS' just to see what happens?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_DT_P_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_10",
-                       title = "In a simulation game, who is most likely to trap their character in a pool by deleting the ladder?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       name_size_mod = 2.1,
-                       output_path = "Data/vote_CQ_DT_S_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_11",
-                       title = "Who would veto a perfect group photo simply because they don't look amazing in it?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_DT_N_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_12",
-                       title = "Who would have an existential crisis about whether it's okay to lie to a telemarketer?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_FM_plot.jpg")
-  TraitGraph::TG_votes(dataset = data,
-                       column_name = "Q_CQ_13",
-                       title = "Who would rather assemble IKEA furniture without instructions than follow them?",
-                       color = "favourite_color",
-                       save_plot = TRUE, show_plot = FALSE,
-                       minor_ticks = 3,
-                       output_path = "Data/vote_CQ_CM_A_plot.jpg")
-
-
-
-
-
-
-
-
-
-
-
-
   TG_votes(
     dataset = sample_data,
     column_name = "rankedQ_1",
@@ -378,7 +274,9 @@ TG_votes(dataset = sample_data,
     save_plot = T,
     output_path = 'ExamplePlots/voting_graph_example_135.jpg',title_size_mod = 1.6
   )
- # ####
+
+
+# ####
  # --- Jungian ####
  # ####
   TG_jung(

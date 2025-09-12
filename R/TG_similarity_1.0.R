@@ -1,29 +1,35 @@
 # -----------------------------------------------------------------------------
 # FILE: R/TG_similarity.R
-# STATUS: STABLE
+# STATUS: REVISED
 # -----------------------------------------------------------------------------
 
 #' Create a Psychological Similarity Network Graph
 #'
 #' Visualize psychological similarity between individuals in a group as a
 #' network graph. Similarity is computed as the correlation between people
-#' across the selected trait columns; thicker/greener edges indicate stronger
-#' positive similarity, and redder edges indicate dissimilarity.
+#' across the selected trait columns. Node size represents the average similarity
+#' of a person to their connections, with larger nodes indicating higher average
+#' similarity. Thicker/greener edges indicate stronger positive similarity, and
+#' redder edges indicate dissimilarity.
 #'
 #' @param dataset A data frame (or tibble) containing the data to plot.
 #' @param columns A character vector of column names to use for the similarity
-#'     calculation (traits/opinions measured for each person).
+#'   calculation (traits/opinions measured for each person).
 #' @param name The name of the column containing unique identifiers (e.g., full names).
-#'     Defaults to `"names"`.
+#'   Defaults to `"names"`.
 #' @param color The name of the column containing hex color codes (e.g., `#AABBCC`)
-#'     used to color nodes. Defaults to `"favourite_color"`.
+#'   used to color nodes. Defaults to `"favourite_color"`.
 #' @param use_initials Logical. If `TRUE`, nodes are labeled with initials
-#'     (first + last initial when available; falls back to first letter for single names).
+#'   (first + last initial when available; falls back to first letter for single names).
 #' @param connection_threshold Numeric in `[0, 1]`. Only edges with absolute
-#'     correlation above this value are drawn. Defaults to `0.3`.
+#'   correlation above this value are drawn. Defaults to `0.3`.
+#' @param min_node_size The minimum size for a node, corresponding to the lowest
+#'   possible average similarity (-1). Defaults to `8`.
+#' @param max_node_size The maximum size for a node, corresponding to the highest
+#'   possible average similarity (+1). Defaults to `25`.
 #' @param name_size_mod Numeric value added to the base label font size (6).
 #' @param zoom_out_factor Numeric scaling for plot limits (prevents clipping).
-#'     Defaults to `1.2` (20% margin).
+#'   Defaults to `1.2` (20% margin).
 #' @param title Plot title.
 #' @param subtitle Plot subtitle.
 #' @param output_path File path for saving the plot (e.g., `"similarity_plot.jpg"`).
@@ -38,21 +44,18 @@
 #' @examples
 #' \dontrun{
 #' df <- data.frame(
-#'    names = c("Ada Lovelace", "Grace Hopper", "Marie"),
-#'    favourite_color = c("#1f77b4", "#ff7f0e", "#2ca02c"),
-#'    TraitA = c(3, 4, 5),
-#'    TraitB = c(1, 2, 1),
-#'    TraitC = c(5, 3, 4)
+#'   names = c("Ada Lovelace", "Grace Hopper", "Marie Curie"),
+#'   favourite_color = c("#1f77b4", "#ff7f0e", "#2ca02c"),
+#'   TraitA = c(5, 1, 4),
+#'   TraitB = c(5, 2, 5),
+#'   TraitC = c(5, 1, 4)
 #' )
 #'
 #' TG_similarity(
-#'    dataset = df,
-#'    columns = c("TraitA", "TraitB", "TraitC"),
-#'    name = "names",
-#'    color = "favourite_color",
-#'    use_initials = TRUE,
-#'    connection_threshold = 0.3,
-#'    save_plot = FALSE
+#'   dataset = df,
+#'   columns = c("TraitA", "TraitB", "TraitC"),
+#'   connection_threshold = 0.1,
+#'   save_plot = FALSE
 #' )
 #' }
 #'
@@ -63,10 +66,12 @@ TG_similarity <- function(dataset,
                           color = "favourite_color",
                           use_initials = TRUE,
                           connection_threshold = 0.3,
+                          min_node_size = 8,
+                          max_node_size = 25,
                           name_size_mod = 0,
                           zoom_out_factor = 1.2,
-                          title = "Psychological Similarity",
-                          subtitle = NULL, # The subtitle parameter is now set to NULL by default
+                          title = "Psychological Similarity Network",
+                          subtitle = "Node size reflects average similarity to others.",
                           output_path = "similarity_plot.jpg",
                           output_width = 12,
                           output_height = 8,
@@ -111,6 +116,10 @@ TG_similarity <- function(dataset,
       connection_threshold < 0 || connection_threshold > 1) {
     rlang::abort("`connection_threshold` must be a single numeric value in [0, 1].")
   }
+  if (!is.numeric(min_node_size) || !is.numeric(max_node_size) || min_node_size > max_node_size) {
+    rlang::abort("`min_node_size` and `max_node_size` must be numeric, with min <= max.")
+  }
+
 
   # ---- 1) Prepare & scale the data ------------------------------------------
   similarity_data <- dataset %>%
@@ -126,21 +135,17 @@ TG_similarity <- function(dataset,
     scaled_data[is.na(scaled_data)] <- 0
   }
 
-  # Build node labels: initials or full
   node_labels <- if (use_initials) {
     .tg_initials(dataset[[name]])
   } else {
     as.character(dataset[[name]])
   }
-
   rownames(scaled_data) <- node_labels
 
   # ---- 2) Correlation matrix & graph ----------------------------------------
-  if (n_people == 1) {
-    graph <- igraph::make_empty_graph(n = 1)
-    igraph::V(graph)$name <- node_labels
-    correlation_matrix <- matrix(0, nrow = 1, ncol = 1,
-                                 dimnames = list(node_labels, node_labels))
+  if (n_people <= 1) {
+    graph <- igraph::make_empty_graph(n = n_people)
+    if (n_people == 1) igraph::V(graph)$name <- node_labels
   } else {
     correlation_matrix <- stats::cor(t(scaled_data), use = "pairwise.complete.obs")
     diag(correlation_matrix) <- 0
@@ -152,44 +157,78 @@ TG_similarity <- function(dataset,
   }
 
   # ---- 3) Node attributes ----------------------------------------------------
-  net_sim <- if (n_people == 1) 0 else igraph::strength(graph, weights = igraph::E(graph)$weight)
-  node_colors <- as.character(dataset[[color]])
-  # is_color_light helper is not in the original code, but is needed for text color
+  # Helper to determine text color based on background
   is_color_light <- function(hex_color) {
     rgb <- grDevices::col2rgb(hex_color)
     brightness <- (0.299 * rgb[1,] + 0.587 * rgb[2,] + 0.114 * rgb[3,]) / 255
     brightness > 0.5
   }
-  text_is_light <- is_color_light(node_colors)
-  text_colors <- ifelse(text_is_light, "black", "white")
 
-  igraph::V(graph)$net_similarity <- net_sim
-  igraph::V(graph)$node_color    <- node_colors
-  igraph::V(graph)$text_color    <- text_colors
+  if (n_people > 0) {
+    node_colors <- as.character(dataset[[color]])
+    text_colors <- ifelse(is_color_light(node_colors), "black", "white")
+    igraph::V(graph)$node_color <- node_colors
+    igraph::V(graph)$text_color <- text_colors
+  }
 
-  # ---- 4) Layout -------------------------------------------------------------
+
+  # ---- 4) Node Size Calculation (Average Similarity) ------------------------
+  if (n_people <= 1) {
+    avg_similarity <- 0
+  } else {
+    # Calculate degree, considering only connections above the threshold
+    threshold_graph <- igraph::delete_edges(graph, which(abs(igraph::E(graph)$weight) < connection_threshold))
+    node_degrees <- igraph::degree(threshold_graph)
+
+    # Use a temporary weights vector for calculation to avoid modifying the graph object
+    temp_weights <- igraph::E(graph)$weight
+    temp_weights[abs(temp_weights) < connection_threshold] <- 0
+    sum_of_weights <- igraph::strength(graph, weights = temp_weights)
+
+    # Calculate average similarity, avoiding division by zero
+    avg_similarity <- ifelse(node_degrees > 0, sum_of_weights / node_degrees, 0)
+  }
+
+  # Linearly scale the [-1, 1] similarity score to [0, 1] for size mapping.
+  node_size_metric <- (avg_similarity + 1) / 2
+
+  if (n_people > 0) {
+    igraph::V(graph)$avg_similarity <- avg_similarity
+    igraph::V(graph)$size_metric <- node_size_metric
+  }
+
+
+  # ---- 5) Layout -------------------------------------------------------------
   if (n_people == 1) {
     layout <- ggraph::create_layout(graph, layout = "manual", x = 0, y = 0)
-  } else {
+  } else if (n_people > 1){
+    # The "fr" layout requires positive weights. We ensure this by taking the
+    # absolute value and replacing any zeros with a very small number.
+    layout_weights <- abs(igraph::E(graph)$weight)
+    layout_weights[layout_weights == 0] <- 1e-6
+
     layout <- ggraph::create_layout(
       graph,
       layout  = "fr",
-      weights = abs(igraph::E(graph)$weight)
+      weights = layout_weights
     )
+    # Center the layout
+    layout$x <- layout$x - mean(range(layout$x))
+    layout$y <- layout$y - mean(range(layout$y))
+  } else { # 0 people
+    layout <- data.frame(x=numeric(), y=numeric())
   }
 
-  layout$x <- layout$x - mean(range(layout$x))
-  layout$y <- layout$y - mean(range(layout$y))
 
-  # ---- 5) Plot ---------------------------------------------------------------
+  # ---- 6) Plot ---------------------------------------------------------------
   p <- ggraph::ggraph(layout) +
     ggraph::geom_edge_link(
       ggplot2::aes(
-        width  = abs(weight)^2,
-        color  = weight,
-        alpha  = ifelse(abs(weight) > connection_threshold, 0.7, 0)
+        width = abs(weight)^2,
+        color = weight,
+        alpha = ifelse(abs(weight) > connection_threshold, 0.7, 0)
       ),
-      show.legend = FALSE # This removes the legend
+      show.legend = FALSE
     ) +
     ggraph::scale_edge_alpha_identity() +
     ggraph::scale_edge_width(range = c(0.5, 4), guide = "none") +
@@ -198,32 +237,32 @@ TG_similarity <- function(dataset,
       mid = "lightgray",
       high = "seagreen4",
       midpoint = 0,
-      guide = "none" # This also removes the legend
+      guide = "none"
     ) +
     ggraph::geom_node_point(
-      ggplot2::aes(size = net_similarity, color = node_color)
+      ggplot2::aes(size = size_metric, color = I(node_color))
     ) +
-    ggplot2::scale_color_identity(guide = "none") +
-    ggplot2::scale_size_continuous(range = c(10, 25), guide = "none") +
+    ggplot2::scale_size_continuous(range = c(min_node_size, max_node_size), guide = "none") +
     ggraph::geom_node_text(
-      ggplot2::aes(label = name, color = text_color),
-      size = 6 + name_size_mod
+      ggplot2::aes(label = name, color = I(text_color)),
+      size = 6 + name_size_mod,
+      repel = FALSE
     ) +
-    ggplot2::scale_colour_identity(guide = "none") +
+    ggplot2::coord_fixed() +
     ggplot2::expand_limits(
-      x = c(-zoom_out_factor, zoom_out_factor),
-      y = c(-zoom_out_factor, zoom_out_factor)
+      x = c(min(layout$x, -1) * zoom_out_factor, max(layout$x, 1) * zoom_out_factor),
+      y = c(min(layout$y, -1) * zoom_out_factor, max(layout$y, 1) * zoom_out_factor)
     ) +
     ggraph::theme_graph(base_family = "sans") +
     ggplot2::theme(
-      legend.position = "none", # And this final line ensures it's gone
+      legend.position = "none",
       plot.margin = ggplot2::margin(20, 20, 20, 20),
-      plot.title = ggplot2::element_text(hjust = 0.5), # This centers the title
-      plot.subtitle = ggplot2::element_blank() # This removes the subtitle
+      plot.title = ggplot2::element_text(hjust = 0.5, size = 16),
+      plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 12, color = "gray30")
     ) +
     ggplot2::labs(
       title = title,
-      subtitle = subtitle # The subtitle argument is now passed as NULL
+      subtitle = subtitle
     )
 
   if (save_plot) {
@@ -244,3 +283,4 @@ TG_similarity <- function(dataset,
 
   invisible(p)
 }
+

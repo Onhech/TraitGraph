@@ -11,10 +11,12 @@ TG_similarity(
   color = "favourite_color",
   use_initials = TRUE,
   connection_threshold = 0.3,
+  min_node_size = 8,
+  max_node_size = 25,
   name_size_mod = 0,
   zoom_out_factor = 1.2,
-  title = "Psychological Similarity",
-  subtitle = NULL,
+  title = "Psychological Similarity Network",
+  subtitle = "Node size reflects average similarity to others.",
   output_path = "similarity_plot.jpg",
   output_width = 12,
   output_height = 8,
@@ -40,6 +42,12 @@ used to color nodes. Defaults to \code{"favourite_color"}.}
 
 \item{connection_threshold}{Numeric in \verb{[0, 1]}. Only edges with absolute
 correlation above this value are drawn. Defaults to \code{0.3}.}
+
+\item{min_node_size}{The minimum size for a node, corresponding to the lowest
+possible average similarity (-1). Defaults to \code{8}.}
+
+\item{max_node_size}{The maximum size for a node, corresponding to the highest
+possible average similarity (+1). Defaults to \code{25}.}
 
 \item{name_size_mod}{Numeric value added to the base label font size (6).}
 
@@ -68,27 +76,26 @@ A \code{ggraph} plot object (returned invisibly).
 \description{
 Visualize psychological similarity between individuals in a group as a
 network graph. Similarity is computed as the correlation between people
-across the selected trait columns; thicker/greener edges indicate stronger
-positive similarity, and redder edges indicate dissimilarity.
+across the selected trait columns. Node size represents the average similarity
+of a person to their connections, with larger nodes indicating higher average
+similarity. Thicker/greener edges indicate stronger positive similarity, and
+redder edges indicate dissimilarity.
 }
 \examples{
 \dontrun{
 df <- data.frame(
-   names = c("Ada Lovelace", "Grace Hopper", "Marie"),
-   favourite_color = c("#1f77b4", "#ff7f0e", "#2ca02c"),
-   TraitA = c(3, 4, 5),
-   TraitB = c(1, 2, 1),
-   TraitC = c(5, 3, 4)
+  names = c("Ada Lovelace", "Grace Hopper", "Marie Curie"),
+  favourite_color = c("#1f77b4", "#ff7f0e", "#2ca02c"),
+  TraitA = c(5, 1, 4),
+  TraitB = c(5, 2, 5),
+  TraitC = c(5, 1, 4)
 )
 
 TG_similarity(
-   dataset = df,
-   columns = c("TraitA", "TraitB", "TraitC"),
-   name = "names",
-   color = "favourite_color",
-   use_initials = TRUE,
-   connection_threshold = 0.3,
-   save_plot = FALSE
+  dataset = df,
+  columns = c("TraitA", "TraitB", "TraitC"),
+  connection_threshold = 0.1,
+  save_plot = FALSE
 )
 }
 
