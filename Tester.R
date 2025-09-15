@@ -1,9 +1,9 @@
-  # -----------------------------------------------------------------------------
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # TraitGraph Package - Development & Testing Script
-  # -----------------------------------------------------------------------------
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # This script is for managing, rebuilding, and testing the TraitGraph package.
   # It is not part of the package itself but a helper for the developer.
-  # -----------------------------------------------------------------------------
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
   # --- 1. SETUP ---
 
@@ -84,9 +84,9 @@
     output_path = 'ExamplePlots/trait_graph_example.jpg'
   )
 
-# ####
-# Voting ####
-# ####
+  # ~~~~~~~~~~~~~~~~~~~ #
+  # Voting ####
+  # ~~~~~~~~~~~~~~~~~~~ #
   TG_votes(
     dataset = sample_data,
     column_name = "rankedQ_1",
@@ -276,9 +276,9 @@
   )
 
 
-# ####
- # --- Jungian ####
- # ####
+  # ~~~~~~~~~~~~~~~~~~~ #
+ # Jungian ####
+ # ~~~~~~~~~~~~~~~~~~~ #
   TG_jung(
     dataset = sample_data,
     column_name = "Extroversion",
@@ -304,71 +304,46 @@
   )
 
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  # Similarity       ####
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  similarity_columns <- c(
+    "HonestyHumility", "Emotionality", "Extroversion",
+    "Agreeableness", "Conscientiousness", "Openness"
+  )
 
-# --- Similarity Network Example ---
-similarity_columns <- c("HonestyHumility", "Emotionality", "Extroversion", "Agreeableness","Conscientiousness", "Openness")
-
-# Define the columns to be used for the similarity calculation
-TG_similarity(
-  dataset = sample_data[1:8,],
-  connection_threshold = .5,
-  columns = similarity_columns,
-  name = "name",
-  use_initials = T, # Use full names for clarity
-  save_plot = T,
-  output_path = 'ExamplePlots/similarity_graph_example.png',
-  zoom_out_factor = 1.2
-)
-
-# --- Similarity Table Example with Custom Threshold ---
-# Create a tidy table of pairwise similarities, bolding and coloring
-# correlations with an absolute value greater than 0.7.
-similarity_table_custom_threshold <- TG_similarity_table(
-  dataset = sample_data[1:8,],
-  columns = similarity_columns,
-  name = "name",
-  format = "html"
-)
-
-# Render the table in the RStudio Viewer
-htmltools::html_print(similarity_table_custom_threshold)
-
-# --- Similarity Plot (Heatmap) Example ---
-similarity_heatmap <- TG_similarity_plot(
-  dataset = sample_data[1:8,],
-  columns = similarity_columns,
-  name = "name"
-)
-
-  # Print the plot to the Viewer
-  print(similarity_heatmap)
-
-  # Save the plot to a file
-  ggplot2::ggsave(
-    filename = "ExamplePlots/similarity_heatmap_example.png",
-    plot = similarity_heatmap,
-    width = 8,
-    height = 7,
-    dpi = 300
+  # --- 1. Network Graph Example ---
+  network_plot <- TG_similarity_network(
+    dataset = sample_data[1:8, ],
+    title = NULL, subtitle = NULL,
+    use_initials = T,
+    connection_threshold = .35,
+    color_col = "favourite_color",
+    columns = similarity_columns,
+    #zoom_out_factor = 1.2,
+    name = "name",
+    save_plot = T,show_plot = T,
+    output_path = "ExamplePlots/similarity_network.png"
   )
 
 
-# --- Similarity Plot (Heatmap) Example ---
-similarity_heatmap <- TG_similarity_plot(
-  dataset = sample_data[1:8,],
+  # --- 2. Heatmap Example ---
+  heatmap_plot <- TG_similarity_heatmap(
+    dataset = sample_data[1:8, ],
+    columns = similarity_columns,
+    name = "name",
+    save_plot = T,show_plot = T,
+    show_legend = F,
+    output_path = "ExamplePlots/similarity_network.png"
+  )
+
+  # --- 3. Heatmap Example ---
+similarity_summary <- TG_similarity_table(
+  dataset = sample_data[1:8, ],
   columns = similarity_columns,
-  name = "name",
-  show_legend = F
+  name_col = "name",
+  format = "ranked_summary"
 )
 
-# Print the plot to the Viewer
-print(similarity_heatmap)
+print(similarity_summary)
 
-# Save the plot to a file
-ggplot2::ggsave(
-  filename = "ExamplePlots/similarity_heatmap_example.jpg",
-  plot = similarity_heatmap,
-  width = 10,
-  height = 5,
-  dpi = 300
-)
