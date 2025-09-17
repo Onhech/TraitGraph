@@ -42,7 +42,7 @@
   # Use this workflow 99% of the time. It loads all your functions directly
   # into memory, which is extremely fast for testing changes.
   # Simply run this line after you save a change in any of your R/ files.
-   devtools::load_all()
+devtools::load_all()
 
 
   # --- Workflow C: Test GitHub Installation ---
@@ -50,14 +50,14 @@
   # It's best to run this in a completely fresh R session.
   # remove.packages("TraitGraph") # Ensure no local version is present
   # remotes::install_github("Onhech/TraitGraph")
-   library(TraitGraph)
+library(TraitGraph)
 
 
   # --- 3. CREATE SAMPLE DATA ---
 
   # Create one master sample data frame for testing.
-  set.seed(42) # for reproducibility
-  sample_data <- tibble::tribble(
+set.seed(42) # for reproducibility
+sample_data <- tibble::tribble(
     ~name,    ~favourite_color, ~HonestyHumility, ~Emotionality, ~Extroversion, ~Agreeableness, ~Conscientiousness, ~Openness,
     "Alice Frank",   "#FF6B6B",         75,               40,            80,            85,             90,                 70,
     "Bob Steward",     "#4ECDC4",         80,               45,            75,            90,             85,                 65,
@@ -70,19 +70,38 @@
     "Ivan Evans",    "#E0FBFC",         35,               85,            25,            45,             55,                 40,
     "Judy Perch",    "#293241",         50,               70,            40,            60,             70,                 55
   ) %>%
-    dplyr::mutate(rankedQ_1 = sample(0:80, 10, replace = TRUE))
-
-
+    dplyr::mutate(
+      rankedQ_1 = sample(0:80, 10, replace = TRUE),
+      rsummedQ_1 = as.vector(rmultinom(n = 1, size = 100, prob = rep(1, 10)))
+    )
   # --- 4. FUNCTION TESTING ---
   # After running `devtools::load_all()`, you can run these calls to test.
 
-  # --- Trait Example ---
-  TG_trait(
+  # ~~~~~~~~~~~~~~~~~~~ #
+  # --- Trait Example   ####
+  # ~~~~~~~~~~~~~~~~~~~ #
+TG_trait(
     dataset = sample_data,
     column_name = "Extroversion",
-    save_plot = T,
+    save_plot = T,show_plot = T,
+    color_opacity = .9,
     output_path = 'ExamplePlots/trait_graph_example.jpg'
   )
+
+  # ~~~~~~~~~~~~~~~~~~~ #
+  # --- Doughnut Graph  ####
+  # ~~~~~~~~~~~~~~~~~~~ #
+  # Add another test case for descending order and no title
+TG_doughnut_chart(
+    dataset = sample_data,
+    column_name = "rsummedQ_1",
+    sort_order = "asc",
+    show_title = FALSE,
+    save_plot = TRUE,
+    show_plot = T,
+    output_path = "ExamplePlots/doughnut_chart_desc_no_title.svg"
+  )
+
 
   # ~~~~~~~~~~~~~~~~~~~ #
   # Voting ####

@@ -16,6 +16,7 @@
 #' @param color The color of the tile.
 #' @param name The name of the column containing unique identifiers.
 #' @param color The name of the column containing hex color codes.
+#' @param bar_opacity The opacity of the bars. `0` = Totally invisible, `1` = totally opaque Default is `0.9`.
 #' @param add_group_avg A logical value. If TRUE, calculates and adds a group average bar. Default is `TRUE`.
 #' @param group_average_label A string used to label the group average bar. Defaults to "Group\\nAverage".
 #' @param group_average_position_mod A numeric value to modify the vertical position of the group average label.
@@ -45,6 +46,7 @@ TG_trait <- function(
     title_color = "black",
     name = "name",
     color = "favourite_color",
+    color_opacity = 0.9,
     add_group_avg = TRUE,
     group_average_label = "Group\nAverage",
     group_average_position_mod = 1,
@@ -98,7 +100,7 @@ TG_trait <- function(
     ggplot2::geom_hline(yintercept = c(25, 75), color = "black", size = 0.2, alpha = 0.4, lty = 'dashed') +
     ggplot2::geom_hline(yintercept = 50, color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_hline(yintercept = c(100), color = "black", size = 0.6, alpha = .5) +
-    ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
+    ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), stat = "identity", alpha = color_opacity, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
     ggplot2::scale_fill_identity() +
     ggplot2::scale_y_continuous(limits = c(final_y_inner_limit, final_y_outer_limit)) +
     ggplot2::theme_void() +
