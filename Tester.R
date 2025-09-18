@@ -96,12 +96,14 @@ TG_doughnut_chart(
     dataset = sample_data,
     column_name = "rsummedQ_1",
     sort_order = "asc",
-    show_title = FALSE,
+    show_title = T,title = "Leadership",
+    title_size_mod = 1,
+    name_size_mod = 1,
     save_plot = TRUE,
     show_plot = T,
+    title_color = "grey30",
     output_path = "ExamplePlots/doughnut_chart_desc_no_title.svg"
   )
-
 
   # ~~~~~~~~~~~~~~~~~~~ #
   # Voting ####

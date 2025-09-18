@@ -43,7 +43,7 @@ TG_trait <- function(
     column_name,
     title = column_name,
     title_face = "bold",
-    title_color = "black",
+    title_color = "grey30",
     name = "name",
     color = "favourite_color",
     color_opacity = 0.9,

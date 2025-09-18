@@ -7,16 +7,18 @@
 TG_doughnut_chart(
   dataset,
   column_name,
-  name_col = "names",
+  name_col = "name",
   color_col = "favourite_color",
   title = NULL,
   show_title = TRUE,
   title_face = "bold",
-  title_color = "black",
+  title_color = "grey30",
   sort_order = "desc",
-  inner_label_threshold = 4,
+  inner_label_threshold = 5,
+  use_indicator = TRUE,
+  indicator_text = "* less than {threshold}\%",
   hole_size = 0.5,
-  name_size_mod = 0,
+  name_size_mod = 1,
   title_size_mod = 0,
   title_vjust_mod = 0,
   output_path = "doughnut_plot.png",
@@ -44,18 +46,24 @@ TG_doughnut_chart(
 
 \item{title_color}{The color of the title text.}
 
-\item{sort_order}{The order to sort the results ("desc" or "asc"). Defaults to "desc".}
+\item{sort_order}{The order to sort the results (\code{desc} or \code{asc}). Defaults to "desc".}
 
 \item{inner_label_threshold}{A numeric value (0-100). Percentage labels for slices
-smaller than this value will be hidden. Defaults to 4.}
+smaller than this value will be hidden or replaced. Defaults to 4.}
+
+\item{use_indicator}{Logical. If TRUE, an asterisk is used for slices smaller than \code{inner_label_threshold}
+and a conditional footnote is added. Defaults to TRUE.}
+
+\item{indicator_text}{A string for the footnote. Use \code{{threshold}} as a placeholder for the value of
+\code{inner_label_threshold}. Defaults to "* <{threshold}\%".}
 
 \item{hole_size}{Numeric value between 0 and 1 to control the size of the doughnut's hole. Defaults to 0.5.}
 
-\item{name_size_mod}{A numeric value to add or subtract from the label font size.}
+\item{name_size_mod}{A multiplier to adjust the final label font size (e.g., 1 = default, 1.2 = 20\% larger).}
 
-\item{title_size_mod}{A numeric value to add or subtract from the title font size.}
+\item{title_size_mod}{A numeric value to add or subtract from the dynamically calculated title font size.}
 
-\item{title_vjust_mod}{A numeric value to add or subtract from the title's vertical adjustment.}
+\item{title_vjust_mod}{A numeric value to add or subtract from the dynamically calculated title's vertical adjustment.}
 
 \item{output_path}{The file path for saving the plot.}
 
@@ -75,5 +83,5 @@ Invisibly returns the ggplot object.
 \description{
 This function takes a dataset and creates a doughnut chart to represent the
 proportional breakdown of a numeric column. It includes robust logic for
-label placement to ensure readability.
+label placement, coloring, and dynamic title formatting to ensure readability.
 }

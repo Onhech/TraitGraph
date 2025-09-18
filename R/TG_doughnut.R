@@ -1,15 +1,15 @@
-# --- Doughnut Chart for Votes/Opinion Data ---
+# --- Doughnut Chart Votes/Opinion Data ---
 # Creates a doughnut chart to visualize proportions, building on the logic
 # refined in the testing script.
 
-# Required libraries: dplyr, ggplot2, rlang
+# Required libraries: dplyr, ggplot2, rlang, stringr
 
 #' Create and Save a Doughnut Chart for Votes/Opinion Data
 #'
 #' @description
 #' This function takes a dataset and creates a doughnut chart to represent the
 #' proportional breakdown of a numeric column. It includes robust logic for
-#' label placement and coloring to ensure readability.
+#' label placement, coloring, and dynamic title formatting to ensure readability.
 #'
 #' @param dataset A data frame containing the data to plot.
 #' @param column_name The name of the column containing the numeric values.
@@ -27,9 +27,9 @@
 #' @param indicator_text A string for the footnote. Use `{threshold}` as a placeholder for the value of
 #'   `inner_label_threshold`. Defaults to "* <{threshold}%".
 #' @param hole_size Numeric value between 0 and 1 to control the size of the doughnut's hole. Defaults to 0.5.
-#' @param name_size_mod A numeric value to add or subtract from the label font size.
-#' @param title_size_mod A numeric value to add or subtract from the title font size.
-#' @param title_vjust_mod A numeric value to add or subtract from the title's vertical adjustment.
+#' @param name_size_mod A multiplier to adjust the final label font size (e.g., 1 = default, 1.2 = 20% larger).
+#' @param title_size_mod A numeric value to add or subtract from the dynamically calculated title font size.
+#' @param title_vjust_mod A numeric value to add or subtract from the dynamically calculated title's vertical adjustment.
 #' @param output_path The file path for saving the plot.
 #' @param output_width The width of the saved image in inches.
 #' @param output_height The height of the saved image in inches.
@@ -46,13 +46,13 @@ TG_doughnut_chart <- function(dataset,
                               title = NULL,
                               show_title = TRUE,
                               title_face = "bold",
-                              title_color = "black",
+                              title_color = "grey30",
                               sort_order = "desc",
-                              inner_label_threshold = 4,
+                              inner_label_threshold = 5,
                               use_indicator = TRUE,
-                              indicator_text = "* <{threshold}%",
+                              indicator_text = "* less than {threshold}%",
                               hole_size = 0.5,
-                              name_size_mod = 0,
+                              name_size_mod = 1,
                               title_size_mod = 0,
                               title_vjust_mod = 0,
                               output_path = "doughnut_plot.png",
@@ -62,9 +62,21 @@ TG_doughnut_chart <- function(dataset,
                               save_plot = TRUE,
                               show_plot = TRUE) {
 
+  # Adjustment for name
+  #name_size_mod = (5.25 * name_size_mod)
+
   # --- 1. Input Validation & Data Prep ---
   if (!show_title) { title <- NULL }
   else if (is.null(title)) { title <- column_name }
+
+  # Get dynamic title properties if a title exists
+  if (!is.null(title)) {
+    title_params <- get_dynamic_title_doughnut(title)
+  } else {
+    # Set reasonable defaults if no title is to be shown
+    title_params <- list(text = NULL, size = 18, vjust = -2)
+  }
+
 
   if (!sort_order %in% c("desc", "asc")) { stop("`sort_order` must be either 'desc' or 'asc'.") }
 
@@ -121,16 +133,26 @@ TG_doughnut_chart <- function(dataset,
   # --- 3. Create the Doughnut Chart ---
   p <- ggplot2::ggplot(plot_data, ggplot2::aes(x = 2, y = percentage, fill = id)) +
     ggplot2::geom_col(width = 1, color = "white") +
+    # Add inner labels for DARK backgrounds (white text)
     ggplot2::geom_text(
+      data = . %>% dplyr::filter(!is_light),
       ggplot2::aes(y = pos, label = value_label),
       color = "white",
-      size = 4 + name_size_mod,
+      size = 5.25 * name_size_mod,
+      fontface = "bold"
+    ) +
+    # Add inner labels for LIGHT backgrounds (grey text)
+    ggplot2::geom_text(
+      data = . %>% dplyr::filter(is_light),
+      ggplot2::aes(y = pos, label = value_label),
+      color = "grey40",
+      size = 5.25 * name_size_mod,
       fontface = "bold"
     ) +
     ggplot2::geom_text(
       ggplot2::aes(y = pos, label = name_label, hjust = label_hjust, color = id),
       x = 2.8,
-      size = 3.5 + name_size_mod
+      size = 5.25 * name_size_mod
     ) +
     ggplot2::scale_fill_manual(values = fill_vec) +
     ggplot2::scale_color_manual(values = text_color_vec) +
@@ -138,20 +160,23 @@ TG_doughnut_chart <- function(dataset,
     ggplot2::coord_polar(theta = "y", start = 0, clip = "off") +
     ggplot2::xlim(c(0.5, 3.5)) +
     ggplot2::theme_void() +
-    ggplot2::labs(title = title, caption = caption_text) +
+    ggplot2::labs(title = title_params$text, caption = caption_text) +
     ggplot2::theme(
       plot.title = ggplot2::element_text(
         hjust = 0.5,
-        vjust = -2 + title_vjust_mod,
-        size = 18 + title_size_mod,
+        vjust = title_params$vjust + title_vjust_mod,
+        size = title_params$size + title_size_mod,
         face = title_face,
-        color = title_color
+        color = title_color,
+        lineheight = 0.9
       ),
       plot.caption = ggplot2::element_text(
-        hjust = 1,
-        size = 8,
+        hjust = .9,
+        vjust = 30,
+        size = 9,
+        color = "grey40",
         face = "italic",
-        margin = ggplot2::margin(t = 10)
+        margin = ggplot2::margin(t = 5)
       ),
       plot.margin = ggplot2::margin(20, 20, 20, 20)
     )

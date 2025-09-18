@@ -9,9 +9,10 @@ TG_trait(
   column_name,
   title = column_name,
   title_face = "bold",
-  title_color = "black",
+  title_color = "grey30",
   name = "name",
   color = "favourite_color",
+  color_opacity = 0.9,
   add_group_avg = TRUE,
   group_average_label = "Group\\nAverage",
   group_average_position_mod = 1,
@@ -80,6 +81,8 @@ TG_trait(
 \item{save_plot}{A logical value. If TRUE, the plot is saved to disk.}
 
 \item{show_plot}{A logical value. If TRUE, the plot is displayed.}
+
+\item{bar_opacity}{The opacity of the bars. \code{0} = Totally invisible, \code{1} = totally opaque Default is \code{0.9}.}
 }
 \value{
 Invisibly returns the ggplot object.

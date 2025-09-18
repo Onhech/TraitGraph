@@ -156,3 +156,65 @@ darken_color <- function(hex, factor = 0.5) {
 
 
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Dynamic Text Function for Voting   ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+#' Adjust voting title properties based on text length
+#'
+#' A specialized version of get_dynamic_title tailored to the larger font sizes
+#' and different layout requirements of the voting graphs.
+#'
+#' @param title_text The character string for the title.
+#' @return A list containing the wrapped text (`text`), the calculated font size (`size`), and the vertical justification value (`vjust`).
+#' @export
+#' @examples
+#' get_dynamic_title_votes("Who is the most likely to lead a Martian colony?")
+
+get_dynamic_title_doughnut <- function(title_text) {
+  title_length <- nchar(title_text)
+
+  # Determine font size, wrap width, and vertical justification based on character length
+  # Largest font, 1 line
+  if (title_length <= 24) {
+    font_size <- 35
+    wrap_width <- 24
+    final_vjust <- -3.5
+    # Smaller font, 1 lines
+  } else if (title_length <= 28) {
+    font_size <- 28
+    wrap_width <- 28
+    final_vjust <- -8
+    # Smaller font, 2 lines
+  } else if (title_length <= 52) {
+    font_size <- 28
+    wrap_width <- 26
+    final_vjust <- -7.5
+    # Small font, 2 lines
+  } else if (title_length <= 70) {
+    font_size <- 24
+    wrap_width <- 35
+    final_vjust <- -10
+    # Small font, 3 lines
+  } else if (title_length <= 105) {
+    font_size <- 24
+    wrap_width <- 35
+    final_vjust <- -9
+    # Smallest font, 3 lines
+  } else if (title_length <= 120) {
+    font_size <- 20
+    wrap_width <- 40
+    final_vjust <- -13
+    # Smallest font, 4 lines
+  } else {
+    font_size <- 20
+    wrap_width <- 40
+    final_vjust <- -12
+  }
+
+  # Wrap the text
+  wrapped_title <- stringr::str_wrap(title_text, width = wrap_width)
+
+  return(list(text = wrapped_title, size = font_size, vjust = final_vjust))
+}
+
+
