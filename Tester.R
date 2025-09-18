@@ -28,14 +28,14 @@
   # --- Workflow A: Full Rebuild and Install ---
   # Use this workflow occasionally, especially before pushing to GitHub, to ensure
   # the complete package builds correctly from start to finish.
-   remove.packages("TraitGraph")
+ remove.packages("TraitGraph")
   # in terminal you can delete cache using
   # % rm -rf /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/TraitGraph
-   devtools::clean_dll()
-   devtools::document()
-   devtools::load_all()
-   devtools::install(upgrade = 'always')           # Build and install the package locally
-   library(TraitGraph)            # Load the newly installed package
+devtools::clean_dll()
+devtools::document()
+devtools::load_all()
+devtools::install(upgrade = 'always')           # Build and install the package locally
+library(TraitGraph)            # Load the newly installed package
 
 
   # --- Workflow B: Fast, Interactive Development (RECOMMENDED) ---
