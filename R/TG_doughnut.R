@@ -173,7 +173,7 @@ TG_doughnut_chart <- function(dataset,
       plot.caption = ggplot2::element_text(
         hjust = .9,
         vjust = 30,
-        size = 12,
+        size = 15,
         color = "grey40",
         face = "italic",
         margin = ggplot2::margin(t = 5)
