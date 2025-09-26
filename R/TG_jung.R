@@ -15,6 +15,8 @@
 #' @param color The color of the tile.
 #' @param label_top The text for the curved label at the top of the chart (100% mark).
 #' @param label_bottom The text for the curved label at the bottom of the chart (0% mark).
+#' @param label_position_min The minimum vertical position (0-100) for a callout label. Defaults to 12.
+#' @param label_position_max The maximum vertical position (0-100) for a callout label. Defaults to 83.
 #' @param callout_background_style A string: "solid" for a standard white box, "gradient" for a faded sunburst effect, or "none" for a transparent background. Defaults to `"solid"`.
 #' @param callout_bg_fill The background color of the callout label. Use `NA` for a transparent background. Defaults to `"white"`.
 #' @param callout_bg_alpha The opacity of the callout background (0-1). Defaults to `1` (fully opaque).
@@ -57,6 +59,8 @@ TG_jung <- function(
     title_color = "black",
     label_top = "Trait A",
     label_bottom = "Trait B",
+    label_position_min = 12,
+    label_position_max = 83,
     name = "name",
     color = "favourite_color",
     group_average_label = "Group\nAverage",
@@ -176,7 +180,6 @@ TG_jung <- function(
       }
     )
 
-
   title_params <- get_dynamic_title(title)
   final_title_size <- title_params$size + title_size_mod
   final_title_vjust <- (title_params$vjust + 24) * title_vjust_mod
@@ -226,7 +229,7 @@ TG_jung <- function(
     gradient_layers <- lapply(seq(19, 2, by = -.8), function(s) {
       ggplot2::geom_point(
         data = plot_data,
-        ggplot2::aes(x = id, y = pmin(pmax(value, 7), 88)),
+        ggplot2::aes(x = id, y = pmin(pmax(value, label_position_min), label_position_max)),
         size = s * callout_size_mod,
         color = "white",
         alpha = 0.030, # Each layer is very faint
@@ -239,7 +242,7 @@ TG_jung <- function(
   # --- Add the final text label on top of everything ---
   p <- p +
     ggplot2::geom_label(
-      ggplot2::aes(x = id, y = pmin(pmax(value, 7), 88), label = paste0(value, "%")),
+      ggplot2::aes(x = id, y = pmin(pmax(value, label_position_min), label_position_max), label = paste0(value, "%")),
       size = ifelse(plot_data$id == group_average_label, 6, 5) * callout_size_mod,
       fontface = ifelse(plot_data$id == group_average_label, "bold", callout_text_face),
       color = plot_data$callout_color_final,

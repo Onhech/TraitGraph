@@ -12,6 +12,8 @@ TG_jung(
   title_color = "black",
   label_top = "Trait A",
   label_bottom = "Trait B",
+  label_position_min = 12,
+  label_position_max = 83,
   name = "name",
   color = "favourite_color",
   group_average_label = "Group\\nAverage",
@@ -53,6 +55,10 @@ TG_jung(
 \item{label_top}{The text for the curved label at the top of the chart (100\% mark).}
 
 \item{label_bottom}{The text for the curved label at the bottom of the chart (0\% mark).}
+
+\item{label_position_min}{The minimum vertical position (0-100) for a callout label. Defaults to 12.}
+
+\item{label_position_max}{The maximum vertical position (0-100) for a callout label. Defaults to 83.}
 
 \item{name}{The name of the column containing unique identifiers. Defaults to "name".}
 
