@@ -15,6 +15,11 @@
 #' @param color The color of the tile.
 #' @param label_top The text for the curved label at the top of the chart (100% mark).
 #' @param label_bottom The text for the curved label at the bottom of the chart (0% mark).
+#' @param callout_background_style A string: "solid" for a standard white box, "gradient" for a faded sunburst effect, or "none" for a transparent background. Defaults to `"solid"`.
+#' @param callout_bg_fill The background color of the callout label. Use `NA` for a transparent background. Defaults to `"white"`.
+#' @param callout_bg_alpha The opacity of the callout background (0-1). Defaults to `1` (fully opaque).
+#' @param callout_border_color The color of the callout border. Use `NA` for no border. Defaults to `"black"`.
+#' @param callout_border_size The thickness of the callout border. Use `0` for no border. Defaults to `0.5`.
 #' @param name The name of the column containing unique identifiers. Defaults to "name".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
 #' @param group_average_label A string for the group average bar's label. Defaults to "Group Average".
@@ -27,6 +32,9 @@
 #'   - A vector of exactly five hex color codes.
 #'   Defaults to `"sunset"`.
 #' @param color_bars_opacity A vector of five opacity (alpha) numbers to determine bar color solidity. Default = `c(0.6, 0.4, 0.2, 0.4, 0.6)`.
+#' @param point_shape Change the size of the points, defaults = 6pt.
+#' @param point_shape The shape of the data points (e.g., 16 for a solid circle, 21 for a circle with a border, 22 for a square). Defaults to 16.
+#' @param point_border_color The color of the border around the data points. Only applies to shapes 21-25. Defaults to NA (no border).
 #' @param callout_size_mod A numeric value that is a percentage modifier for the callout sizes (size * mod). Default is `1`.
 #' @param callout_text_color Toggles the callout background. Defaults to `TRUE`, `FALSE` removes callout background.
 #' @param callout_text_face The font style of the callout (e.g., `plain`, `bold`, or `bold.italic`). Defaults to `bold`.
@@ -58,10 +66,18 @@ TG_jung <- function(
     title_vjust_mod = 1,
     color_bars = "sunset",
     color_bars_opacity = c(0.6, 0.4, 0.2, 0.4, 0.6),
+    show_points = TRUE,
+    point_size = 6,
+    point_shape = 16,
+    point_border_color = NA,
     callout_size_mod = 1,
     callout_text_color = "dark_color",
     callout_text_face = "plain",
-    callout_background = T,
+    callout_background_style = "solid",
+    callout_bg_fill = "white",
+    callout_bg_alpha = .5,
+    callout_border_color = "black",
+    callout_border_size = 0.0,
     output_path = "jung_plot.jpg",
     output_width = 7,
     output_height = 6,
@@ -165,24 +181,74 @@ TG_jung <- function(
   final_title_size <- title_params$size + title_size_mod
   final_title_vjust <- (title_params$vjust + 24) * title_vjust_mod
 
+  # --- Build the plot layers ---
   p <- ggplot2::ggplot(plot_data) +
+    # Background color bands and lines
     ggplot2::geom_rect(data = color_bands, ggplot2::aes(xmin = -Inf, xmax = Inf, ymin = ystart, ymax = ystop, fill = color, alpha = opacity)) +
     ggplot2::scale_fill_identity() +
     ggplot2::scale_alpha_identity() +
     ggplot2::geom_hline(yintercept = 50, color = "black", size = 0.7, alpha = 0.5, lty = 'dashed') +
     ggplot2::geom_hline(yintercept = c(0, 100), color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_vline(xintercept = 1:nrow(plot_data), color = "white", size = 1, alpha = 0.25) +
-    ggplot2::geom_point(ggplot2::aes(x = id, y = value), color = plot_data$color, shape = 1, size = 0, alpha = 0) +
+    # Invisible points for structure
+    ggplot2::geom_point(ggplot2::aes(x = id, y = value), alpha = 0) +
+    # Curved text labels
     geomtextpath::geom_textpath(ggplot2::aes(x = 1, y = 91, label = label_top), hjust = 0.5, vjust = 0.5, color = "white", size = 6) +
     geomtextpath::geom_textpath(ggplot2::aes(x = 1, y = 11, label = label_bottom), hjust = 0.5, vjust = 0.5, color = "white", size = 6) +
     geomtextpath::geom_textpath(ggplot2::aes(x = nrow(plot_data) / 2 + 1, y = 91, label = label_top), hjust = 0.5, vjust = 0.5, color = "white", size = 6) +
-    geomtextpath::geom_textpath(ggplot2::aes(x = nrow(plot_data) / 2 + 1, y = 11, label = label_bottom), hjust = 0.5, vjust = 0.5, color = "white", size = 6) +
+    geomtextpath::geom_textpath(ggplot2::aes(x = nrow(plot_data) / 2 + 1, y = 11, label = label_bottom), hjust = 0.5, vjust = 0.5, color = "white", size = 6)
+
+  # --- Conditionally Add the VISIBLE data points ---
+  if (show_points) {
+    # This logic now handles both filled and solid shapes correctly
+    if (point_shape %in% 21:25) {
+      # For shapes with a fill and a border (like 21)
+      p <- p + ggplot2::geom_point(
+        ggplot2::aes(x = id, y = value, fill = color),
+        size = point_size,
+        shape = point_shape,
+        color = point_border_color, # Border color
+        stroke = 1.2
+      )
+    } else {
+      # For solid shapes (like 16, 17, 18)
+      p <- p + ggplot2::geom_point(
+        ggplot2::aes(x = id, y = value, color = color), # Use color aesthetic for solid shapes
+        size = point_size,
+        shape = point_shape
+      )
+    }
+  }
+
+  # --- Conditionally add the label background ---
+  if (callout_background_style == "gradient") {
+    # Use lapply to add multiple geom_point layers for the sunburst effect
+    gradient_layers <- lapply(seq(19, 2, by = -.8), function(s) {
+      ggplot2::geom_point(
+        data = plot_data,
+        ggplot2::aes(x = id, y = pmin(pmax(value, 7), 88)),
+        size = s * callout_size_mod,
+        color = "white",
+        alpha = 0.030, # Each layer is very faint
+        shape = 16   # Solid circle
+      )
+    })
+    p <- p + gradient_layers
+  }
+
+  # --- Add the final text label on top of everything ---
+  p <- p +
     ggplot2::geom_label(
       ggplot2::aes(x = id, y = pmin(pmax(value, 7), 88), label = paste0(value, "%")),
       size = ifelse(plot_data$id == group_average_label, 6, 5) * callout_size_mod,
       fontface = ifelse(plot_data$id == group_average_label, "bold", callout_text_face),
-      fill = "white", alpha = callout_background, color = plot_data$callout_color_final,
-      label.size = 0.5 * callout_background, label.r = ggplot2::unit(8, "pt"), show.legend = FALSE
+      color = plot_data$callout_color_final,
+      fill = callout_bg_fill,
+      alpha = callout_bg_alpha,
+      label.color = callout_border_color,
+      label.size = callout_border_size,
+      label.r = ggplot2::unit(8, "pt"),
+      show.legend = FALSE
     ) +
     ggplot2::scale_y_continuous(limits = c(0, 100), expand = c(0, 0)) +
     ggplot2::theme_void() +

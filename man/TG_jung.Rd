@@ -21,10 +21,18 @@ TG_jung(
   title_vjust_mod = 1,
   color_bars = "sunset",
   color_bars_opacity = c(0.6, 0.4, 0.2, 0.4, 0.6),
+  show_points = TRUE,
+  point_size = 6,
+  point_shape = 16,
+  point_border_color = NA,
   callout_size_mod = 1,
   callout_text_color = "dark_color",
   callout_text_face = "plain",
-  callout_background = T,
+  callout_background_style = "solid",
+  callout_bg_fill = "white",
+  callout_bg_alpha = 0.5,
+  callout_border_color = "black",
+  callout_border_size = 0,
   output_path = "jung_plot.jpg",
   output_width = 7,
   output_height = 6,
@@ -69,11 +77,25 @@ Defaults to \code{"sunset"}.
 
 \item{color_bars_opacity}{A vector of five opacity (alpha) numbers to determine bar color solidity. Default = \code{c(0.6, 0.4, 0.2, 0.4, 0.6)}.}
 
+\item{point_shape}{The shape of the data points (e.g., 16 for a solid circle, 21 for a circle with a border, 22 for a square). Defaults to 16.}
+
+\item{point_border_color}{The color of the border around the data points. Only applies to shapes 21-25. Defaults to NA (no border).}
+
 \item{callout_size_mod}{A numeric value that is a percentage modifier for the callout sizes (size * mod). Default is \code{1}.}
 
 \item{callout_text_color}{Toggles the callout background. Defaults to \code{TRUE}, \code{FALSE} removes callout background.}
 
 \item{callout_text_face}{The font style of the callout (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaults to \code{bold}.}
+
+\item{callout_background_style}{A string: "solid" for a standard white box, "gradient" for a faded sunburst effect, or "none" for a transparent background. Defaults to \code{"solid"}.}
+
+\item{callout_bg_fill}{The background color of the callout label. Use \code{NA} for a transparent background. Defaults to \code{"white"}.}
+
+\item{callout_bg_alpha}{The opacity of the callout background (0-1). Defaults to \code{1} (fully opaque).}
+
+\item{callout_border_color}{The color of the callout border. Use \code{NA} for no border. Defaults to \code{"black"}.}
+
+\item{callout_border_size}{The thickness of the callout border. Use \code{0} for no border. Defaults to \code{0.5}.}
 
 \item{output_path}{The full path where the plot will be saved.}
 
