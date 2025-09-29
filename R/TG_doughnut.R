@@ -59,7 +59,7 @@ TG_doughnut_chart <- function(dataset,
                               footnote_text_width = 65,
                               footnote_size = 12,
                               footnote_hjust = 0,
-                              footnote_vjust = 0,
+                              footnote_vjust = 1,
                               footnote_lineheight = 1.3,
                               footnote_margin_t = -42,
                               hole_size = 0.5,
@@ -114,7 +114,7 @@ TG_doughnut_chart <- function(dataset,
   # --- 2. Calculate Percentages and Label Positions/Colors ---
   plot_data <- plot_data %>%
     dplyr::mutate(percentage = value / sum(value) * 100) %>%
-    { if (sort_order == "desc") dplyr::arrange(., dplyr::desc(value)) else dplyr::arrange(., value) } %>%
+    { if (sort_order == "desc") dplyr::arrange(., dplyr::desc(value), id) else dplyr::arrange(., value, id) } %>%
     dplyr::mutate(id = factor(id, levels = unique(id))) %>%
     dplyr::mutate(
       pos = rev(cumsum(rev(percentage)) - 0.5 * rev(percentage)),
@@ -134,13 +134,13 @@ TG_doughnut_chart <- function(dataset,
   # --- 2a. Generate Caption/Legend for Small Slices ---
   small_slices <- plot_data %>%
     dplyr::filter(percentage <= outer_label_threshold) %>%
-    dplyr::arrange(dplyr::desc(percentage)) # Sort largest to smallest for the legend
+    # *** CORRECTED: Sort by percentage (desc), then by name (asc) to break ties ***
+    dplyr::arrange(dplyr::desc(percentage), id)
 
   if (nrow(small_slices) > 0) {
     # Define the intro text and the indent string for hanging indents
     plain_intro <- paste0("* ", outer_label_threshold, "% or less: ")
     html_intro <- paste0("<b>*</b><i>", outer_label_threshold, "% or less: </i>")
-    # *** CORRECTED: Repeat a single non-breaking space, not a long string ***
     indent_str <- paste(rep("&nbsp;", nchar(plain_intro)), collapse = "")
 
 

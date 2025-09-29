@@ -106,8 +106,6 @@ TG_jung(
 )
 
 
-
-
   # ~~~~~~~~~~~~~~~~~~~ #
   # --- Trait Example   ####
   # ~~~~~~~~~~~~~~~~~~~ #
@@ -134,9 +132,10 @@ TG_doughnut_chart(
     inner_label_threshold = 15,
     footnote_text_width = 65,
     footnote_hjust = 0,
+    footnote_vjust = 1,
     show_plot = T,
     title_color = "grey30",
-    footnote_margin_t = -42,
+    #footnote_margin_t = -42,
     output_path = "ExamplePlots/doughnut_chart_desc_no_title.jpeg"
   )
 
