@@ -15,8 +15,13 @@ TG_doughnut_chart(
   title_color = "grey30",
   sort_order = "asc",
   inner_label_threshold = 5,
-  use_indicator = TRUE,
-  indicator_text = "* less than {threshold}\%",
+  outer_label_threshold = NULL,
+  footnote_text_width = 65,
+  footnote_size = 12,
+  footnote_hjust = 0,
+  footnote_vjust = 0,
+  footnote_lineheight = 1.3,
+  footnote_margin_t = -42,
   hole_size = 0.5,
   name_size_mod = 1,
   title_size_mod = 1,
@@ -49,13 +54,22 @@ TG_doughnut_chart(
 \item{sort_order}{The order to sort the results (\code{desc} or \code{asc}). Defaults to "desc".}
 
 \item{inner_label_threshold}{A numeric value (0-100). Percentage labels for slices
-smaller than this value will be hidden or replaced. Defaults to 4.}
+smaller than this value will be replaced by an asterisk. Defaults to 5.}
 
-\item{use_indicator}{Logical. If TRUE, an asterisk is used for slices smaller than \code{inner_label_threshold}
-and a conditional footnote is added. Defaults to TRUE.}
+\item{outer_label_threshold}{A numeric value (0-100). Name labels for slices smaller
+than this value will be hidden. Defaults to the same value as \code{inner_label_threshold}.}
 
-\item{indicator_text}{A string for the footnote. Use \code{{threshold}} as a placeholder for the value of
-\code{inner_label_threshold}. Defaults to "* <{threshold}\%".}
+\item{footnote_text_width}{The acceptable character width of each line in the footnote. Defaults to 50.}
+
+\item{footnote_size}{The font size for the footnote text. Defaults to 12.}
+
+\item{footnote_hjust}{The horizontal justification of the footnote (0-1). Defaults to 0.5 (center).}
+
+\item{footnote_vjust}{The vertical justification of the footnote. Defaults to 0.}
+
+\item{footnote_lineheight}{The line height for multi-line footnotes. Defaults to 1.3.}
+
+\item{footnote_margin_t}{Numeric. The top margin (space) above the footnote. Defaults to 15. Smaller values move the footnote up.}
 
 \item{hole_size}{Numeric value between 0 and 1 to control the size of the doughnut's hole. Defaults to 0.5.}
 
@@ -84,4 +98,6 @@ Invisibly returns the ggplot object.
 This function takes a dataset and creates a doughnut chart to represent the
 proportional breakdown of a numeric column. It includes robust logic for
 label placement, coloring, and dynamic title formatting to ensure readability.
+It also automatically generates a legend in the caption for categories
+that fall below a certain threshold.
 }

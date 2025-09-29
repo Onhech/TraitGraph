@@ -67,7 +67,7 @@ sample_data <- tibble::tribble(
     "Heidi Probosky",   "#FF8C61",         80,               75,            70,            85,             45,                 85,
     "Charlie Kane", "#3D5A80",         40,               80,            30,            50,             60,                 45,
     "David Turner Salvadora III",   "#98C1D9",         45,               75,            35,            55,             65,                 50,
-    "Ivan Evans",    "#E0FBFC",         35,               85,            25,            45,             55,                 40,
+    "Ivan Evans",    "purple",         35,               85,            25,            45,             55,                 40,
     "Judy Perch",    "#293241",         50,               70,            40,            60,             70,                 55
   ) %>%
     dplyr::mutate(
@@ -131,23 +131,15 @@ TG_doughnut_chart(
     title_size_mod = 1,
     name_size_mod = 1,
     save_plot = TRUE,
+    inner_label_threshold = 15,
+    footnote_text_width = 65,
+    footnote_hjust = 0,
     show_plot = T,
     title_color = "grey30",
-    output_path = "ExamplePlots/doughnut_chart_desc_no_title.svg"
+    footnote_margin_t = -42,
+    output_path = "ExamplePlots/doughnut_chart_desc_no_title.jpeg"
   )
 
-TG_doughnut_chart(
-  dataset = sample_data,
-  column_name = "rsummedQ_1",
-  sort_order = "asc",
-  show_title = T,title = "Who would win the Nobel Prize and then apologize for taking up everyone's time during their acceptance speech?",
-  title_size_mod = 1,
-  name_size_mod = 1,
-  save_plot = TRUE,
-  show_plot = T,
-  title_color = "grey30",
-  output_path = "ExamplePlots/doughnut_chart_desc_no_title.jpeg"
-)
 
 
 

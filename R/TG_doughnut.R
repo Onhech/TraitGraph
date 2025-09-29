@@ -2,7 +2,7 @@
 # Creates a doughnut chart to visualize proportions, building on the logic
 # refined in the testing script.
 
-# Required libraries: dplyr, ggplot2, rlang, stringr
+# Required libraries: dplyr, ggplot2, rlang, stringr, ggtext
 
 #' Create and Save a Doughnut Chart for Votes/Opinion Data
 #'
@@ -10,6 +10,8 @@
 #' This function takes a dataset and creates a doughnut chart to represent the
 #' proportional breakdown of a numeric column. It includes robust logic for
 #' label placement, coloring, and dynamic title formatting to ensure readability.
+#' It also automatically generates a legend in the caption for categories
+#' that fall below a certain threshold.
 #'
 #' @param dataset A data frame containing the data to plot.
 #' @param column_name The name of the column containing the numeric values.
@@ -21,11 +23,15 @@
 #' @param title_color The color of the title text.
 #' @param sort_order The order to sort the results (`desc` or `asc`). Defaults to "desc".
 #' @param inner_label_threshold A numeric value (0-100). Percentage labels for slices
-#'   smaller than this value will be hidden or replaced. Defaults to 4.
-#' @param use_indicator Logical. If TRUE, an asterisk is used for slices smaller than `inner_label_threshold`
-#'   and a conditional footnote is added. Defaults to TRUE.
-#' @param indicator_text A string for the footnote. Use `{threshold}` as a placeholder for the value of
-#'   `inner_label_threshold`. Defaults to "* <{threshold}%".
+#'   smaller than this value will be replaced by an asterisk. Defaults to 5.
+#' @param outer_label_threshold A numeric value (0-100). Name labels for slices smaller
+#'   than this value will be hidden. Defaults to the same value as `inner_label_threshold`.
+#' @param footnote_text_width The acceptable character width of each line in the footnote. Defaults to 50.
+#' @param footnote_size The font size for the footnote text. Defaults to 12.
+#' @param footnote_hjust The horizontal justification of the footnote (0-1). Defaults to 0.5 (center).
+#' @param footnote_vjust The vertical justification of the footnote. Defaults to 0.
+#' @param footnote_lineheight The line height for multi-line footnotes. Defaults to 1.3.
+#' @param footnote_margin_t Numeric. The top margin (space) above the footnote. Defaults to 15. Smaller values move the footnote up.
 #' @param hole_size Numeric value between 0 and 1 to control the size of the doughnut's hole. Defaults to 0.5.
 #' @param name_size_mod A multiplier to adjust the final label font size (e.g., 1 = default, 1.2 = 20% larger).
 #' @param title_size_mod A numeric value to add or subtract from the dynamically calculated title font size.
@@ -49,8 +55,13 @@ TG_doughnut_chart <- function(dataset,
                               title_color = "grey30",
                               sort_order = "asc",
                               inner_label_threshold = 5,
-                              use_indicator = TRUE,
-                              indicator_text = "* less than {threshold}%",
+                              outer_label_threshold = NULL,
+                              footnote_text_width = 65,
+                              footnote_size = 12,
+                              footnote_hjust = 0,
+                              footnote_vjust = 0,
+                              footnote_lineheight = 1.3,
+                              footnote_margin_t = -42,
                               hole_size = 0.5,
                               name_size_mod = 1,
                               title_size_mod = 1,
@@ -62,10 +73,17 @@ TG_doughnut_chart <- function(dataset,
                               save_plot = TRUE,
                               show_plot = TRUE) {
 
-  # Adjustment for name
-  #name_size_mod = (5.25 * name_size_mod)
+  # --- 0. Check for necessary packages ---
+  if (!requireNamespace("ggtext", quietly = TRUE)) {
+    stop("Package 'ggtext' is required for the formatted caption. Please install it using install.packages('ggtext').", call. = FALSE)
+  }
+
 
   # --- 1. Input Validation & Data Prep ---
+  if (is.null(outer_label_threshold)) {
+    outer_label_threshold <- inner_label_threshold
+  }
+
   if (!show_title) { title <- NULL }
   else if (is.null(title)) { title <- column_name }
 
@@ -100,12 +118,8 @@ TG_doughnut_chart <- function(dataset,
     dplyr::mutate(id = factor(id, levels = unique(id))) %>%
     dplyr::mutate(
       pos = rev(cumsum(rev(percentage)) - 0.5 * rev(percentage)),
-      name_label = id,
-      value_label = dplyr::case_when(
-        percentage > inner_label_threshold ~ paste0(round(percentage, 0), "%"),
-        use_indicator ~ "*",
-        TRUE ~ ""
-      ),
+      name_label = ifelse(percentage > outer_label_threshold, as.character(id), ""),
+      value_label = ifelse(percentage > inner_label_threshold, paste0(round(percentage, 0), "%"), "*"),
       is_light = is_color_light(color),
       dark_color = sapply(color, darken_color),
       label_color = ifelse(is_light, dark_color, color),
@@ -117,9 +131,47 @@ TG_doughnut_chart <- function(dataset,
       )
     )
 
-  # Determine if the caption is needed
-  show_caption <- use_indicator && any(plot_data$percentage <= inner_label_threshold)
-  caption_text <- if (show_caption) gsub("\\{threshold\\}", inner_label_threshold, indicator_text) else NULL
+  # --- 2a. Generate Caption/Legend for Small Slices ---
+  small_slices <- plot_data %>%
+    dplyr::filter(percentage <= outer_label_threshold) %>%
+    dplyr::arrange(dplyr::desc(percentage)) # Sort largest to smallest for the legend
+
+  if (nrow(small_slices) > 0) {
+    # Define the intro text and the indent string for hanging indents
+    plain_intro <- paste0("* ", outer_label_threshold, "% or less: ")
+    html_intro <- paste0("<b>*</b><i>", outer_label_threshold, "% or less: </i>")
+    # *** CORRECTED: Repeat a single non-breaking space, not a long string ***
+    indent_str <- paste(rep("&nbsp;", nchar(plain_intro)), collapse = "")
+
+
+    # Build the caption line-by-line to wrap text without breaking HTML tags
+    caption_lines <- c()
+    current_line <- html_intro
+    current_len <- nchar(plain_intro)
+
+    for (i in 1:nrow(small_slices)) {
+      name <- as.character(small_slices$id[i])
+      color <- small_slices$label_color[i]
+      # Add a comma if it's not the first name on the line
+      prefix <- if (current_len > nchar(plain_intro)) ", " else ""
+      formatted_name <- paste0("<b style='color:", color, ";'>", name, "</b>")
+      name_len <- nchar(name)
+
+      if ((current_len + name_len + nchar(prefix)) > footnote_text_width) {
+        caption_lines <- c(caption_lines, current_line)
+        current_line <- paste0(indent_str, formatted_name)
+        current_len <- nchar(plain_intro) + name_len # Reset length for new line
+      } else {
+        current_line <- paste0(current_line, prefix, formatted_name)
+        current_len <- current_len + name_len + nchar(prefix)
+      }
+    }
+    caption_lines <- c(caption_lines, current_line) # Add the last line
+    caption_text <- paste(caption_lines, collapse = "<br>")
+
+  } else {
+    caption_text <- NULL
+  }
 
 
   # Create separate named vectors for fill and text colors
@@ -170,13 +222,13 @@ TG_doughnut_chart <- function(dataset,
         color = title_color,
         lineheight = 0.9
       ),
-      plot.caption = ggplot2::element_text(
-        hjust = .9,
-        vjust = 22,
-        size = 12,
+      plot.caption = ggtext::element_markdown(
+        hjust = footnote_hjust,
+        vjust = footnote_vjust,
+        size = footnote_size,
+        lineheight = footnote_lineheight,
         color = "grey40",
-        face = "italic",
-        margin = ggplot2::margin(t = 5)
+        margin = ggplot2::margin(t = footnote_margin_t)
       ),
       plot.margin = ggplot2::margin(20, 20, 20, 20)
     )
