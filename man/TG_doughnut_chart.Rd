@@ -19,7 +19,7 @@ TG_doughnut_chart(
   footnote_text_width = 65,
   footnote_size = 12,
   footnote_hjust = 0,
-  footnote_vjust = 0,
+  footnote_vjust = 1,
   footnote_lineheight = 1.3,
   footnote_margin_t = -42,
   hole_size = 0.5,
