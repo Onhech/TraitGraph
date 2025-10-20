@@ -242,7 +242,7 @@ TG_similarity_heatmap <- function(dataset, columns, name_col = "names",
   correlation_matrix <- .calculate_similarity_matrix(dataset, columns, name_col = name_col)
 
   similarity_matrix <- (correlation_matrix + 1) / 2 * 100
-  similarity_matrix[upper.tri(similarity_matrix)] <- NA
+  #similarity_matrix[upper.tri(similarity_matrix)] <- NA
   diag(similarity_matrix) <- NA
 
   tidy_similarity <- similarity_matrix %>%
