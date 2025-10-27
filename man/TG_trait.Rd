@@ -15,6 +15,7 @@ TG_trait(
   color_opacity = 0.9,
   add_group_avg = TRUE,
   group_average_label = "Group\\nAverage",
+  group_average_face = "plain",
   group_average_position_mod = 1,
   callout_size_mod = 1,
   plot_zoom_mod = 0,
@@ -40,7 +41,7 @@ TG_trait(
 
 \item{title}{A string for the plot's main title. Defaults to the \code{column_name}.}
 
-\item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaalts to \code{bold}.}
+\item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaults to \code{bold}.}
 
 \item{name}{The name of the column containing unique identifiers.}
 
@@ -49,6 +50,8 @@ TG_trait(
 \item{add_group_avg}{A logical value. If TRUE, calculates and adds a group average bar. Default is \code{TRUE}.}
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
+
+\item{group_average_face}{The font style of the group_average (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaults to \code{plain}.}
 
 \item{group_average_position_mod}{A numeric value to modify the vertical position of the group average label.}
 

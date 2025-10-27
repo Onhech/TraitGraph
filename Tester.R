@@ -5,26 +5,24 @@
   # It is not part of the package itself but a helper for the developer.
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
-  # --- 1. SETUP ---
-
-  # Load devtools for package management
-  # install.packages("devtools") # Run once if not installed
+## --- 0. PACKAGES & PROJECT ROOT -------------------------------------------------
+# install.packages(c("devtools","tidyverse","here","withr"), dep = TRUE)
+suppressPackageStartupMessages({
   library(devtools)
   library(tidyverse)
+  library(here)
+  library(withr)
+})
 
-  # Set the working directory to the package's root folder.
-  # IMPORTANT: This needs to be the correct path on your machine.
-  # Using RStudio Projects (the .Rproj file) is the best way to manage this
-  # automatically and avoid hardcoding the path.
-  setwd('/Users/lyndenjensen/Library/CloudStorage/GoogleDrive-lynden.jensen@gmail.com/My Drive/Work/PsychologyReports/Product/Reports/TraitGraph')
+# Ensure we're in the project (use the .Rproj)
+proj_root <- here::here()
+message("Project root: ", proj_root)
 
-  # Create a directory for example plots if it doesn't already exist
-  if (!dir.exists("ExamplePlots")) {
-    dir.create("ExamplePlots")
-  }
+# Output folder (centralized)
+plots_dir <- file.path(proj_root, "ExamplePlots")
+if (!dir.exists(plots_dir)) dir.create(plots_dir, recursive = TRUE)
 
-
-  # --- 2. PACKAGE WORKFLOWS ---
+## --- 1. WORKFLOW HELPERS --------------------------------------------------------
   # --- Workflow A: Full Rebuild and Install ---
   # Use this workflow occasionally, especially before pushing to GitHub, to ensure
   # the complete package builds correctly from start to finish.
@@ -36,7 +34,6 @@ devtools::document()
 devtools::load_all()
 devtools::install(upgrade = 'always')           # Build and install the package locally
 library(TraitGraph)            # Load the newly installed package
-
 
   # --- Workflow B: Fast, Interactive Development (RECOMMENDED) ---
   # Use this workflow 99% of the time. It loads all your functions directly
@@ -53,29 +50,36 @@ devtools::load_all()
 library(TraitGraph)
 
 
-  # --- 3. CREATE SAMPLE DATA ---
-
-  # Create one master sample data frame for testing.
+# --- 2. CREATE SAMPLE DATA ---
+# Create one master sample data frame for testing.
 set.seed(42) # for reproducibility
-sample_data <- tibble::tribble(
-    ~name,    ~favourite_color, ~HonestyHumility, ~Emotionality, ~Extroversion, ~Agreeableness, ~Conscientiousness, ~Openness,
-    "Alice Frank",   "#FF6B6B",         75,               40,            80,            85,             90,                 70,
-    "Bob Steward",     "#4ECDC4",         80,               45,            75,            90,             85,                 65,
-    "Frank Bobby",   "#45B7D1",         70,               50,            85,            80,             95,                 75,
-    "Eve Twingle",     "#F7B801",         85,               70,            75,            80,             40,                 95,
-    "Grace Hunter",   "#FAD390",         90,               65,            80,            75,             35,                 90,
-    "Heidi Probosky",   "#FF8C61",         80,               75,            70,            85,             45,                 85,
-    "Charlie Kane", "#3D5A80",         40,               80,            30,            50,             60,                 45,
-    "David Turner Salvadora III",   "#98C1D9",         45,               75,            35,            55,             65,                 50,
-    "Ivan Evans",    "purple",         35,               85,            25,            45,             55,                 40,
-    "Judy Perch",    "#293241",         50,               70,            40,            60,             70,                 55
-  ) %>%
-    dplyr::mutate(
-      rankedQ_1 = sample(0:80, 10, replace = TRUE),
-      rsummedQ_1 = as.vector(rmultinom(n = 1, size = 100, prob = rep(1, 10)))
-    )
-  # --- 4. FUNCTION TESTING ---
-  # After running `devtools::load_all()`, you can run these calls to test.
+
+# Generate the main sample data
+sample_data <- tibble::tibble(
+  name = c(  "Alice Frank", "Bob Steward", "Frank Bobby", "Eve Twingle", "Grace Hunter", "Heidi Probosky", "Charlie Kane", "David Turner Salvadora III", "Ivan Evans", "Judy Perch", "Karl Moritz", "Lana Perez", "Mason Lee", "Nina Hollis", "Oscar Grant", "Paula White", "Quinn Baxter", "Riley Chen", "Sara Diaz", "Theo Nguyen", "Uma Patel", "Victor Stone", "Willow Adams", "Xavier Brooks", "Yara Cohen", "Zane Foster", "Abby Kim", "Ben Torres", "Clara Wells", "Derek Young"),
+  favourite_color = c( "#FF6B6B", "#4ECDC4", "#45B7D1", "#F7B801", "#FAD390","#FF8C61", "#3D5A80", "#98C1D9", "#9B59B6", "#293241","#E67E22", "#1ABC9C", "#E74C3C", "#3498DB", "#9B59B6","#F1C40F", "#2ECC71", "#16A085", "#D35400", "#C0392B","#7F8C8D", "#BDC3C7", "#8E44AD", "#27AE60", "#F39C12","#2980B9", "#C0392B", "#D35400", "#1ABC9C", "#9B59B6"),
+  HonestyHumility     = round(runif(30, 30, 95)),  # varied range per trait
+  Emotionality        = round(runif(30, 30, 90)),
+  Extroversion        = round(runif(30, 25, 95)),
+  Agreeableness       = round(runif(30, 40, 95)),
+  Conscientiousness   = round(runif(30, 35, 95)),
+  Openness            = round(runif(30, 40, 95)),
+  rankedQ_1 = sample(0:80, 30, replace = TRUE),
+  rsummedQ_1 = as.vector(rmultinom(n = 1, size = 100, prob = rep(1, 30)))
+  )
+
+# Preview
+sample_data<-dplyr::slice_sample(sample_data,n = 15) # Default (ideal) size
+sample_data_5<-dplyr::slice_sample(sample_data,n = 5)
+sample_data_15<-dplyr::slice_sample(sample_data,n = 15)
+sample_data_20<-dplyr::slice_sample(sample_data,n = 20)
+sample_data_25<-dplyr::slice_sample(sample_data,n = 25)
+sample_data_30<-dplyr::slice_sample(sample_data,n = 30)
+
+
+
+# --- 3. FUNCTION TESTING ---
+# After running `devtools::load_all()`, you can run these calls to test.
 
 # ~~~~~~~~~~~~~~~~~~~ #
 # Jungian ####
@@ -92,25 +96,25 @@ TG_jung(
   output_path = 'ExamplePlots/jung_graph_example_0.jpg'
 )
 
-TG_jung(
-  dataset = sample_data,
-  column_name = "Extroversion",
-  title = "Introversion vs Extroversion",
-  label_top = "Introversion",
-  label_bottom = "Extroversion",
-  callout_text_color = "other",
-  save_plot = T,
-  color_bars = "sunset",
-  color_bars_opacity = c(0.4, 0.2, 0.2, 0.5, 0.7),
-  output_path = 'ExamplePlots/jung_graph_example_1a.jpg',
-)
+#TG_jung(
+#  dataset = sample_data,
+#  column_name = "Extroversion",
+#  title = "Introversion vs Extroversion",
+#  label_top = "Introversion",
+#  label_bottom = "Extroversion",
+#  callout_text_color = "other",
+#  save_plot = T,
+#  color_bars = "sunset",
+#  color_bars_opacity = c(0.4, 0.2, 0.2, 0.5, 0.7),
+#  output_path = 'ExamplePlots/jung_graph_example_1a.jpg',
+#)
 
 
   # ~~~~~~~~~~~~~~~~~~~ #
   # --- Trait Example   ####
   # ~~~~~~~~~~~~~~~~~~~ #
 TG_trait(
-    dataset = sample_data,
+    dataset = sample_data_20,
     column_name = "Extroversion",
     save_plot = T,show_plot = T,
     color_opacity = .9,
