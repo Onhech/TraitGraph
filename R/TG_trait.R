@@ -76,7 +76,7 @@ TG_trait <- function(
     )
 
 
-  # Calcualte group average, if selected
+  # Calculate group average, if selected
   if (add_group_avg) {
     group_avg <- round(mean(plot_data$value, na.rm = TRUE), 0)
     average_row <- tibble::tibble(id = group_average_label, value = group_avg, color = "#111F51")
@@ -111,7 +111,8 @@ TG_trait <- function(
       ggplot2::aes(x = id, y = pmax(value - 18, 12), label = paste0(value, "%")),
       size = ifelse(plot_data$id == group_average_label, 3.2, 3) * callout_size_mod,
       fontface = ifelse(plot_data$id == group_average_label, "bold", "plain"),#group_average_face, "plain"),
-      fill = "white", alpha = 0.99, color = plot_data$dark_color,
+      fill = "white", alpha = 0.99,
+      color = plot_data$dark_color,
       label.size = 0.2, show.legend = FALSE
     ) +
     ggplot2::geom_text(

@@ -115,9 +115,10 @@ TG_jung(
   # ~~~~~~~~~~~~~~~~~~~ #
 TG_trait(
     dataset = sample_data_20,
+    title = "",
     column_name = "Extroversion",
     save_plot = T,show_plot = T,
-    color_opacity = .9,
+    #color_opacity = .,
     output_path = 'ExamplePlots/trait_graph_example.jpg'
   )
 
