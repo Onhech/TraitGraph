@@ -1,3 +1,4 @@
+
 # -----------------------------------------------------------------------------
 # FILE: R/TG_trait.R
 # STATUS: FINAL - Corrected
@@ -12,16 +13,16 @@
 #' @param dataset A data frame containing the data to plot.
 #' @param column_name The name of the column to use for the plot values.
 #' @param title A string for the plot's main title. Defaults to the `column_name`.
-#' @param title_face The font style of the title (e.g., `plain`, `bold`, or `bold.italic`). Defaults to `bold`.
-#' @param color The color of the tile.
+#' @param show_title Logical: if TRUE (default), include the generated title in the plot.
 #' @param name The name of the column containing unique identifiers.
 #' @param color The name of the column containing hex color codes.
-#' @param bar_opacity The opacity of the bars. `0` = Totally invisible, `1` = totally opaque Default is `0.9`.
-#' @param add_group_avg A logical value. If TRUE, calculates and adds a group average bar. Default is `TRUE`.
+#' @param color_mode A string specifying how bar colors are chosen: `"favorite"` (default) uses the provided color column, `"midpoint"` applies trait-specific midpoint shading.
+#' @param midpoint_colors Optional list with `high` and `low` hex codes used when `color_mode = "midpoint"`. Defaults to `list(high = "#00A878", low = "#3B6DD8")`.
+#' @param midpoint_lighten Logical. If TRUE (default), midpoint mode lightens colors toward white as scores approach 50.
+#' @param midpoint_lighten_max Numeric between 0 and 1; maximum lightening toward white when `midpoint_lighten = TRUE`. Defaults to 0.3.
+#' @param midpoint_lighten_power Numeric >= 0 controlling the curve of lightening; values > 1 make lightening drop off faster as scores move away from 50.
+#' @param midpoint_label_color Choose `"base"` (default) to color labels with the prototypical high/low colors, or `"shade"` to color labels with the lightened/darkened bar color (darkened for readability) when `color_mode = "midpoint"`.
 #' @param group_average_label A string used to label the group average bar. Defaults to "Group\\nAverage".
-#' @param group_average_face The font style of the group_average (e.g., `plain`, `bold`, or `bold.italic`). Defaults to `plain`.
-#' @param group_average_position_mod A numeric value to modify the vertical position of the group average label.
-#' @param callout_size_mod A numeric value to modify the callout box and inner text.  Defaults to `1` (100%).
 #' @param plot_zoom_mod A numeric value to add/subtract from the outer plot boundary.
 #' @param inner_hole_size_mod A positive numeric value to reduce the inner hole size.
 #' @param margin_y_mod A numeric value (in cm) to add/subtract from top/bottom margins.
@@ -29,7 +30,6 @@
 #' @param title_size_mod A numeric value to add/subtract from the title font size.
 #' @param title_vjust_mod A numeric value to add/subtract from the title vertical adjustment.
 #' @param name_size_mod A numeric value to add/subtract from the name label font size.
-#' @param name_position_mod A numeric value to modify the vertical position of the individual names.
 #' @param output_path The full path where the plot will be saved.
 #' @param output_width The width of the saved image in inches.
 #' @param output_height The height of the saved image in inches.
@@ -43,16 +43,16 @@ TG_trait <- function(
     dataset,
     column_name,
     title = column_name,
-    title_face = "bold",
-    title_color = "grey30",
+    show_title = TRUE,
     name = "name",
     color = "favourite_color",
-    color_opacity = 0.9,
-    add_group_avg = TRUE,
+    color_mode = c("favorite", "midpoint"),
+    midpoint_colors = list(high = "#00A878", low = "#3B6DD8"),
+    midpoint_lighten = TRUE,
+    midpoint_lighten_max = 0.75,
+    midpoint_lighten_power = 2,
+    midpoint_label_color = c("base", "shade"),
     group_average_label = "Group\nAverage",
-    group_average_face = "plain",
-    group_average_position_mod = 1,
-    callout_size_mod = 1,
     plot_zoom_mod = 0,
     inner_hole_size_mod = 0,
     margin_y_mod = 0,
@@ -60,13 +60,41 @@ TG_trait <- function(
     title_size_mod = 0,
     title_vjust_mod = 0,
     name_size_mod = 0,
-    name_position_mod = 1,
     output_path = "trait_plot.jpg",
     output_width = 7,
     output_height = 5,
     output_dpi = 300,
     save_plot = FALSE,
     show_plot = TRUE) {
+
+  color_mode <- match.arg(color_mode)
+  midpoint_label_color <- match.arg(midpoint_label_color)
+  default_midpoint_colors <- list(high = "#00A878", low = "#3B6DD8")
+  midpoint_colors <- utils::modifyList(default_midpoint_colors, midpoint_colors)
+  midpoint_lighten_max <- pmax(0, pmin(midpoint_lighten_max, 1))
+  midpoint_lighten_power <- pmax(0, midpoint_lighten_power)
+
+  lighten_toward_white <- function(hex, amount) {
+    rgb_matrix <- grDevices::col2rgb(hex)
+    amount <- pmax(0, pmin(amount, 1))
+    if (length(amount) == 1) {
+      amount <- rep(amount, ncol(rgb_matrix))
+    }
+    adjusted_rgb <- rgb_matrix + sweep(255 - rgb_matrix, 2, amount, `*`)
+    grDevices::rgb(adjusted_rgb[1, ], adjusted_rgb[2, ], adjusted_rgb[3, ], maxColorValue = 255)
+  }
+
+  compute_midpoint_color <- function(values, high_hex, low_hex) {
+    vapply(values, function(v) {
+      if (is.na(v)) return(NA_character_)
+      base_color <- if (v >= 50) high_hex else low_hex
+      intensity <- abs(v - 50) / 50
+      intensity <- pmax(0, pmin(intensity, 1))
+      if (!midpoint_lighten) return(base_color)
+      lightening <- midpoint_lighten_max * ((1 - intensity) ^ midpoint_lighten_power)
+      lighten_toward_white(base_color, lightening)
+    }, character(1))
+  }
 
   plot_data <- dataset %>%
     dplyr::rename(
@@ -75,51 +103,83 @@ TG_trait <- function(
       color = !!rlang::sym(color)
     )
 
-
-  # Calculate group average, if selected
-  if (add_group_avg) {
-    group_avg <- round(mean(plot_data$value, na.rm = TRUE), 0)
-    average_row <- tibble::tibble(id = group_average_label, value = group_avg, color = "#111F51")
-    plot_data <- dplyr::bind_rows(average_row, plot_data)
-  }
+  group_avg <- round(mean(plot_data$value, na.rm = TRUE), 0)
+  average_row <- tibble::tibble(id = group_average_label, value = group_avg, color = "black")
+  plot_data <- dplyr::bind_rows(average_row, plot_data)
 
   plot_data <- plot_data %>%
     dplyr::mutate(
       value = ifelse(value >= 99, value, round(value, 0)),
-      id = factor(id, levels = id),
-      is_light = is_color_light(color),
-      dark_color = sapply(color, darken_color),
+      id = factor(id, levels = id)
+    )
+
+  if (color_mode == "midpoint") {
+    plot_data <- plot_data %>%
+      dplyr::mutate(
+        base_mid_color = dplyr::if_else(
+          id == group_average_label,
+          "black",
+          dplyr::if_else(value >= 50, midpoint_colors$high, midpoint_colors$low)
+        ),
+        fill_color = dplyr::if_else(
+          id == group_average_label,
+          "black",
+          compute_midpoint_color(value, midpoint_colors$high, midpoint_colors$low)
+        )
+      )
+  } else {
+    plot_data <- plot_data %>%
+      dplyr::mutate(
+        fill_color = color,
+        base_mid_color = fill_color
+      )
+  }
+
+  plot_data <- plot_data %>%
+    dplyr::mutate(
+      is_light = is_color_light(fill_color),
+      dark_color = sapply(fill_color, darken_color),
+      label_color = dplyr::case_when(
+        color_mode == "midpoint" & midpoint_label_color == "base"  ~ sapply(base_mid_color, darken_color),
+        color_mode == "midpoint" & midpoint_label_color == "shade" ~ sapply(fill_color, darken_color),
+        TRUE ~ dark_color
+      ),
       border_color = ifelse(is_light, dark_color, NA_character_)
     )
 
   title_params <- get_dynamic_title(title)
   final_title_size <- 8 + title_params$size + title_size_mod
-  final_title_vjust <- 17.5 + title_params$vjust + title_vjust_mod
+  final_title_vjust <- 16 + title_params$vjust + title_vjust_mod
   final_y_outer_limit <- 135 + plot_zoom_mod
   final_y_inner_limit <- -40 + inner_hole_size_mod
+  plot_title_text <- if (isTRUE(show_title)) title_params$text else NULL
+  title_element <- if (isTRUE(show_title)) {
+    ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = "bold")
+  } else {
+    ggplot2::element_blank()
+  }
 
   p <- ggplot2::ggplot(plot_data) +
     ggplot2::geom_hline(yintercept = c(25, 75), color = "black", size = 0.2, alpha = 0.4, lty = 'dashed') +
     ggplot2::geom_hline(yintercept = 50, color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_hline(yintercept = c(100), color = "black", size = 0.6, alpha = .5) +
-    ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), stat = "identity", alpha = color_opacity, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
+    ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = fill_color), stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), linewidth = 0.2) +
     ggplot2::scale_fill_identity() +
     ggplot2::scale_y_continuous(limits = c(final_y_inner_limit, final_y_outer_limit)) +
     ggplot2::theme_void() +
     ggplot2::geom_label(
       data = plot_data,
       ggplot2::aes(x = id, y = pmax(value - 18, 12), label = paste0(value, "%")),
-      size = ifelse(plot_data$id == group_average_label, 3.2, 3) * callout_size_mod,
-      fontface = ifelse(plot_data$id == group_average_label, "bold", "plain"),#group_average_face, "plain"),
-      fill = "white", alpha = 0.99,
-      color = plot_data$dark_color,
+      size = ifelse(plot_data$id == group_average_label, 3.2, 3),
+      fontface = ifelse(plot_data$id == group_average_label, "bold", "plain"),
+      fill = "white", alpha = 0.99, color = plot_data$label_color,
       label.size = 0.2, show.legend = FALSE
     ) +
     ggplot2::geom_text(
       data = plot_data,
-      ggplot2::aes(x = id, y = ifelse(id == group_average_label, 120 * group_average_position_mod, 113 * name_position_mod), label = id, fontface = ifelse(id == group_average_label, group_average_face, "plain")),
+      ggplot2::aes(x = id, y = ifelse(id == group_average_label, 120, 110), label = id, fontface = ifelse(id == group_average_label, "bold", "plain")),
       size = (ifelse(plot_data$id == group_average_label, 5, 4)) + name_size_mod,
-      color = plot_data$dark_color, angle = 0, lineheight = 0.8,
+      color = plot_data$label_color, angle = 0, lineheight = 0.8,
       hjust = dplyr::case_when(
         plot_data$id == group_average_label ~ 0.5,
         c(FALSE, seq_along(plot_data$id[-1]) == ceiling(length(plot_data$id[-1]) / 2)) ~ 0.5,
@@ -129,10 +189,10 @@ TG_trait <- function(
     ) +
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(-1 + margin_y_mod, -1 + margin_x_mod, -1 + margin_y_mod, -1 + margin_x_mod), "cm"),
-      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = title_face, color = title_color)
+      plot.title = title_element
     ) +
-    ggplot2::coord_polar(start = -pi / (nrow(plot_data)), clip = "off") +
-    ggplot2::ggtitle(title_params$text)
+    ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
+    ggplot2::ggtitle(plot_title_text)
 
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")

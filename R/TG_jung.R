@@ -11,6 +11,7 @@
 #' @param dataset A data frame containing the data to plot.
 #' @param column_name The name of the column containing the percentile scores to plot.
 #' @param title A string for the plot's main title. Defaults to the `column_name`.
+#' @param show_title Logical: if TRUE (default), include the generated title in the plot.
 #' @param title_face The font style of the title (e.g., `plain`, `bold`, or `bold.italic`). Defaults to `bold`.
 #' @param color The color of the tile.
 #' @param label_top The text for the curved label at the top of the chart (100% mark).
@@ -55,6 +56,7 @@ TG_jung <- function(
     dataset,
     column_name,
     title = column_name,
+    show_title = TRUE,
     title_face = "bold",
     title_color = "black",
     label_top = "Trait A",
@@ -105,7 +107,7 @@ TG_jung <- function(
       border_color = ifelse(is_light, dark_color, NA_character_)
     )
 
-# Determine color palette
+  # Determine color palette
   #  `sunset`, `coastal`, `autumn`, `twilight`, `regal`, `cyber`, `blaze`, `earth`, `vaporwave`, `oceanic`, `vibrant`, `volcano`, `forest`
   # --- Define palette presets ---
   color_presets <- list(
@@ -166,23 +168,29 @@ TG_jung <- function(
         ifelse(
           value > 80,
           darken_color(color_bands$color[5], factor = .55),
+          ifelse(
+            value > 55,
+            darken_color(color_bands$color[4], factor = .65),
             ifelse(
-              value > 55,
-              darken_color(color_bands$color[4], factor = .65),
-                ifelse(
-                  value > 45,
-                  darken_color(color_bands$color[3], factor = .9),
-                  ifelse(
-                    value > 30,
-                    darken_color(color_bands$color[2], factor = .65),
-                      darken_color(color_bands$color[1], factor = .55)
-                    ))))
+              value > 45,
+              darken_color(color_bands$color[3], factor = .9),
+              ifelse(
+                value > 30,
+                darken_color(color_bands$color[2], factor = .65),
+                darken_color(color_bands$color[1], factor = .55)
+              ))))
       }
     )
 
   title_params <- get_dynamic_title(title)
+  plot_title_text <- if (isTRUE(show_title)) title_params$text else NULL
   final_title_size <- title_params$size + title_size_mod
   final_title_vjust <- (title_params$vjust + 24) * title_vjust_mod
+  title_element <- if (isTRUE(show_title)) {
+    ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = title_face, color = title_color)
+  } else {
+    ggplot2::element_blank()
+  }
 
   # --- Build the plot layers ---
   p <- ggplot2::ggplot(plot_data) +
@@ -257,11 +265,11 @@ TG_jung <- function(
     ggplot2::theme_void() +
     ggplot2::theme(
       plot.margin = ggplot2::unit(c((0.3 + plot_zoom_mod), 0, (0.3 * plot_zoom_mod), 0), "cm"),
-      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = title_face, color = title_color),
+      plot.title = title_element,
       axis.text.x = ggplot2::element_text(color = plot_data$dark_color, size = 15 * name_size_mod, face = ifelse(plot_data$id == group_average_label, "bold", "plain"), margin = ggplot2::margin(t = 12, unit = "pt"))
     ) +
     ggplot2:::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
-    ggplot2::ggtitle(title_params$text)
+    ggplot2::ggtitle(plot_title_text)
 
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")

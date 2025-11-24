@@ -10,6 +10,7 @@ TG_votes(
   title = NULL,
   title_face = "bold",
   title_color = "black",
+  show_title = TRUE,
   name = "name",
   color = "favourite_color",
   sort_order = "desc",
@@ -36,6 +37,8 @@ TG_votes(
 of the \code{column_name} will be used. 160 Character limit.}
 
 \item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaalts to \code{bold}.}
+
+\item{show_title}{Logical: if TRUE (default), include the generated title in the plot.}
 
 \item{name}{The name of the column containing unique identifiers. Defaults to "names".}
 

@@ -14,6 +14,8 @@ TG_similarity_heatmap(
   show_values = TRUE,
   show_legend = TRUE,
   title = "Psychological Similarity Between Individuals",
+  show_title = TRUE,
+  show_upper = FALSE,
   save_plot = TRUE,
   show_plot = TRUE,
   output_path = "similarity_heatmap.png"
@@ -37,6 +39,10 @@ TG_similarity_heatmap(
 \item{show_legend}{Logical. If TRUE, display the color legend.}
 
 \item{title}{String for the plot title.}
+
+\item{show_title}{Logical: if TRUE (default), include the generated title in the plot.}
+
+\item{show_upper}{Logical: if FALSE (default), hide the upper triangle (including diagonal) of the similarity matrix for a cleaner, non-redundant view.}
 
 \item{save_plot}{Logical. If \code{TRUE}, save the plot to \code{output_path}.}
 

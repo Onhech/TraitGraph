@@ -9,6 +9,7 @@
 #' @param title A string for the plot's main title. If not provided, the name
 #'   of the `column_name` will be used. 160 Character limit.
 #' @param title_face The font style of the title (e.g., `plain`, `bold`, or `bold.italic`). Defaalts to `bold`.
+#' @param show_title Logical: if TRUE (default), include the generated title in the plot.
 #' @param color The color of the tile.
 #' @param name The name of the column containing unique identifiers. Defaults to "names".
 #' @param color The name of the column containing hex color codes. Defaults to "favourite_color".
@@ -33,6 +34,7 @@ TG_votes <- function(dataset,
                      title = NULL,
                      title_face = "bold",
                      title_color = "black",
+                     show_title = TRUE,
                      name = "name",
                      color = "favourite_color",
                      sort_order = "desc",
@@ -74,14 +76,22 @@ TG_votes <- function(dataset,
   if (nrow(plot_data) == 0) { message("No data with scores greater than 0 to plot."); return(invisible(NULL)) }
 
   max_score <- max(plot_data$value)
-  title_params <- get_dynamic_title_votes(title)
-  final_title_size <- (title_params$size)+ title_size_mod
-  final_title_vjust <- title_params$vjust + title_vjust_mod
+  if (isTRUE(show_title)) {
+    title_params <- get_dynamic_title_votes(title)
+    plot_title_text <- title_params$text
+    final_title_size <- (title_params$size)+ title_size_mod
+    final_title_vjust <- title_params$vjust + title_vjust_mod
+    title_element <- ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = title_face, color = title_color)
+  } else {
+    plot_title_text <- NULL
+    final_title_size <- 0
+    title_element <- ggplot2::element_blank()
+  }
   column_width <- dplyr::case_when(nrow(plot_data) <= 8 ~ 0.98 - (nrow(plot_data) * 0.01), TRUE ~ 0.90)
   final_y_outer_limit <- ((max_score*1.05) * 2.0) + plot_zoom_mod
 
   p <- ggplot2::ggplot(plot_data) +
-    ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), width = column_width, stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), size = 0.2) +
+    ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = color), width = column_width, stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), linewidth = 0.2) +
     ggplot2::geom_hline(yintercept = max_score*1.05, color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_hline(yintercept = 0, color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_hline(yintercept = seq(from = 0, to = max_score*1.05, by = (max_score*1.05)/(1 + minor_ticks)), color = "black", size = 0.1, alpha = 0.25, linetype = 'dashed') +
@@ -101,10 +111,10 @@ TG_votes <- function(dataset,
                        )) +
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(-3, -4, -3.5, -4), "cm"),
-      plot.title = ggplot2::element_text(hjust = 0.5, vjust = final_title_vjust, size = final_title_size, face = title_face, color = title_color)
+      plot.title = title_element
     ) +
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
-    ggplot2::ggtitle(title_params$text)
+    ggplot2::ggtitle(plot_title_text)
 
   if (save_plot) { ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in"); message("Plot saved to: ", output_path) }
   if (show_plot) { print(p) }

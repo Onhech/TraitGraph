@@ -8,6 +8,7 @@ TG_jung(
   dataset,
   column_name,
   title = column_name,
+  show_title = TRUE,
   title_face = "bold",
   title_color = "black",
   label_top = "Trait A",
@@ -49,6 +50,8 @@ TG_jung(
 \item{column_name}{The name of the column containing the percentile scores to plot.}
 
 \item{title}{A string for the plot's main title. Defaults to the \code{column_name}.}
+
+\item{show_title}{Logical: if TRUE (default), include the generated title in the plot.}
 
 \item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaults to \code{bold}.}
 

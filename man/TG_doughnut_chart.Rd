@@ -13,6 +13,11 @@ TG_doughnut_chart(
   show_title = TRUE,
   title_face = "bold",
   title_color = "grey30",
+  color_mode = c("favorite", "midpoint"),
+  midpoint_color = "#00A878",
+  midpoint_lighten_max = 0.75,
+  midpoint_lighten_power = 2,
+  midpoint_label_color = c("base", "shade"),
   sort_order = "asc",
   inner_label_threshold = 5,
   outer_label_threshold = NULL,
@@ -50,6 +55,16 @@ TG_doughnut_chart(
 \item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}). Defaults to \code{bold}.}
 
 \item{title_color}{The color of the title text.}
+
+\item{color_mode}{A string specifying how slice colors are chosen: \code{"favorite"} (default) uses the provided color column, \code{"midpoint"} shades a single base color across slices.}
+
+\item{midpoint_color}{Single hex color used when \code{color_mode = "midpoint"}; darkest slice. Defaults to \code{"#00A878"}.}
+
+\item{midpoint_lighten_max}{Numeric between 0 and 1; maximum lightening toward white for the lightest slice when \code{color_mode = "midpoint"}. Defaults to 0.75.}
+
+\item{midpoint_lighten_power}{Numeric >= 0 controlling the curve of lightening across ranks; values > 1 make lightening drop off faster from the top slice. Defaults to 2.}
+
+\item{midpoint_label_color}{Choose \code{"base"} (default) to color labels with the base color darkened, or \code{"shade"} to color labels with the shaded slice color (darkened) when \code{color_mode = "midpoint"}.}
 
 \item{sort_order}{The order to sort the results (\code{desc} or \code{asc}). Defaults to "desc".}
 

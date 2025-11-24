@@ -66,6 +66,7 @@
 #' @param max_node_size Maximum node size for plotting (default: 20).
 #' @param title String for the plot title.
 #' @param subtitle String for the plot subtitle.
+#' @param show_title Logical: if TRUE (default), include the generated title/subtitle in the plot.
 #' @param save_plot Logical. If `TRUE`, save the plot to `output_path`.
 #' @param show_plot Logical. If `TRUE`, print the plot to the active device.
 #' @param show_legend Logical. If `TRUE`, display the color legend.
@@ -99,6 +100,7 @@ TG_similarity_network <- function(dataset, columns, name_col = "names",
                                   min_node_size = 8, max_node_size = 20,
                                   title = "Psychological Similarity Network",
                                   subtitle = "Node size reflects average similarity to all others.",
+                                  show_title = TRUE,
                                   save_plot = TRUE, show_plot = TRUE, show_legend = TRUE,
                                   output_path = "similarity_network.png",
                                   edge_width_power = 1,
@@ -172,7 +174,10 @@ TG_similarity_network <- function(dataset, columns, name_col = "names",
     ggraph::scale_edge_width(range = c(0.2, 3), guide = "none") +
     ggraph::scale_edge_color_gradient2(
       low = "firebrick", mid = "lightgray", high = "seagreen",
-      midpoint = 0, name = "Similarity", labels = scales::percent
+      midpoint = 0,
+      name = "Similarity",
+      labels = scales::percent,
+      guide = if (show_legend) "colourbar" else "none"
     ) +
     ggraph::geom_node_point(aes(size = node_size, color = node_color), shape = 19) +
     ggplot2::scale_size_identity(guide = "none") +
@@ -187,7 +192,10 @@ TG_similarity_network <- function(dataset, columns, name_col = "names",
       legend.position = if (show_legend) "right" else "none",
       plot.margin = ggplot2::margin(10, 10, 10, 10)
     ) +
-    ggplot2::labs(title = title, subtitle = subtitle)
+    ggplot2::labs(
+      title = if (isTRUE(show_title)) title else NULL,
+      subtitle = if (isTRUE(show_title)) subtitle else NULL
+    )
 
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, width = 10, height = 7, dpi = 300)
@@ -219,6 +227,8 @@ TG_similarity_network <- function(dataset, columns, name_col = "names",
 #' @param show_values Logical. If TRUE, show percentage values on tiles.
 #' @param show_legend Logical. If TRUE, display the color legend.
 #' @param title String for the plot title.
+#' @param show_title Logical: if TRUE (default), include the generated title in the plot.
+#' @param show_upper Logical: if FALSE (default), hide the upper triangle (including diagonal) of the similarity matrix for a cleaner, non-redundant view.
 #' @param save_plot Logical. If `TRUE`, save the plot to `output_path`.
 #' @param show_plot Logical. If `TRUE`, print the plot to the active device.
 #' @param output_path File path for saving the plot.
@@ -237,12 +247,16 @@ TG_similarity_heatmap <- function(dataset, columns, name_col = "names",
                                   low_color = "#E57373", mid_color = "white", high_color = "#81C784",
                                   show_values = TRUE, show_legend = TRUE,
                                   title = "Psychological Similarity Between Individuals",
+                                  show_title = TRUE,
+                                  show_upper = FALSE,
                                   save_plot = TRUE, show_plot = TRUE,
                                   output_path = "similarity_heatmap.png") {
   correlation_matrix <- .calculate_similarity_matrix(dataset, columns, name_col = name_col)
 
   similarity_matrix <- (correlation_matrix + 1) / 2 * 100
-  #similarity_matrix[upper.tri(similarity_matrix)] <- NA
+  if (!isTRUE(show_upper)) {
+    similarity_matrix[upper.tri(similarity_matrix, diag = TRUE)] <- NA
+  }
   diag(similarity_matrix) <- NA
 
   tidy_similarity <- similarity_matrix %>%
@@ -264,10 +278,14 @@ TG_similarity_heatmap <- function(dataset, columns, name_col = "names",
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
       axis.ticks = ggplot2::element_blank(), panel.grid = ggplot2::element_blank(),
-      plot.title = ggplot2::element_text(hjust = 0.5, face = "bold"),
+      plot.title = if (isTRUE(show_title)) ggplot2::element_text(hjust = 0.5, face = "bold") else ggplot2::element_blank(),
       legend.position = if(show_legend) "right" else "none"
     ) +
-    ggplot2::labs(x = NULL, y = NULL, title = title) +
+    ggplot2::labs(
+      x = NULL,
+      y = NULL,
+      title = if (isTRUE(show_title)) title else NULL
+    ) +
     ggplot2::coord_fixed()
 
   if (show_values) {
@@ -376,4 +394,3 @@ TG_similarity_table <- function(dataset, columns, name_col = "names",
     return(matrix_to_return)
   }
 }
-

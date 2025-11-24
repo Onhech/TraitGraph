@@ -8,16 +8,16 @@ TG_trait(
   dataset,
   column_name,
   title = column_name,
-  title_face = "bold",
-  title_color = "grey30",
+  show_title = TRUE,
   name = "name",
   color = "favourite_color",
-  color_opacity = 0.9,
-  add_group_avg = TRUE,
+  color_mode = c("favorite", "midpoint"),
+  midpoint_colors = list(high = "#00A878", low = "#3B6DD8"),
+  midpoint_lighten = TRUE,
+  midpoint_lighten_max = 0.75,
+  midpoint_lighten_power = 2,
+  midpoint_label_color = c("base", "shade"),
   group_average_label = "Group\\nAverage",
-  group_average_face = "plain",
-  group_average_position_mod = 1,
-  callout_size_mod = 1,
   plot_zoom_mod = 0,
   inner_hole_size_mod = 0,
   margin_y_mod = 0,
@@ -25,7 +25,6 @@ TG_trait(
   title_size_mod = 0,
   title_vjust_mod = 0,
   name_size_mod = 0,
-  name_position_mod = 1,
   output_path = "trait_plot.jpg",
   output_width = 7,
   output_height = 5,
@@ -41,21 +40,25 @@ TG_trait(
 
 \item{title}{A string for the plot's main title. Defaults to the \code{column_name}.}
 
-\item{title_face}{The font style of the title (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaults to \code{bold}.}
+\item{show_title}{Logical: if TRUE (default), include the generated title in the plot.}
 
 \item{name}{The name of the column containing unique identifiers.}
 
 \item{color}{The name of the column containing hex color codes.}
 
-\item{add_group_avg}{A logical value. If TRUE, calculates and adds a group average bar. Default is \code{TRUE}.}
+\item{color_mode}{A string specifying how bar colors are chosen: \code{"favorite"} (default) uses the provided color column, \code{"midpoint"} applies trait-specific midpoint shading.}
+
+\item{midpoint_colors}{Optional list with \code{high} and \code{low} hex codes used when \code{color_mode = "midpoint"}. Defaults to \code{list(high = "#00A878", low = "#3B6DD8")}.}
+
+\item{midpoint_lighten}{Logical. If TRUE (default), midpoint mode lightens colors toward white as scores approach 50.}
+
+\item{midpoint_lighten_max}{Numeric between 0 and 1; maximum lightening toward white when \code{midpoint_lighten = TRUE}. Defaults to 0.3.}
+
+\item{midpoint_lighten_power}{Numeric >= 0 controlling the curve of lightening; values > 1 make lightening drop off faster as scores move away from 50.}
+
+\item{midpoint_label_color}{Choose \code{"base"} (default) to color labels with the prototypical high/low colors, or \code{"shade"} to color labels with the lightened/darkened bar color (darkened for readability) when \code{color_mode = "midpoint"}.}
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
-
-\item{group_average_face}{The font style of the group_average (e.g., \code{plain}, \code{bold}, or \code{bold.italic}). Defaults to \code{plain}.}
-
-\item{group_average_position_mod}{A numeric value to modify the vertical position of the group average label.}
-
-\item{callout_size_mod}{A numeric value to modify the callout box and inner text.  Defaults to \code{1} (100\%).}
 
 \item{plot_zoom_mod}{A numeric value to add/subtract from the outer plot boundary.}
 
@@ -71,8 +74,6 @@ TG_trait(
 
 \item{name_size_mod}{A numeric value to add/subtract from the name label font size.}
 
-\item{name_position_mod}{A numeric value to modify the vertical position of the individual names.}
-
 \item{output_path}{The full path where the plot will be saved.}
 
 \item{output_width}{The width of the saved image in inches.}
@@ -84,8 +85,6 @@ TG_trait(
 \item{save_plot}{A logical value. If TRUE, the plot is saved to disk.}
 
 \item{show_plot}{A logical value. If TRUE, the plot is displayed.}
-
-\item{bar_opacity}{The opacity of the bars. \code{0} = Totally invisible, \code{1} = totally opaque Default is \code{0.9}.}
 }
 \value{
 Invisibly returns the ggplot object.

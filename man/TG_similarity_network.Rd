@@ -15,6 +15,7 @@ TG_similarity_network(
   max_node_size = 20,
   title = "Psychological Similarity Network",
   subtitle = "Node size reflects average similarity to all others.",
+  show_title = TRUE,
   save_plot = TRUE,
   show_plot = TRUE,
   show_legend = TRUE,
@@ -43,6 +44,8 @@ TG_similarity_network(
 \item{title}{String for the plot title.}
 
 \item{subtitle}{String for the plot subtitle.}
+
+\item{show_title}{Logical: if TRUE (default), include the generated title/subtitle in the plot.}
 
 \item{save_plot}{Logical. If \code{TRUE}, save the plot to \code{output_path}.}
 

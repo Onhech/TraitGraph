@@ -21,6 +21,11 @@
 #' @param show_title Logical. If TRUE (default), the title is displayed. Set to FALSE to hide.
 #' @param title_face The font style of the title (e.g., `plain`, `bold`). Defaults to `bold`.
 #' @param title_color The color of the title text.
+#' @param color_mode A string specifying how slice colors are chosen: `"favorite"` (default) uses the provided color column, `"midpoint"` shades a single base color across slices.
+#' @param midpoint_color Single hex color used when `color_mode = "midpoint"`; darkest slice. Defaults to `"#00A878"`.
+#' @param midpoint_lighten_max Numeric between 0 and 1; maximum lightening toward white for the lightest slice when `color_mode = "midpoint"`. Defaults to 0.75.
+#' @param midpoint_lighten_power Numeric >= 0 controlling the curve of lightening across ranks; values > 1 make lightening drop off faster from the top slice. Defaults to 2.
+#' @param midpoint_label_color Choose `"base"` (default) to color labels with the base color darkened, or `"shade"` to color labels with the shaded slice color (darkened) when `color_mode = "midpoint"`.
 #' @param sort_order The order to sort the results (`desc` or `asc`). Defaults to "desc".
 #' @param inner_label_threshold A numeric value (0-100). Percentage labels for slices
 #'   smaller than this value will be replaced by an asterisk. Defaults to 5.
@@ -53,6 +58,11 @@ TG_doughnut_chart <- function(dataset,
                               show_title = TRUE,
                               title_face = "bold",
                               title_color = "grey30",
+                              color_mode = c("favorite", "midpoint"),
+                              midpoint_color = "#00A878",
+                              midpoint_lighten_max = 0.75,
+                              midpoint_lighten_power = 2,
+                              midpoint_label_color = c("base", "shade"),
                               sort_order = "asc",
                               inner_label_threshold = 5,
                               outer_label_threshold = NULL,
@@ -84,6 +94,20 @@ TG_doughnut_chart <- function(dataset,
     outer_label_threshold <- inner_label_threshold
   }
 
+  color_mode <- match.arg(color_mode)
+  midpoint_label_color <- match.arg(midpoint_label_color)
+  midpoint_lighten_max <- pmax(0, pmin(midpoint_lighten_max, 1))
+  midpoint_lighten_power <- pmax(0, midpoint_lighten_power)
+
+  lighten_toward_white <- function(hex, amount) {
+    amount <- pmax(0, pmin(amount, 1))
+    base_rgb <- grDevices::col2rgb(hex)[, 1]
+    vapply(amount, function(a) {
+      col <- base_rgb + (255 - base_rgb) * a
+      grDevices::rgb(col[1], col[2], col[3], maxColorValue = 255)
+    }, character(1))
+  }
+
   if (!show_title) { title <- NULL }
   else if (is.null(title)) { title <- column_name }
 
@@ -93,6 +117,19 @@ TG_doughnut_chart <- function(dataset,
   } else {
     # Set reasonable defaults if no title is to be shown
     title_params <- list(text = NULL, size = 18, vjust = -2)
+  }
+  plot_title_text <- if (isTRUE(show_title)) title_params$text else NULL
+  title_element <- if (isTRUE(show_title)) {
+    ggplot2::element_text(
+      hjust = 0.5,
+      vjust = title_params$vjust + title_vjust_mod,
+      size = title_params$size * title_size_mod,
+      face = title_face,
+      color = title_color,
+      lineheight = 0.9
+    )
+  } else {
+    ggplot2::element_blank()
   }
 
 
@@ -112,17 +149,61 @@ TG_doughnut_chart <- function(dataset,
   }
 
   # --- 2. Calculate Percentages and Label Positions/Colors ---
+  total_slices <- nrow(plot_data)
+
   plot_data <- plot_data %>%
     dplyr::mutate(percentage = value / sum(value) * 100) %>%
     { if (sort_order == "desc") dplyr::arrange(., dplyr::desc(value), id) else dplyr::arrange(., value, id) } %>%
-    dplyr::mutate(id = factor(id, levels = unique(id))) %>%
+    dplyr::mutate(id = factor(id, levels = unique(id)))
+
+  # Compute slice ranks and positions outside mutate to avoid recycling issues
+  slice_rank <- seq_len(nrow(plot_data))
+  slice_rank_prop <- if (nrow(plot_data) > 1) {
+    (slice_rank - 1) / (nrow(plot_data) - 1)
+  } else {
+    rep(0, nrow(plot_data))
+  }
+  intensity_rank <- dplyr::dense_rank(dplyr::desc(plot_data$value))
+  max_intensity_rank <- max(intensity_rank)
+  intensity_prop <- if (max_intensity_rank > 1) {
+    (intensity_rank - 1) / (max_intensity_rank - 1)
+  } else {
+    rep(0, length(intensity_rank))
+  }
+  plot_data <- plot_data %>%
     dplyr::mutate(
       pos = rev(cumsum(rev(percentage)) - 0.5 * rev(percentage)),
       name_label = ifelse(percentage > outer_label_threshold, as.character(id), ""),
       value_label = ifelse(percentage > inner_label_threshold, paste0(round(percentage, 0), "%"), "*"),
-      is_light = is_color_light(color),
-      dark_color = sapply(color, darken_color),
-      label_color = ifelse(is_light, dark_color, color),
+      slice_rank = slice_rank,
+      slice_rank_prop = slice_rank_prop,
+      intensity_prop = intensity_prop
+    )
+
+  if (color_mode == "midpoint") {
+    plot_data <- plot_data %>%
+      dplyr::mutate(
+        lightening_value = midpoint_lighten_max * (intensity_prop ^ midpoint_lighten_power),
+        fill_color = lighten_toward_white(midpoint_color, lightening_value),
+        base_mid_color = midpoint_color
+      )
+  } else {
+    plot_data <- plot_data %>%
+      dplyr::mutate(
+        fill_color = color,
+        base_mid_color = fill_color
+      )
+  }
+
+  plot_data <- plot_data %>%
+    dplyr::mutate(
+      is_light = is_color_light(fill_color),
+      dark_color = sapply(fill_color, darken_color),
+      label_color = dplyr::case_when(
+        color_mode == "midpoint" & midpoint_label_color == "base"  ~ sapply(base_mid_color, darken_color),
+        color_mode == "midpoint" & midpoint_label_color == "shade" ~ sapply(fill_color, darken_color),
+        TRUE ~ ifelse(is_light, dark_color, fill_color)
+      ),
       label_hjust = dplyr::case_when(
         pos > 95 | pos < 5  ~ 0.5,
         pos > 45 & pos < 55 ~ 0.5,
@@ -130,6 +211,16 @@ TG_doughnut_chart <- function(dataset,
         TRUE ~ 0
       )
     )
+
+  # Space out labels near 6 o'clock by nudging their radius slightly
+  angle_deg <- (plot_data$pos / 100) * 360
+  bottom_band <- angle_deg > 135 & angle_deg < 225
+  radius_offsets <- rep(0, nrow(plot_data))
+  if (any(bottom_band)) {
+    idx <- which(bottom_band)
+    radius_offsets[idx] <- (rank(angle_deg[idx]) - (length(idx) + 1) / 2) * 0.12
+  }
+  plot_data$label_radius <- 2.9 + radius_offsets
 
   # --- 2a. Generate Caption/Legend for Small Slices ---
   small_slices <- plot_data %>%
@@ -175,7 +266,7 @@ TG_doughnut_chart <- function(dataset,
 
 
   # Create separate named vectors for fill and text colors
-  fill_vec <- plot_data$color
+  fill_vec <- plot_data$fill_color
   names(fill_vec) <- plot_data$id
 
   text_color_vec <- plot_data$label_color
@@ -202,8 +293,7 @@ TG_doughnut_chart <- function(dataset,
       fontface = "bold"
     ) +
     ggplot2::geom_text(
-      ggplot2::aes(y = pos, label = name_label, hjust = label_hjust, color = id),
-      x = 2.8,
+      ggplot2::aes(y = pos, x = label_radius, label = name_label, hjust = label_hjust, color = id),
       size = 5.25 * name_size_mod
     ) +
     ggplot2::scale_fill_manual(values = fill_vec) +
@@ -212,16 +302,9 @@ TG_doughnut_chart <- function(dataset,
     ggplot2::coord_polar(theta = "y", start = 0, clip = "off") +
     ggplot2::xlim(c(0.5, 3.5)) +
     ggplot2::theme_void() +
-    ggplot2::labs(title = title_params$text, caption = caption_text) +
+    ggplot2::labs(title = plot_title_text, caption = caption_text) +
     ggplot2::theme(
-      plot.title = ggplot2::element_text(
-        hjust = 0.5,
-        vjust = title_params$vjust + title_vjust_mod,
-        size = title_params$size * title_size_mod,
-        face = title_face,
-        color = title_color,
-        lineheight = 0.9
-      ),
+      plot.title = title_element,
       plot.caption = ggtext::element_markdown(
         hjust = footnote_hjust,
         vjust = footnote_vjust,
@@ -252,4 +335,3 @@ TG_doughnut_chart <- function(dataset,
 
   return(invisible(p))
 }
-
