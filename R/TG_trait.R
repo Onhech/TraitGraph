@@ -177,7 +177,7 @@ TG_trait <- function(
     ) +
     ggplot2::geom_text(
       data = plot_data,
-      ggplot2::aes(x = id, y = ifelse(id == group_average_label, 120, 110), label = id, fontface = ifelse(id == group_average_label, "bold", "plain")),
+      ggplot2::aes(x = id, y = ifelse(id == group_average_label, 130, 110), label = id, fontface = ifelse(id == group_average_label, "bold", "plain")),
       size = (ifelse(plot_data$id == group_average_label, 5, 4)) + name_size_mod,
       color = plot_data$label_color, angle = 0, lineheight = 0.8,
       hjust = dplyr::case_when(
