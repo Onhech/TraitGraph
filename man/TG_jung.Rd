@@ -122,6 +122,6 @@ Defaults to \code{"sunset"}.
 Invisibly returns the ggplot object.
 }
 \description{
-This function generates a polar bar chart with background color bands and
-curved text labels, ideal for visualizing dichotomous traits.
+Generates a polar bar chart with background color bands and curved text labels,
+ideal for visualizing dichotomous Jungian preference pairs.
 }

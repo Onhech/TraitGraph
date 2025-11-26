@@ -80,24 +80,6 @@ sample_data_30<-dplyr::slice_sample(sample_data,n = 30)
 
 # --- 3. FUNCTION TESTING ---
 # After running `devtools::load_all()`, you can run these calls to test.
-
-# ~~~~~~~~~~~~~~~~~~~ #
-# Jungian ####
-# ~~~~~~~~~~~~~~~~~~~ #
-TG_jung(
-  dataset = sample_data,
-  column_name = "Extroversion",
-  title = "Team Extroversion Profile",
-  show_title = FALSE,
-  label_top = "Introversion",
-  label_bottom = "Extroversion",
-  callout_text_color = "other",
-  show_points = F,
-  save_plot = TRUE,
-  output_path = 'ExamplePlots/jung_graph_example_0.jpg'
-)
-
-
   # ~~~~~~~~~~~~~~~~~~~ #
   # --- Trait Example   ####
   # ~~~~~~~~~~~~~~~~~~~ #
@@ -105,6 +87,7 @@ TG_trait(
     dataset = sample_data_20,
     show_title = F,
     column_name = "Extroversion",
+    random_seed = 12345,
     save_plot = T,show_plot = T,
     #color_opacity = .,
     output_path = 'ExamplePlots/trait_graph_example.jpg'
@@ -121,10 +104,27 @@ TG_trait(
     midpoint_lighten_max = 0.75,    # slightly stronger lightening toward white near 50
     midpoint_lighten_power = 1.75,     # curve control: >1 reduces lightening faster as scores move away from 50
     midpoint_label_color = "base", # use shaded (darkened) bar color on labels for clarity
+    random_seed = 12345,
     save_plot = T,show_plot = T,
     output_path = 'ExamplePlots/trait_graph_example_midpoint_rect_clip.jpg',
     plot_zoom_mod = 1.15,output_width = 6,output_height = 5
   )
+
+# ~~~~~~~~~~~~~~~~~~~ #
+# Jungian ####
+# ~~~~~~~~~~~~~~~~~~~ #
+TG_jung(
+  dataset = sample_data,
+  column_name = "Extroversion",
+  title = "Team Extroversion Profile",
+  show_title = FALSE,
+  label_top = "Introversion",
+  label_bottom = "Extroversion",
+  callout_text_color = "other",
+  show_points = F,
+  save_plot = TRUE,
+  output_path = 'ExamplePlots/jung_graph_example_0.jpg'
+)
 
   # ~~~~~~~~~~~~~~~~~~~ #
   # --- Doughnut Graph  ####

@@ -1,12 +1,17 @@
 # -----------------------------------------------------------------------------
 # FILE: R/TG_jung.R
-# STATUS: FINAL - UPDATED
+# DESCRIPTION: Polar dichotomy bars for Jungian preference pairs with curved labels.
+# AUTHOR: Lynden Jensen
+# LAST EDIT: 2025-02-09
+# DEPENDS: ggplot2, dplyr, scales, stringr, rlang
+# STATUS: ACTIVE
 # -----------------------------------------------------------------------------
 
 #' Create a Circular Dichotomy Bar Chart (Jungian Style)
 #'
-#' This function generates a polar bar chart with background color bands and
-#' curved text labels, ideal for visualizing dichotomous traits.
+#' @description
+#' Generates a polar bar chart with background color bands and curved text labels,
+#' ideal for visualizing dichotomous Jungian preference pairs.
 #'
 #' @param dataset A data frame containing the data to plot.
 #' @param column_name The name of the column containing the percentile scores to plot.

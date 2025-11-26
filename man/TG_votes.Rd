@@ -74,5 +74,6 @@ of the \code{column_name} will be used. 160 Character limit.}
 Invisibly returns the ggplot object.
 }
 \description{
-Create and Save a Circular Bar Chart for Votes/Opinion Data
+Builds a circular bar chart for vote/opinion proportions with title handling,
+label placement, and optional color customization.
 }

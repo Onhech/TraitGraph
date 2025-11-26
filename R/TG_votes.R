@@ -1,8 +1,17 @@
 # -----------------------------------------------------------------------------
 # FILE: R/TG_votes.R
+# DESCRIPTION: Circular bar chart for vote/opinion proportions.
+# AUTHOR: Lynden Jensen
+# LAST EDIT: 2025-02-09
+# DEPENDS: ggplot2, dplyr, rlang, tibble
+# STATUS: ACTIVE
 # -----------------------------------------------------------------------------
 
 #' Create and Save a Circular Bar Chart for Votes/Opinion Data
+#'
+#' @description
+#' Builds a circular bar chart for vote/opinion proportions with title handling,
+#' label placement, and optional color customization.
 #'
 #' @param dataset A data frame containing the data to plot.
 #' @param column_name The name of the column containing the numeric values to plot.

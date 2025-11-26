@@ -54,7 +54,8 @@ TG_similarity_heatmap(
 A \code{ggplot} object representing the similarity heatmap (returned invisibly).
 }
 \description{
-Produces a heatmap of similarity scores between individuals.
+Produces a similarity heatmap (lower triangle by default) between individuals,
+with optional value labels and legend control.
 }
 \examples{
 TG_similarity_heatmap(

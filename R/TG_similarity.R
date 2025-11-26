@@ -1,9 +1,11 @@
-# --- Psychological Similarity Function Suite ---
-# Provides functions to calculate, visualize, and tabulate
-# psychological similarity within a group.
-
-# Required libraries:
-# dplyr, igraph, ggraph, scales, knitr, kableExtra, tidyr, tibble, rlang, ggrepel
+# -----------------------------------------------------------------------------
+# FILE: R/TG_similarity.R
+# DESCRIPTION: Similarity matrix calculations plus heatmap and network visuals.
+# AUTHOR: Lynden Jensen
+# LAST EDIT: 2025-02-09
+# DEPENDS: dplyr, igraph, ggraph, scales, knitr, kableExtra, tidyr, tibble, rlang, ggrepel
+# STATUS: ACTIVE
+# -----------------------------------------------------------------------------
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # INTERNAL HELPER FUNCTION
@@ -216,7 +218,8 @@ TG_similarity_network <- function(dataset, columns, name_col = "names",
 #' Create a Psychological Similarity Heatmap
 #'
 #' @description
-#' Produces a heatmap of similarity scores between individuals.
+#' Produces a similarity heatmap (lower triangle by default) between individuals,
+#' with optional value labels and legend control.
 #'
 #' @param dataset A `data.frame` or `tibble`.
 #' @param columns A character vector of column names.

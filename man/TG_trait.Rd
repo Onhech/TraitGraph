@@ -19,6 +19,10 @@ TG_trait(
   midpoint_label_color = c("base", "shade"),
   group_average_label = "Group\\nAverage",
   group_average_color = "#0F2240",
+  order_mode = c("hybrid", "risk", "custom"),
+  order_column = NULL,
+  random_seed = 12345,
+  center_middle_label = TRUE,
   plot_zoom_mod = 0,
   inner_hole_size_mod = 0,
   margin_y_mod = 0,
@@ -61,7 +65,15 @@ TG_trait(
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
 
-\item{group_average_color}{Hex color for the group average slice and text. Defaults to "black".}
+\item{group_average_color}{Hex color for the group average slice and text. Defaults to "#0F2240".}
+
+\item{order_mode}{How to order participant labels around the circle: \code{"hybrid"} (default; manual slots for n > 5, else risk-based), \code{"risk"} (always longest-to-safest), or \code{"custom"} (use \code{order_column}).}
+
+\item{order_column}{Name of a column that supplies a custom order when \code{order_mode = "custom"}.}
+
+\item{random_seed}{Optional integer seed to make the randomized ordering reproducible (when \code{order_mode} uses randomness).}
+
+\item{center_middle_label}{Logical; if TRUE (default), center-align the middle participant label to reduce overlap.}
 
 \item{plot_zoom_mod}{A numeric value to add/subtract from the outer plot boundary.}
 
@@ -93,7 +105,7 @@ TG_trait(
 Invisibly returns the ggplot object.
 }
 \description{
-This function generates a polar bar chart to visualize percentile scores for
-individuals within a group. It automatically calculates and adds a group
-average comparison to the plot.
+Generates a polar bar chart of percentile scores for individuals, adds a group
+average slice, supports favorite/midpoint coloring, and reorders labels to
+reduce clipping while keeping label offsets fixed.
 }

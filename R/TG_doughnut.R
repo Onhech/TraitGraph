@@ -1,8 +1,11 @@
-# --- Doughnut Chart Votes/Opinion Data ---
-# Creates a doughnut chart to visualize proportions, building on the logic
-# refined in the testing script.
-
-# Required libraries: dplyr, ggplot2, rlang, stringr, ggtext
+# -----------------------------------------------------------------------------
+# FILE: R/TG_doughnut.R
+# DESCRIPTION: Doughnut chart for voting/opinion data with readable labels.
+# AUTHOR: Lynden Jensen
+# LAST EDIT: 2025-02-09
+# DEPENDS: dplyr, ggplot2, rlang, stringr, ggtext
+# STATUS: ACTIVE
+# -----------------------------------------------------------------------------
 
 #' Create and Save a Doughnut Chart for Votes/Opinion Data
 #'
@@ -154,7 +157,10 @@ TG_doughnut_chart <- function(dataset,
   plot_data <- plot_data %>%
     dplyr::mutate(percentage = value / sum(value) * 100) %>%
     { if (sort_order == "desc") dplyr::arrange(., dplyr::desc(value), id) else dplyr::arrange(., value, id) } %>%
-    dplyr::mutate(id = factor(id, levels = unique(id)))
+    dplyr::mutate(
+      id = factor(id, levels = unique(id)),
+      plot_order = dplyr::row_number() # freeze order for plotting, stars, and footnote
+    )
 
   # Compute slice ranks and positions outside mutate to avoid recycling issues
   slice_rank <- seq_len(nrow(plot_data))
@@ -174,11 +180,24 @@ TG_doughnut_chart <- function(dataset,
     dplyr::mutate(
       pos = rev(cumsum(rev(percentage)) - 0.5 * rev(percentage)),
       name_label = ifelse(percentage > outer_label_threshold, as.character(id), ""),
-      value_label = ifelse(percentage > inner_label_threshold, paste0(round(percentage, 0), "%"), "*"),
+      value_label = paste0(round(percentage, 0), "%"),
       slice_rank = slice_rank,
       slice_rank_prop = slice_rank_prop,
-      intensity_prop = intensity_prop
+      intensity_prop = intensity_prop,
+      plot_order = dplyr::row_number() # freeze order for plotting/star/footnote
     )
+
+  # Only the first below-threshold slice (by plot order) gets an asterisk; others blank.
+  small_idx <- which(plot_data$percentage <= inner_label_threshold)
+  if (length(small_idx) > 0) {
+    # Choose the largest below-threshold slice (descending percentage, tie-breaker: plot_order)
+    star_idx <- small_idx[order(plot_data$percentage[small_idx], plot_data$plot_order[small_idx], decreasing = TRUE)][1]
+    plot_data$value_label <- ifelse(
+      plot_data$percentage > inner_label_threshold,
+      plot_data$value_label,
+      ifelse(seq_len(nrow(plot_data)) == star_idx, "*", "")
+    )
+  }
 
   if (color_mode == "midpoint") {
     plot_data <- plot_data %>%
@@ -225,8 +244,7 @@ TG_doughnut_chart <- function(dataset,
   # --- 2a. Generate Caption/Legend for Small Slices ---
   small_slices <- plot_data %>%
     dplyr::filter(percentage <= outer_label_threshold) %>%
-    # *** CORRECTED: Sort by percentage (desc), then by name (asc) to break ties ***
-    dplyr::arrange(dplyr::desc(percentage), id)
+    dplyr::arrange(plot_order)
 
   if (nrow(small_slices) > 0) {
     # Define the intro text and the indent string for hanging indents
@@ -240,7 +258,7 @@ TG_doughnut_chart <- function(dataset,
     current_line <- html_intro
     current_len <- nchar(plain_intro)
 
-    for (i in 1:nrow(small_slices)) {
+    for (i in seq(nrow(small_slices), 1)) {
       name <- as.character(small_slices$id[i])
       color <- small_slices$label_color[i]
       # Add a comma if it's not the first name on the line
