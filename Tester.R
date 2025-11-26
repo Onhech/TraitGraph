@@ -56,7 +56,7 @@ set.seed(42) # for reproducibility
 
 # Generate the main sample data
 sample_data <- tibble::tibble(
-  name = c(  "Alice Frank", "Bob Steward", "Frank Bobby", "Eve Twingle", "Grace Hunter", "Heidi Probosky", "Charlie Kane", "David Turner Salvadora III", "Ivan Evans", "Judy Perch", "Karl Moritz", "Lana Perez", "Mason Lee", "Nina Hollis", "Oscar Grant", "Paula White", "Quinn Baxter", "Riley Chen", "Sara Diaz", "Theo Nguyen", "Uma Patel", "Victor Stone", "Willow Adams", "Xavier Brooks", "Yara Cohen", "Zane Foster", "Abby Kim", "Ben Torres", "Clara Wells", "Derek Young"),
+  name = c(  "Alice Frank Longnamer", "Bob Steward", "Frank Bobby", "Eve Twingle", "Grace Hunter", "Heidi Probosky", "Charlie Kane", "David Turner Salvadora III", "Ivan Evans", "Judy Perch", "Karl Moritz", "Lana Perez", "Mason Lee", "Nina Hollis", "Oscar Grant", "Paula White", "Quinn Baxter", "Riley Chen", "Sara Diaz", "Theo Nguyen", "Uma Patel", "Victor Stone", "Willow Adams", "Xavier Brooks", "Yara Cohen", "Zane Foster", "Abby Kim", "Ben Torres", "Clara Wells", "Derek Young"),
   favourite_color = c( "#FF6B6B", "#4ECDC4", "#45B7D1", "#F7B801", "#FAD390","#FF8C61", "#3D5A80", "#98C1D9", "#9B59B6", "#293241","#E67E22", "#1ABC9C", "#E74C3C", "#3498DB", "#9B59B6","#F1C40F", "#2ECC71", "#16A085", "#D35400", "#C0392B","#7F8C8D", "#BDC3C7", "#8E44AD", "#27AE60", "#F39C12","#2980B9", "#C0392B", "#D35400", "#1ABC9C", "#9B59B6"),
   HonestyHumility     = round(runif(30, 30, 95)),  # varied range per trait
   Emotionality        = round(runif(30, 30, 90)),
@@ -122,7 +122,8 @@ TG_trait(
     midpoint_lighten_power = 1.75,     # curve control: >1 reduces lightening faster as scores move away from 50
     midpoint_label_color = "base", # use shaded (darkened) bar color on labels for clarity
     save_plot = T,show_plot = T,
-    output_path = 'ExamplePlots/trait_graph_example_midpoint.jpg'
+    output_path = 'ExamplePlots/trait_graph_example_midpoint_rect_clip.jpg',
+    plot_zoom_mod = 1.15,output_width = 6,output_height = 5
   )
 
   # ~~~~~~~~~~~~~~~~~~~ #

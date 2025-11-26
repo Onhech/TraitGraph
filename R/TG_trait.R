@@ -23,6 +23,7 @@
 #' @param midpoint_lighten_power Numeric >= 0 controlling the curve of lightening; values > 1 make lightening drop off faster as scores move away from 50.
 #' @param midpoint_label_color Choose `"base"` (default) to color labels with the prototypical high/low colors, or `"shade"` to color labels with the lightened/darkened bar color (darkened for readability) when `color_mode = "midpoint"`.
 #' @param group_average_label A string used to label the group average bar. Defaults to "Group\\nAverage".
+#' @param group_average_color Hex color for the group average slice and text. Defaults to "black".
 #' @param plot_zoom_mod A numeric value to add/subtract from the outer plot boundary.
 #' @param inner_hole_size_mod A positive numeric value to reduce the inner hole size.
 #' @param margin_y_mod A numeric value (in cm) to add/subtract from top/bottom margins.
@@ -53,6 +54,7 @@ TG_trait <- function(
     midpoint_lighten_power = 2,
     midpoint_label_color = c("base", "shade"),
     group_average_label = "Group\nAverage",
+    group_average_color = "#0F2240",
     plot_zoom_mod = 0,
     inner_hole_size_mod = 0,
     margin_y_mod = 0,
@@ -104,26 +106,102 @@ TG_trait <- function(
     )
 
   group_avg <- round(mean(plot_data$value, na.rm = TRUE), 0)
-  average_row <- tibble::tibble(id = group_average_label, value = group_avg, color = "black")
+  average_row <- tibble::tibble(id = group_average_label, value = group_avg, color = group_average_color)
   plot_data <- dplyr::bind_rows(average_row, plot_data)
 
   plot_data <- plot_data %>%
     dplyr::mutate(
       value = ifelse(value >= 99, value, round(value, 0)),
-      id = factor(id, levels = id)
+      id = as.character(id)
     )
+
+  # Reorder participants to reduce side-edge clipping. Preserve randomness, then steer long names
+  # toward safer angles and short names toward riskier angles. For larger groups we use a
+  # manual placement to avoid a boxy look.
+  is_group_average <- plot_data$id == group_average_label
+  participant_ids <- plot_data$id[!is_group_average]
+  n_participants <- length(participant_ids)
+  if (n_participants > 1) {
+    participant_ids <- sample(participant_ids) # randomize base order each call
+    start_angle <- -pi / (n_participants + 1)  # match coord_polar start
+    angles <- ((seq_len(n_participants) - 0.5) / n_participants) * 2 * pi + start_angle
+    # edge_risk: sin(angle) is 0 at top/bottom and ±1 at left/right; abs() makes it a risk score
+    # so higher values mean more likely to clip horizontally, lower values are safer positions.
+    edge_risk <- abs(sin(angles))
+
+    if (n_participants > 5) {
+      # Manual placement for larger groups:
+      # longest -> position 1; second-longest -> position n;
+      # shortest -> highest-risk open slot; second-shortest -> second highest-risk open slot;
+      # remaining names keep their (shuffled) order in remaining slots.
+      name_len <- nchar(participant_ids)
+      long_order <- order(-name_len, seq_along(name_len)) # longest first
+      short_order <- order(name_len, seq_along(name_len)) # shortest first
+
+      placed <- rep(NA_character_, n_participants)
+
+      longest_name <- participant_ids[long_order[1]]
+      placed[1] <- longest_name
+      if (n_participants >= 2) {
+        second_long_name <- participant_ids[long_order[min(2, n_participants)]]
+        placed[n_participants] <- second_long_name
+      }
+
+      used_names <- placed[!is.na(placed)]
+      remaining_idx <- setdiff(seq_along(participant_ids), long_order[1:min(2, n_participants)])
+      remaining_names <- participant_ids[remaining_idx]
+      remaining_lens <- name_len[remaining_idx]
+
+      short_idx_order <- order(remaining_lens, seq_along(remaining_lens)) # shortest among remaining
+      risk_order <- order(edge_risk, decreasing = TRUE, seq_along(edge_risk)) # highest risk first
+
+      # Place shortest then second-shortest into highest-risk available slots (not 1 or n)
+      placed_short <- 0
+      for (risk_slot in risk_order) {
+        if (risk_slot %in% c(1, n_participants)) next
+        if (placed_short >= min(2, length(short_idx_order))) break
+        candidate_name <- remaining_names[short_idx_order[placed_short + 1]]
+        if (!candidate_name %in% used_names) {
+          placed[risk_slot] <- candidate_name
+          used_names <- c(used_names, candidate_name)
+          placed_short <- placed_short + 1
+        }
+      }
+
+      # Fill remaining slots with remaining names in their current (shuffled) order
+      fill_names <- participant_ids[!(participant_ids %in% used_names)]
+      empty_slots <- which(is.na(placed))
+      if (length(empty_slots) > 0 && length(fill_names) > 0) {
+        placed[empty_slots] <- fill_names[seq_len(min(length(empty_slots), length(fill_names)))]
+      }
+
+      final_levels <- c(group_average_label, placed)
+    } else {
+      name_rank <- order(-nchar(participant_ids), seq_along(participant_ids)) # longest first
+      angle_rank <- order(edge_risk, seq_along(edge_risk))                   # safest angles first
+      placed <- participant_ids
+      placed[angle_rank] <- participant_ids[name_rank]
+      final_levels <- c(group_average_label, placed)
+    }
+  } else {
+    final_levels <- plot_data$id
+  }
+
+  plot_data <- plot_data %>%
+    dplyr::mutate(id = factor(id, levels = final_levels)) %>%
+    dplyr::arrange(id)
 
   if (color_mode == "midpoint") {
     plot_data <- plot_data %>%
       dplyr::mutate(
         base_mid_color = dplyr::if_else(
           id == group_average_label,
-          "black",
+          group_average_color,
           dplyr::if_else(value >= 50, midpoint_colors$high, midpoint_colors$low)
         ),
         fill_color = dplyr::if_else(
           id == group_average_label,
-          "black",
+          group_average_color,
           compute_midpoint_color(value, midpoint_colors$high, midpoint_colors$low)
         )
       )

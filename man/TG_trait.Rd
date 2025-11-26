@@ -18,6 +18,7 @@ TG_trait(
   midpoint_lighten_power = 2,
   midpoint_label_color = c("base", "shade"),
   group_average_label = "Group\\nAverage",
+  group_average_color = "#0F2240",
   plot_zoom_mod = 0,
   inner_hole_size_mod = 0,
   margin_y_mod = 0,
@@ -59,6 +60,8 @@ TG_trait(
 \item{midpoint_label_color}{Choose \code{"base"} (default) to color labels with the prototypical high/low colors, or \code{"shade"} to color labels with the lightened/darkened bar color (darkened for readability) when \code{color_mode = "midpoint"}.}
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
+
+\item{group_average_color}{Hex color for the group average slice and text. Defaults to "black".}
 
 \item{plot_zoom_mod}{A numeric value to add/subtract from the outer plot boundary.}
 
