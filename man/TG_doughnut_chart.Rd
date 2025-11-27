@@ -27,6 +27,9 @@ TG_doughnut_chart(
   footnote_vjust = 1,
   footnote_lineheight = 1.3,
   footnote_margin_t = -42,
+  plot_margin = 20,
+  label_radius_base = 2.9,
+  label_nudge_bottom = TRUE,
   hole_size = 0.5,
   name_size_mod = 1,
   title_size_mod = 1,
@@ -85,6 +88,12 @@ than this value will be hidden. Defaults to the same value as \code{inner_label_
 \item{footnote_lineheight}{The line height for multi-line footnotes. Defaults to 1.3.}
 
 \item{footnote_margin_t}{Numeric. The top margin (space) above the footnote. Defaults to 15. Smaller values move the footnote up.}
+
+\item{plot_margin}{Numeric or length-4 numeric vector applied to plot margins (top, right, bottom, left). Defaults to 20 on all sides.}
+
+\item{label_radius_base}{Baseline radial position for outer labels. Defaults to 2.9 (lower to pull labels closer).}
+
+\item{label_nudge_bottom}{Logical; if TRUE (default) slightly nudges labels near 6 o'clock to reduce overlap.}
 
 \item{hole_size}{Numeric value between 0 and 1 to control the size of the doughnut's hole. Defaults to 0.5.}
 

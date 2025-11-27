@@ -40,6 +40,9 @@
 #' @param footnote_vjust The vertical justification of the footnote. Defaults to 0.
 #' @param footnote_lineheight The line height for multi-line footnotes. Defaults to 1.3.
 #' @param footnote_margin_t Numeric. The top margin (space) above the footnote. Defaults to 15. Smaller values move the footnote up.
+#' @param plot_margin Numeric or length-4 numeric vector applied to plot margins (top, right, bottom, left). Defaults to 20 on all sides.
+#' @param label_radius_base Baseline radial position for outer labels. Defaults to 2.9 (lower to pull labels closer).
+#' @param label_nudge_bottom Logical; if TRUE (default) slightly nudges labels near 6 o'clock to reduce overlap.
 #' @param hole_size Numeric value between 0 and 1 to control the size of the doughnut's hole. Defaults to 0.5.
 #' @param name_size_mod A multiplier to adjust the final label font size (e.g., 1 = default, 1.2 = 20% larger).
 #' @param title_size_mod A numeric value to add or subtract from the dynamically calculated title font size.
@@ -75,6 +78,9 @@ TG_doughnut_chart <- function(dataset,
                               footnote_vjust = 1,
                               footnote_lineheight = 1.3,
                               footnote_margin_t = -42,
+                              plot_margin = 20,
+                              label_radius_base = 2.9,
+                              label_nudge_bottom = TRUE,
                               hole_size = 0.5,
                               name_size_mod = 1,
                               title_size_mod = 1,
@@ -231,15 +237,16 @@ TG_doughnut_chart <- function(dataset,
       )
     )
 
-  # Space out labels near 6 o'clock by nudging their radius slightly
+  # Space out labels near 6 o'clock by nudging their radius slightly (optional)
   angle_deg <- (plot_data$pos / 100) * 360
   bottom_band <- angle_deg > 135 & angle_deg < 225
   radius_offsets <- rep(0, nrow(plot_data))
-  if (any(bottom_band)) {
+  if (isTRUE(label_nudge_bottom) && any(bottom_band)) {
     idx <- which(bottom_band)
-    radius_offsets[idx] <- (rank(angle_deg[idx]) - (length(idx) + 1) / 2) * 0.12
+    # Push outward only (no inward nudge): distance grows with rank within the band
+    radius_offsets[idx] <- abs(rank(angle_deg[idx]) - (length(idx) + 1) / 2) * 0.12
   }
-  plot_data$label_radius <- 2.9 + radius_offsets
+  plot_data$label_radius <- label_radius_base + radius_offsets
 
   # --- 2a. Generate Caption/Legend for Small Slices ---
   small_slices <- plot_data %>%
@@ -331,7 +338,11 @@ TG_doughnut_chart <- function(dataset,
         color = "grey40",
         margin = ggplot2::margin(t = footnote_margin_t)
       ),
-      plot.margin = ggplot2::margin(20, 20, 20, 20)
+      plot.margin = if (length(plot_margin) == 4) {
+        ggplot2::margin(plot_margin[1], plot_margin[2], plot_margin[3], plot_margin[4])
+      } else {
+        ggplot2::margin(plot_margin, plot_margin, plot_margin, plot_margin)
+      }
     )
 
   # --- 4. Save and/or Show Plot ---

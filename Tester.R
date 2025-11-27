@@ -134,18 +134,18 @@ TG_doughnut_chart(
     dataset = sample_data,
     column_name = "rsummedQ_1",
     sort_order = "asc",
-    show_title = F,title = "Who would win the Nobel Prize and then apologize for taking up everyone's time during their acceptance speech?",
-    title_size_mod = 1,
+    show_title = F, title = "Who would win the Nobel Prize and then apologize for taking up everyone's time during their acceptance speech?", title_size_mod = 1,
     name_size_mod = 1,
     save_plot = TRUE,
     inner_label_threshold = 5,
     footnote_text_width = 65,
     footnote_hjust = 0,
     footnote_vjust = 1,
+    #footnote_margin_t = -42,
     show_plot = T,
     title_color = "grey30",
-    #footnote_margin_t = -42,
-    output_path = "ExamplePlots/doughnut_chart_desc_no_title.jpeg"
+    output_path = "ExamplePlots/doughnut_chart_desc_no_title.jpeg",
+    plot_margin = -7,label_radius_base = 2.65, label_nudge_bottom = F
   )
 
 # Midpoint color mode for doughnut (single base color, lightened by rank)
