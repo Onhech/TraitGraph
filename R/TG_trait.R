@@ -90,9 +90,9 @@ TG_trait <- function(
   midpoint_lighten_max <- pmax(0, pmin(midpoint_lighten_max, 1))
   midpoint_lighten_power <- pmax(0, midpoint_lighten_power)
   if (!is.null(random_seed)) {
-    old_seed <- .Random.seed
+    old_seed <- if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) .Random.seed else NULL
     on.exit({
-      if (exists("old_seed", inherits = FALSE)) .Random.seed <<- old_seed
+      if (!is.null(old_seed)) .Random.seed <<- old_seed
     }, add = TRUE)
     set.seed(random_seed)
   }
