@@ -48,9 +48,9 @@
 #' @param title_size_mod A numeric value to add or subtract from the dynamically calculated title font size.
 #' @param title_vjust_mod A numeric value to add or subtract from the dynamically calculated title's vertical adjustment.
 #' @param output_path The file path for saving the plot.
-#' @param output_width The width of the saved image in inches.
-#' @param output_height The height of the saved image in inches.
-#' @param output_dpi The resolution for the saved image.
+#' @param output_width The width of the saved image in inches (default = 7).
+#' @param output_height The height of the saved image in inches (default = 7).
+#' @param output_dpi The resolution for the saved image (default = 300).
 #' @param save_plot Logical. If TRUE, the plot is saved.
 #' @param show_plot Logical. If TRUE, the plot is displayed.
 #'
