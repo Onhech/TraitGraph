@@ -110,6 +110,20 @@ TG_trait(
     plot_zoom_mod = 1.15,output_width = 6,output_height = 5
   )
 
+# --- Gradient color mode (direct interpolation between high/low colors) ----------
+TG_trait(
+    dataset = sample_data_20,
+    show_title = F,
+    column_name = "Agreeableness",
+    color_mode = "gradient",
+    midpoint_colors = list(high = "#2BB49E", low = "#FF4C5B"),
+    midpoint_lighten = FALSE,
+    random_seed = 12345,
+    save_plot = T, show_plot = T,
+    output_path = 'ExamplePlots/trait_graph_example_gradient.jpg',
+    plot_zoom_mod = 0.6, output_width = 5.5, output_height = 4.5
+  )
+
 # ~~~~~~~~~~~~~~~~~~~ #
 # Jungian ####
 # ~~~~~~~~~~~~~~~~~~~ #

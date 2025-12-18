@@ -105,11 +105,11 @@ than this value will be hidden. Defaults to the same value as \code{inner_label_
 
 \item{output_path}{The file path for saving the plot.}
 
-\item{output_width}{The width of the saved image in inches.}
+\item{output_width}{The width of the saved image in inches (default = 7).}
 
-\item{output_height}{The height of the saved image in inches.}
+\item{output_height}{The height of the saved image in inches (default = 7).}
 
-\item{output_dpi}{The resolution for the saved image.}
+\item{output_dpi}{The resolution for the saved image (default = 300).}
 
 \item{save_plot}{Logical. If TRUE, the plot is saved.}
 

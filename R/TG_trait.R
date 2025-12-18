@@ -21,12 +21,13 @@
 #' @param show_title Logical: if TRUE (default), include the generated title in the plot.
 #' @param name The name of the column containing unique identifiers.
 #' @param color The name of the column containing hex color codes.
-#' @param color_mode A string specifying how bar colors are chosen: `"favorite"` (default) uses the provided color column, `"midpoint"` applies trait-specific midpoint shading.
+#' @param color_mode A string specifying how bar colors are chosen: `"favorite"` (default) uses the provided color column, `"midpoint"` applies trait-specific midpoint shading with optional lightening, and `"gradient"` simply interpolates between the low/high palette.
 #' @param midpoint_colors Optional list with `high` and `low` hex codes used when `color_mode = "midpoint"`. Defaults to `list(high = "#00A878", low = "#3B6DD8")`.
 #' @param midpoint_lighten Logical. If TRUE (default), midpoint mode lightens colors toward white as scores approach 50.
 #' @param midpoint_lighten_max Numeric between 0 and 1; maximum lightening toward white when `midpoint_lighten = TRUE`. Defaults to 0.3.
 #' @param midpoint_lighten_power Numeric >= 0 controlling the curve of lightening; values > 1 make lightening drop off faster as scores move away from 50.
 #' @param midpoint_label_color Choose `"base"` (default) to color labels with the prototypical high/low colors, or `"shade"` to color labels with the lightened/darkened bar color (darkened for readability) when `color_mode = "midpoint"`.
+#' @param color_opacity Numeric between 0 and 1 controlling the transparency of the bars. Defaults to 0.85.
 #' @param group_average_label A string used to label the group average bar. Defaults to "Group\\nAverage".
 #' @param group_average_color Hex color for the group average slice and text. Defaults to "#0F2240".
 #' @param order_mode How to order participant labels around the circle: `"hybrid"` (default; manual slots for n > 5, else risk-based), `"risk"` (always longest-to-safest), or `"custom"` (use `order_column`).
@@ -56,7 +57,7 @@ TG_trait <- function(
     show_title = TRUE,
     name = "name",
     color = "favourite_color",
-    color_mode = c("favorite", "midpoint"),
+    color_mode = c("favorite", "midpoint", "gradient"),
     midpoint_colors = list(high = "#00A878", low = "#3B6DD8"),
     midpoint_lighten = TRUE,
     midpoint_lighten_max = 0.75,
@@ -77,6 +78,7 @@ TG_trait <- function(
     name_size_mod = 0,
     output_path = "trait_plot.jpg",
     output_width = 7,
+    color_opacity = 0.95,
     output_height = 5,
     output_dpi = 300,
     save_plot = FALSE,
@@ -98,25 +100,56 @@ TG_trait <- function(
   }
 
   lighten_toward_white <- function(hex, amount) {
-    rgb_matrix <- grDevices::col2rgb(hex)
-    amount <- pmax(0, pmin(amount, 1))
-    if (length(amount) == 1) {
-      amount <- rep(amount, ncol(rgb_matrix))
+    amount <- rep(amount, length.out = length(hex))
+    result <- rep(NA_character_, length(hex))
+    valid <- !is.na(hex)
+    if (any(valid)) {
+      rgb_matrix <- grDevices::col2rgb(hex[valid])
+      clean_amount <- pmax(0, pmin(amount[valid], 1))
+      adjusted_rgb <- rgb_matrix + sweep(255 - rgb_matrix, 2, clean_amount, `*`)
+      result[valid] <- grDevices::rgb(
+        adjusted_rgb[1, ],
+        adjusted_rgb[2, ],
+        adjusted_rgb[3, ],
+        maxColorValue = 255
+      )
     }
-    adjusted_rgb <- rgb_matrix + sweep(255 - rgb_matrix, 2, amount, `*`)
-    grDevices::rgb(adjusted_rgb[1, ], adjusted_rgb[2, ], adjusted_rgb[3, ], maxColorValue = 255)
+    result
+  }
+
+  compute_gradient_colors <- function(values, high_hex, low_hex) {
+    clamped <- pmin(pmax(values, 0), 100)
+    gradient <- rep(NA_character_, length(clamped))
+    valid <- !is.na(clamped) & !is.na(high_hex) & !is.na(low_hex)
+    if (!any(valid)) {
+      return(gradient)
+    }
+    ramp <- grDevices::colorRamp(c(low_hex, high_hex))
+    rgb_values <- ramp(clamped[valid] / 100)
+    gradient[valid] <- grDevices::rgb(
+      rgb_values[, 1],
+      rgb_values[, 2],
+      rgb_values[, 3],
+      maxColorValue = 255
+    )
+    gradient
   }
 
   compute_midpoint_color <- function(values, high_hex, low_hex) {
-    vapply(values, function(v) {
-      if (is.na(v)) return(NA_character_)
-      base_color <- if (v >= 50) high_hex else low_hex
-      intensity <- abs(v - 50) / 50
-      intensity <- pmax(0, pmin(intensity, 1))
-      if (!midpoint_lighten) return(base_color)
-      lightening <- midpoint_lighten_max * ((1 - intensity) ^ midpoint_lighten_power)
-      lighten_toward_white(base_color, lightening)
-    }, character(1))
+    colors <- compute_gradient_colors(values, high_hex, low_hex)
+    if (!midpoint_lighten) {
+      return(colors)
+    }
+    clamped <- pmin(pmax(values, 0), 100)
+    valid <- !is.na(colors) & !is.na(clamped)
+    if (!any(valid)) {
+      return(colors)
+    }
+    intensity <- abs(clamped[valid] - 50) / 50
+    intensity <- pmax(0, pmin(intensity, 1))
+    lightening <- midpoint_lighten_max * ((1 - intensity) ^ midpoint_lighten_power)
+    colors[valid] <- lighten_toward_white(colors[valid], lightening)
+    colors
   }
 
   plot_data <- dataset %>%
@@ -226,18 +259,24 @@ TG_trait <- function(
     dplyr::mutate(id = factor(id, levels = final_levels)) %>%
     dplyr::arrange(id)
 
-  if (color_mode == "midpoint") {
+  if (color_mode %in% c("midpoint", "gradient")) {
+    gradient_colors <- compute_gradient_colors(plot_data$value, midpoint_colors$high, midpoint_colors$low)
     plot_data <- plot_data %>%
       dplyr::mutate(
-        base_mid_color = dplyr::if_else(
-          id == group_average_label,
-          group_average_color,
-          dplyr::if_else(value >= 50, midpoint_colors$high, midpoint_colors$low)
+        base_mid_color = dplyr::case_when(
+          id == group_average_label ~ group_average_color,
+          color_mode == "midpoint" & value >= 50 ~ midpoint_colors$high,
+          color_mode == "midpoint" ~ midpoint_colors$low,
+          TRUE ~ gradient_colors
         ),
         fill_color = dplyr::if_else(
           id == group_average_label,
           group_average_color,
-          compute_midpoint_color(value, midpoint_colors$high, midpoint_colors$low)
+          if (color_mode == "midpoint") {
+            compute_midpoint_color(value, midpoint_colors$high, midpoint_colors$low)
+          } else {
+            gradient_colors
+          }
         )
       )
   } else {
@@ -278,7 +317,7 @@ TG_trait <- function(
     ggplot2::geom_hline(yintercept = c(25, 75), color = "black", size = 0.2, alpha = 0.4, lty = 'dashed') +
     ggplot2::geom_hline(yintercept = 50, color = "black", size = 0.6, alpha = 0.5) +
     ggplot2::geom_hline(yintercept = c(100), color = "black", size = 0.6, alpha = .5) +
-    ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = fill_color), stat = "identity", alpha = 0.85, color = ggplot2::alpha(plot_data$border_color, 0.75), linewidth = 0.2) +
+    ggplot2::geom_bar(ggplot2::aes(x = id, y = value, fill = fill_color), stat = "identity", alpha = color_opacity, color = ggplot2::alpha(plot_data$border_color, 0.75), linewidth = 0.2) +
     ggplot2::scale_fill_identity() +
     ggplot2::scale_y_continuous(limits = c(final_y_inner_limit, final_y_outer_limit)) +
     ggplot2::theme_void() +

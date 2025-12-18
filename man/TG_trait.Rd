@@ -11,7 +11,7 @@ TG_trait(
   show_title = TRUE,
   name = "name",
   color = "favourite_color",
-  color_mode = c("favorite", "midpoint"),
+  color_mode = c("favorite", "midpoint", "gradient"),
   midpoint_colors = list(high = "#00A878", low = "#3B6DD8"),
   midpoint_lighten = TRUE,
   midpoint_lighten_max = 0.75,
@@ -32,6 +32,7 @@ TG_trait(
   name_size_mod = 0,
   output_path = "trait_plot.jpg",
   output_width = 7,
+  color_opacity = 0.95,
   output_height = 5,
   output_dpi = 300,
   save_plot = FALSE,
@@ -51,7 +52,7 @@ TG_trait(
 
 \item{color}{The name of the column containing hex color codes.}
 
-\item{color_mode}{A string specifying how bar colors are chosen: \code{"favorite"} (default) uses the provided color column, \code{"midpoint"} applies trait-specific midpoint shading.}
+\item{color_mode}{A string specifying how bar colors are chosen: \code{"favorite"} (default) uses the provided color column, \code{"midpoint"} applies trait-specific midpoint shading with optional lightening, and \code{"gradient"} simply interpolates between the low/high palette.}
 
 \item{midpoint_colors}{Optional list with \code{high} and \code{low} hex codes used when \code{color_mode = "midpoint"}. Defaults to \code{list(high = "#00A878", low = "#3B6DD8")}.}
 
@@ -92,6 +93,8 @@ TG_trait(
 \item{output_path}{The full path where the plot will be saved.}
 
 \item{output_width}{The width of the saved image in inches.}
+
+\item{color_opacity}{Numeric between 0 and 1 controlling the transparency of the bars. Defaults to 0.85.}
 
 \item{output_height}{The height of the saved image in inches.}
 
