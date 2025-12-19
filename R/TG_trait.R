@@ -38,6 +38,8 @@
 #' @param inner_hole_size_mod A positive numeric value to reduce the inner hole size.
 #' @param margin_y_mod A numeric value (in cm) to add/subtract from top/bottom margins.
 #' @param margin_x_mod A numeric value (in cm) to add/subtract from left/right margins.
+#' @param label_radius_base Numeric y coordinate used for name labels; higher values push labels further from the plot edge.
+#' @param label_nudge_bottom Logical; if TRUE (default) slightly offsets labels near the 6 o'clock position to prevent overlap.
 #' @param title_size_mod A numeric value to add/subtract from the title font size.
 #' @param title_vjust_mod A numeric value to add/subtract from the title vertical adjustment.
 #' @param name_size_mod A numeric value to add/subtract from the name label font size.
@@ -73,6 +75,8 @@ TG_trait <- function(
     inner_hole_size_mod = 0,
     margin_y_mod = 0,
     margin_x_mod = 0,
+    label_radius_base = 110,
+    label_nudge_bottom = TRUE,
     title_size_mod = 0,
     title_vjust_mod = 0,
     name_size_mod = 0,
@@ -301,6 +305,20 @@ TG_trait <- function(
       border_color = ifelse(is_light, dark_color, NA_character_)
     )
 
+  # --- Label radius adjustments ---
+  n_labels <- nrow(plot_data)
+  angles_deg <- ((seq_len(n_labels) - 0.5) / n_labels) * 360 - (180 / n_labels)
+  base_radius <- ifelse(plot_data$id == group_average_label, 130, label_radius_base)
+  radius_offsets <- rep(0, n_labels)
+  if (isTRUE(label_nudge_bottom)) {
+    bottom_mask <- angles_deg > 135 & angles_deg < 225 & plot_data$id != group_average_label
+    if (any(bottom_mask)) {
+      idx <- which(bottom_mask)
+      radius_offsets[idx] <- abs(rank(angles_deg[idx]) - (length(idx) + 1) / 2) * 3
+    }
+  }
+  plot_data$label_radius <- base_radius + radius_offsets
+
   title_params <- get_dynamic_title(title)
   final_title_size <- 8 + title_params$size + title_size_mod
   final_title_vjust <- 16 + title_params$vjust + title_vjust_mod
@@ -331,7 +349,7 @@ TG_trait <- function(
     ) +
     ggplot2::geom_text(
       data = plot_data,
-      ggplot2::aes(x = id, y = ifelse(id == group_average_label, 130, 110), label = id, fontface = ifelse(id == group_average_label, "bold", "plain")),
+      ggplot2::aes(x = id, y = label_radius, label = id, fontface = ifelse(id == group_average_label, "bold", "plain")),
       size = (ifelse(plot_data$id == group_average_label, 5, 4)) + name_size_mod,
       color = plot_data$label_color, angle = 0, lineheight = 0.8,
       hjust = dplyr::case_when(

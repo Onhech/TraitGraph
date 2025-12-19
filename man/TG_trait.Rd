@@ -27,6 +27,8 @@ TG_trait(
   inner_hole_size_mod = 0,
   margin_y_mod = 0,
   margin_x_mod = 0,
+  label_radius_base = 110,
+  label_nudge_bottom = TRUE,
   title_size_mod = 0,
   title_vjust_mod = 0,
   name_size_mod = 0,
@@ -83,6 +85,10 @@ TG_trait(
 \item{margin_y_mod}{A numeric value (in cm) to add/subtract from top/bottom margins.}
 
 \item{margin_x_mod}{A numeric value (in cm) to add/subtract from left/right margins.}
+
+\item{label_radius_base}{Numeric y coordinate used for name labels; higher values push labels further from the plot edge.}
+
+\item{label_nudge_bottom}{Logical; if TRUE (default) slightly offsets labels near the 6 o'clock position to prevent overlap.}
 
 \item{title_size_mod}{A numeric value to add/subtract from the title font size.}
 
