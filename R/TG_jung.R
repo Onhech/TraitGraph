@@ -273,6 +273,7 @@ TG_jung <- function(
       plot.title = title_element,
       axis.text.x = ggplot2::element_text(color = plot_data$dark_color, size = 15 * name_size_mod, face = ifelse(plot_data$id == group_average_label, "bold", "plain"), margin = ggplot2::margin(t = 12, unit = "pt"))
     ) +
+    # Uses an internal ggplot2 coord not exported via NAMESPACE.
     ggplot2:::coord_radial(start = -pi / (nrow(plot_data) + ((nrow(plot_data) * -0.1743) + 0.2101)), inner.radius = 0.25) +
     ggplot2::ggtitle(plot_title_text)
 

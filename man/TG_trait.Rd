@@ -18,7 +18,9 @@ TG_trait(
   midpoint_lighten_power = 2,
   midpoint_label_color = c("base", "shade"),
   group_average_label = "Group\\nAverage",
-  group_average_color = "#0F2240",
+  group_average_color = NULL,
+  group_average_label_fontface = NULL,
+  group_average_label_color = NULL,
   order_mode = c("hybrid", "risk", "custom"),
   order_column = NULL,
   random_seed = 12345,
@@ -28,7 +30,7 @@ TG_trait(
   margin_y_mod = 0,
   margin_x_mod = 0,
   label_radius_base = 110,
-  label_nudge_bottom = TRUE,
+  label_nudge_bottom = FALSE,
   title_size_mod = 0,
   title_vjust_mod = 0,
   name_size_mod = 0,
@@ -68,7 +70,11 @@ TG_trait(
 
 \item{group_average_label}{A string used to label the group average bar. Defaults to "Group\\nAverage".}
 
-\item{group_average_color}{Hex color for the group average slice and text. Defaults to "#0F2240".}
+\item{group_average_color}{Optional hex color for the group average slice. If NULL (default), the color follows the same mode logic as the other bars.}
+
+\item{group_average_label_fontface}{Font face for the group average label (e.g., "plain", "bold", "italic"). Defaults to the same as other labels.}
+
+\item{group_average_label_color}{Optional hex color for the group average label. If NULL (default), the label follows the same color logic as other labels.}
 
 \item{order_mode}{How to order participant labels around the circle: \code{"hybrid"} (default; manual slots for n > 5, else risk-based), \code{"risk"} (always longest-to-safest), or \code{"custom"} (use \code{order_column}).}
 

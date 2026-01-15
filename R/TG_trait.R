@@ -29,7 +29,9 @@
 #' @param midpoint_label_color Choose `"base"` (default) to color labels with the prototypical high/low colors, or `"shade"` to color labels with the lightened/darkened bar color (darkened for readability) when `color_mode = "midpoint"`.
 #' @param color_opacity Numeric between 0 and 1 controlling the transparency of the bars. Defaults to 0.85.
 #' @param group_average_label A string used to label the group average bar. Defaults to "Group\\nAverage".
-#' @param group_average_color Hex color for the group average slice and text. Defaults to "#0F2240".
+#' @param group_average_color Optional hex color for the group average slice. If NULL (default), the color follows the same mode logic as the other bars.
+#' @param group_average_label_fontface Font face for the group average label (e.g., "plain", "bold", "italic"). Defaults to the same as other labels.
+#' @param group_average_label_color Optional hex color for the group average label. If NULL (default), the label follows the same color logic as other labels.
 #' @param order_mode How to order participant labels around the circle: `"hybrid"` (default; manual slots for n > 5, else risk-based), `"risk"` (always longest-to-safest), or `"custom"` (use `order_column`).
 #' @param order_column Name of a column that supplies a custom order when `order_mode = "custom"`.
 #' @param random_seed Optional integer seed to make the randomized ordering reproducible (when `order_mode` uses randomness).
@@ -66,7 +68,9 @@ TG_trait <- function(
     midpoint_lighten_power = 2,
     midpoint_label_color = c("base", "shade"),
     group_average_label = "Group\nAverage",
-    group_average_color = "#0F2240",
+    group_average_color = NULL,
+    group_average_label_fontface = NULL,
+    group_average_label_color = NULL,
     order_mode = c("hybrid", "risk", "custom"),
     order_column = NULL,
     random_seed = 12345,
@@ -76,7 +80,7 @@ TG_trait <- function(
     margin_y_mod = 0,
     margin_x_mod = 0,
     label_radius_base = 110,
-    label_nudge_bottom = TRUE,
+    label_nudge_bottom = FALSE,
     title_size_mod = 0,
     title_vjust_mod = 0,
     name_size_mod = 0,
@@ -156,6 +160,16 @@ TG_trait <- function(
     colors
   }
 
+  average_hex_colors <- function(hex) {
+    hex <- hex[!is.na(hex)]
+    if (length(hex) == 0) {
+      return(NA_character_)
+    }
+    rgb_matrix <- grDevices::col2rgb(hex)
+    avg <- rowMeans(rgb_matrix)
+    grDevices::rgb(avg[1], avg[2], avg[3], maxColorValue = 255)
+  }
+
   plot_data <- dataset %>%
     dplyr::rename(
       id    = !!rlang::sym(name),
@@ -164,6 +178,11 @@ TG_trait <- function(
     )
 
   group_avg <- round(mean(plot_data$value, na.rm = TRUE), 0)
+  group_average_color <- if (is.null(group_average_color) || is.na(group_average_color) || group_average_color == "") {
+    NA_character_
+  } else {
+    group_average_color
+  }
   average_row <- tibble::tibble(id = group_average_label, value = group_avg, color = group_average_color)
   plot_data <- dplyr::bind_rows(average_row, plot_data)
 
@@ -263,19 +282,30 @@ TG_trait <- function(
     dplyr::mutate(id = factor(id, levels = final_levels)) %>%
     dplyr::arrange(id)
 
+  group_average_fill <- group_average_color
+  if (is.na(group_average_fill)) {
+    if (color_mode == "favorite") {
+      group_average_fill <- average_hex_colors(plot_data$color[plot_data$id != group_average_label])
+    } else if (color_mode == "midpoint") {
+      group_average_fill <- compute_midpoint_color(group_avg, midpoint_colors$high, midpoint_colors$low)
+    } else {
+      group_average_fill <- compute_gradient_colors(group_avg, midpoint_colors$high, midpoint_colors$low)
+    }
+  }
+
   if (color_mode %in% c("midpoint", "gradient")) {
     gradient_colors <- compute_gradient_colors(plot_data$value, midpoint_colors$high, midpoint_colors$low)
     plot_data <- plot_data %>%
       dplyr::mutate(
         base_mid_color = dplyr::case_when(
-          id == group_average_label ~ group_average_color,
+          id == group_average_label ~ group_average_fill,
           color_mode == "midpoint" & value >= 50 ~ midpoint_colors$high,
           color_mode == "midpoint" ~ midpoint_colors$low,
           TRUE ~ gradient_colors
         ),
         fill_color = dplyr::if_else(
           id == group_average_label,
-          group_average_color,
+          group_average_fill,
           if (color_mode == "midpoint") {
             compute_midpoint_color(value, midpoint_colors$high, midpoint_colors$low)
           } else {
@@ -286,7 +316,7 @@ TG_trait <- function(
   } else {
     plot_data <- plot_data %>%
       dplyr::mutate(
-        fill_color = color,
+        fill_color = dplyr::if_else(id == group_average_label, group_average_fill, color),
         base_mid_color = fill_color
       )
   }
@@ -303,6 +333,22 @@ TG_trait <- function(
       ),
       label_color = ifelse(is_light, sapply(label_base, darken_color), label_base),
       border_color = ifelse(is_light, dark_color, NA_character_)
+    )
+
+  group_average_label_fontface <- if (is.null(group_average_label_fontface)) {
+    "plain"
+  } else {
+    group_average_label_fontface
+  }
+  group_average_label_color <- if (is.null(group_average_label_color) || is.na(group_average_label_color) || group_average_label_color == "") {
+    NA_character_
+  } else {
+    group_average_label_color
+  }
+  plot_data <- plot_data %>%
+    dplyr::mutate(
+      label_color = ifelse(id == group_average_label & !is.na(group_average_label_color), group_average_label_color, label_color),
+      label_fontface = ifelse(id == group_average_label, group_average_label_fontface, "plain")
     )
 
   # --- Label radius adjustments ---
@@ -343,13 +389,13 @@ TG_trait <- function(
       data = plot_data,
       ggplot2::aes(x = id, y = pmax(value - 18, 12), label = paste0(value, "%")),
       size = ifelse(plot_data$id == group_average_label, 3.2, 3),
-      fontface = ifelse(plot_data$id == group_average_label, "bold", "plain"),
+      fontface = plot_data$label_fontface,
       fill = "white", alpha = 0.99, color = plot_data$label_color,
       label.size = 0.2, show.legend = FALSE
     ) +
     ggplot2::geom_text(
       data = plot_data,
-      ggplot2::aes(x = id, y = label_radius, label = id, fontface = ifelse(id == group_average_label, "bold", "plain")),
+      ggplot2::aes(x = id, y = label_radius, label = id, fontface = label_fontface),
       size = (ifelse(plot_data$id == group_average_label, 5, 4)) + name_size_mod,
       color = plot_data$label_color, angle = 0, lineheight = 0.8,
       hjust = dplyr::case_when(

@@ -1,0 +1,64 @@
+id,type,subtype,Title,Image,Trigger,Alternative Trigger,Mutually exclusive with,exclusive_group,Description,expected_rarity,interest_score,desirability_rank,Notes
+1,Survey Completion,completion-order,First!,1,Be the first person to complete the survey,,,completion-order,"First out the gate, this member submitted before anyone else.",Rare,Very Interesting,14,probably the owner
+2,Survey Completion,completion-order,Caboose,train,Be the last person to complete the survey,,,completion-order,"Last across the line, this member submitted after everyone else.",Rare,Mildly Interesting,44,
+3,Survey Completion,completion-duration,Speedrunner,Running person,Shortest completion time in cohort,Completed the survey in under 'x' minutes.,,completion-duration,"Fastest finish, this member had the shortest completion time.",Rare,Interesting,36,
+4,Survey Completion,completion-duration,The Thinker,Thinker,Longest completion time in cohort,Completed the survey in over 'x' minutes.,Speedrunner,completion-duration,"Took their time, this member had the longest completion time.",Rare,Mildly Interesting,48,
+5,Survey Completion,completion-window,Keener,Eye,Completed within first 24 hours,,,completion-window,"Early bird energy, this member finished within the first 24 hours.",Uncommon,Mildly Interesting,52,
+6,Survey Completion,completion-window,Last-Minute Larry,stopwatch,Completed in final 24 hours,,,completion-window,"Down to the wire, this member finished in the final 24 hours.",Uncommon,Interesting,41,
+7,Survey Completion,completion-time-of-day,Early Bird,Bird,Complete the survey between 4:00am-8:00am,,,completion-time,"Up with the sun, this member submitted between 4am and 8am.",Uncommon,Mildly Interesting,49,
+8,Survey Completion,completion-time-of-day,Night Owl,Owl,Complete the survey between 11:00pm-4:00am,,,completion-time,"Late-night submit, this member finished between 11pm and 4am.",Uncommon,Mildly Interesting,53,
+9,Survey Completion,completion-time-of-day,Prime Time,TV,Completed the survey during working hours (9am-5pm),,,completion-time,"9-to-5 energy, this member submitted during working hours.",Common,Uninteresting,62,
+10,Survey Completion,completion-day,Weekend Warrior,Sun,Completed the survey on a Saturday or Sunday,,,completion-time,"Weekend win, this member submitted on a Saturday or Sunday.",Uncommon,Mildly Interesting,56,
+11,Survey Completion,completion-time-of-day,Lunch Break,Sandwhich,Completed the survey between 11am - 1pm,,,completion-time,"Midday submit, this member finished between 11am and 1pm.",Common,Uninteresting,59,
+12,Survey Completion,response-style,Threes all the way down,3,Selected 3 most commonly (neutral),,,response-style,"Neutral zone, this member picked 3s more than anyone else.",Uncommon,Mildly Interesting,55,
+13,Survey Completion,profile-aggregate,Low Profile,sunglasses,Total sum of all trait percentiles is below the 40th percentile,,,profile-aggregate,"Low-key total, this member's trait sum fell below the 40th percentile.",Rare,Interesting,31,
+14,Trait Results,trait-peak,Angel,Wings,Scores highest in Honesty-Humility,,,trait-peak,"Halo on, this member scored highest in Honesty-Humility.",Rare,Very Interesting,8,
+15,Trait Results,trait-peak,Rock,Rock,Lowest Emotionality,,,trait-peak,"Steady nerves, this member scored lowest in Emotionality.",Rare,Interesting,35,
+16,Trait Results,trait-peak,Sparkplug,Lightning,Highest Extroversion,,,trait-peak,"Always ready to go, this member scored highest in Extraversion.",Rare,Very Interesting,19,
+17,Trait Results,trait-peak,Diplomat,dove,Highest Agreeableness,,,trait-peak,"Peacekeeper energy, this member scored highest in Agreeableness.",Rare,Interesting,28,
+18,Trait Results,trait-peak,Firestarter,Flame,Lowest Agreeableness,,,trait-peak,"Spicy takes, this member scored lowest in Agreeableness.",Rare,Interesting,30,
+19,Trait Results,trait-peak,The Planner,clipboard,High conscientiousness,,,trait-peak,"Checklist master, this member scored high in Conscientiousness.",Rare,Interesting,37,
+20,Trait Results,trait-peak,Explorer,Compass,Highest Openness,,,trait-peak,"Curiosity unlocked, this member scored highest in Openness.",Rare,Very Interesting,13,
+21,Trait Results,trait-balance,Right Down the Middle,bread,Smallest total distance from trait percentile midpoints across all traits,,,trait-balance,"Centered build, this member stayed closest to the midpoint overall.",Rare,Interesting,34,
+22,Trait Results,trait-balance,Full Send,explosion,Largest total distance from trait percentile midpoints across all traits,,,trait-balance,"All-in extremes, this member strayed farthest from the midpoint overall.",Rare,Very Interesting,15,
+23,Trait Results,trait-balance,Milquetoast,circle,No traits above or below 25%,,,trait-balance,"Middle lane, this member had no trait above 75 or below 25.",Rare,Mildly Interesting,46,
+24,Trait Results,trait-spike,The Specialist,wrench,Score >80 or <10 percentile in at least one trait,,,trait-pattern,"Signature spike, this member had at least one trait >80 or <10.",Rare,Very Interesting,21,
+25,Trait Results,trait-contrast,Walking Contradiction,?,"Within the same construct have one score >75th percentile, and one <25th percentile",,,trait-pattern,"Mixed signals, this member had a high and low within one construct.",Rare,Very Interesting,24,
+26,Dark Traits,dark-peak,The Main Character,Spotlight,Highest Narcissism,,,dark-peak,"Spotlight on, this member scored highest in Narcissism.",Rare,Very Interesting,20,
+27,Dark Traits,dark-peak,Chessmaster,Rook,Highest Machiavellianism,,,dark-peak,"Strategic vibe, this member scored highest in Machiavellianism.",Rare,Very Interesting,12,
+28,Dark Traits,dark-peak,Ice Cube,ice cube,Highest Psychopathy,,,dark-peak,"Cool and collected, this member scored highest in Psychopathy.",Rare,Very Interesting,16,
+29,Dark Traits,dark-peak,Troll Mode,gremlin face,Highest in Sadism,,,dark-peak,"Always pushing buttons, this member scored highest in Sadism.",Rare,Very Interesting,22,
+30,Dark Traits,dark-composite,Devil,Horns,Scores highest in the Dark Traits,,,dark-peak,"Dark side MVP, this member scored highest overall in dark traits.",Very Rare,Very Interesting,5,
+31,Similarity,similarity-average,The Epicenter,bullseye,Highest average similarity to all other members,,,similarity-average,"Group glue, this member was most similar to everyone on average.",Very Rare,Fascinating,3,
+32,Similarity,similarity-average,Default Settings,person,Average similarity closest to 0,,,similarity-average,"Baseline build, this member's average similarity was closest to zero.",Rare,Mildly Interesting,45,may be confusing
+33,Similarity,similarity-average,Black Sheep,sheep,Lowest average similarity to all other members,,,similarity-average,"Outlier energy, this member was least similar to everyone on average.",Rare,Very Interesting,10,Might not be seen as positive
+34,Similarity,similarity-top-match-count,Personality Triplets,,Be #1 match for 2 group members,,,similarity-top-match-count,"Triple match, this member was #1 for two people.",Rare,Interesting,32,
+35,Similarity,similarity-top-match-count,Personality Quadruplets,,Be #1 match for 3 group members,,,similarity-top-match-count,"Quad match, this member was #1 for three people.",Very Rare,Very Interesting,7,
+36,Similarity,similarity-top-match-count,Personality Quintuplets,,Be #1 match for 4 group members,,,similarity-top-match-count,"Quint match, this member was #1 for four people.",Legendary,Fascinating,1,
+37,Similarity,similarity-top-match-count,One of One,,Be #1 match for 0 group members,,,similarity-top-match-count,"Unique build, this member was no one's #1 match.",Rare,Very Interesting,18,Might not be seen as positive
+38,Similarity,similarity-pair,Nemesis,sword,Has the single lowest similarity pair in the cohort,,,similarity-pair,"Opposites clash, this member was in the least-similar pair.",Very Rare,Very Interesting,6,Shared 
+39,Similarity,similarity-pair,Soulmate,heart,Has the single highest similarity pair in the cohort,,,similarity-pair,"Twin energy, this member was in the most-similar pair.",Very Rare,Fascinating,2,Shared 
+40,Similarity,similarity-pair,Besties,peace,A and B are each other’s #1 most similar,,,similarity-pair,"Mutual match, these two were each other's #1.",Rare,Very Interesting,9,Shared 
+41,Similarity,similarity-inbound,Connector,node,Most inbound #1 matches,,,similarity-inbound,"Social hub, this member had the most inbound #1 matches.",Very Rare,Very Interesting,4,
+42,Similarity,similarity-triangle,Third Wheel,,Person whose #1 match is mutual with someone else,,,similarity-triangle,"Triangle alert, this member's #1 was mutual with someone else.",Uncommon,Mildly Interesting,54,
+43,Voting Results,vote-total,Vote-Magnet,Magnet,Received the most votes,,,vote-total,"Crowd favorite, this member received the most votes.",Rare,Very Interesting,23,
+44,Voting Results,vote-podium,Mr. Popular,laurel wreath,Received the most 1st place votes,,,vote-podium,"Top pick, this member received the most 1st-place votes.",Rare,Very Interesting,17,
+45,Voting Results,vote-podium,Always the bridesmaid,bouquet,Received the most 2nd place votes,,Mr. Popular,vote-podium,"Runner-up champ, this member had the most 2nd-place votes.",Rare,Interesting,25,
+46,Voting Results,vote-podium,Cut it in half,knife,Tied a 1st place vote,,,vote-podium,"Split the top spot, this member tied for 1st place.",Rare,Interesting,27,
+47,Voting Results,vote-podium,Bronze is the New Gold,three,Received the most 3rd place votes,,Always the bridesmaid; Mr. Popular,vote-podium,"Third-place hero, this member had the most 3rd-place votes.",Rare,Interesting,26,
+48,Voting Results,vote-alignment,Kingmaker,crown,Voted for the eventual winner most often,,,vote-alignment,"Winner picker, this member voted for winners most often.",Uncommon,Interesting,40,
+49,Voting Results,vote-alignment,Contrarian,finger up,Voted for the eventual winner least often,,,vote-alignment,"Off the beat, this member voted for winners least often.",Uncommon,Interesting,38,Might not be seen as positive
+50,Voting Results,vote-accuracy,Bullseye,crosshairs,"Most accurate on �""who is the most X"" guesses",,,vote-accuracy,"Dead-on reads, this member guessed most X most accurately.",Rare,Very Interesting,11,
+51,Voting Results,vote-accuracy,Stormtrooper,blaster,"Most inaccurate on �""who is the most X"" guesses",,,vote-accuracy,"Shots missed, this member guessed most X least accurately.",Rare,Mildly Interesting,47,
+52,Voting Results,vote-coverage,You get a car!,car,Voted for everyone at least once,Voted for the most number of unique people,,vote-coverage,"Oprah mode, this member voted for everyone at least once.",Uncommon,Interesting,43,
+53,Voting Results,vote-coverage,Plot Armor,butterfly,Received votes from the most number of unique people,,,vote-coverage,"Wide support, this member received votes from the most unique people.",Rare,Interesting,33,tie very possible
+54,Voting Results,vote-relationship,Jinx,,Have a two-way voting tie,,,vote-relationship,"Mirror votes, this member had a two-way voting tie.",Uncommon,Mildly Interesting,51,
+55,Voting Results,vote-relationship,Double Jinx,,Have a three-way voting tie,,,vote-relationship,"Triple mirror, this member had a three-way voting tie.",Rare,Interesting,29,
+56,Voting Results,vote-relationship,Ride-or-Die,car,Vote for the same person more than 6 times.,,,vote-relationship,"Loyalty locked, this member voted for the same person 6+ times.",Uncommon,Interesting,42,
+57,Voting Results,vote-coverage,Inclusive,,Vote for someone who got no other votes,,,vote-coverage,"Kind pick, this member voted for someone no one else did.",Uncommon,Interesting,39,
+57,Voting Results,vote-podium,I win,#1,Got a first-place vote,,,vote-podium,Got a first-place vote. A win is a win.,Uncommon,Mildly Interesting,50,
+57,Voting Results,vote-podium,Better than nothing,shrug,Get 4th place in a vote or a honorable mention,,,vote-podium,"Honorable mention, this member placed fourth.",Common,Uninteresting,58,
+58,Backup,backup-neutral,Remarkably Unremarkable,,,,,backup,"Perfectly average, this member never led or lagged.",Common,Uninteresting,63,
+59,Backup,backup-neutral,Middle Child,child,Never scored the largest or smallest on a trait,,,backup,"Steady middle, this member was never highest or lowest on any trait.",Common,Uninteresting,60,would likely not have many of the trait acheievements
+60,Backup,backup-participation,Mystery Gift,gift,Completed the survey,,,backup,"Secret badge, this member completed the survey. How? A mystery.",Common,Mildly Interesting,57,
+61,Backup,backup-participation,Participation Trophy,trophy,Completed the survey,,,backup,"Showed up, this member completed the survey.",Common,Uninteresting,61,last place backup

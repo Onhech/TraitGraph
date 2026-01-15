@@ -14,19 +14,38 @@ suppressPackageStartupMessages({
   library(withr)
 })
 
-# Ensure we're in the project (use the .Rproj)
-proj_root <- here::here()
+find_project_root <- function(start_dir = getwd()) {
+  dir <- normalizePath(start_dir, winslash = "/", mustWork = FALSE)
+  repeat {
+    rproj <- file.path(dir, "TraitGraph.Rproj")
+    desc <- file.path(dir, "DESCRIPTION")
+    if (file.exists(rproj)) return(dir)
+    if (file.exists(desc)) {
+      d1 <- readLines(desc, n = 1, warn = FALSE)
+      if (length(d1) == 1 && grepl("^Package: TraitGraph", d1)) return(dir)
+    }
+    parent <- dirname(dir)
+    if (parent == dir) break
+    dir <- parent
+  }
+  stop("Could not find TraitGraph project root from: ", start_dir)
+}
+
+# Ensure we're in the project (use the .Rproj or DESCRIPTION)
+proj_root <- find_project_root()
+setwd(proj_root)
 message("Project root: ", proj_root)
 
 # Output folder (centralized)
 plots_dir <- file.path(proj_root, "ExamplePlots")
 if (!dir.exists(plots_dir)) dir.create(plots_dir, recursive = TRUE)
-
 ## --- 1. WORKFLOW HELPERS --------------------------------------------------------
   # --- Workflow A: Full Rebuild and Install ---
   # Use this workflow occasionally, especially before pushing to GitHub, to ensure
   # the complete package builds correctly from start to finish.
-remove.packages("TraitGraph")
+if ("TraitGraph" %in% rownames(installed.packages())) {
+  remove.packages("TraitGraph")
+}
   # in terminal you can delete cache using
   # % rm -rf /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/TraitGraph
 devtools::clean_dll()
@@ -238,3 +257,25 @@ TG_votes(
   save_plot = T,
   output_path = 'ExamplePlots/voting_graph_example_10.jpg',title_size_mod = 1.6
 )
+
+
+# --- 9. ACHIEVEMENTS TESTS ------------------------------------------------------
+  # Uses the sample files in /achievement_inputs to validate the achievement pipeline.
+
+achievement_inputs_dir <- file.path(proj_root, "achievement_inputs")
+ach_output_dir <- file.path(proj_root, "achievements")
+
+ach_results <- TG_achievements(
+  trait_map_path = file.path(achievement_inputs_dir, "trait_map.csv"),
+  vote_map_path = file.path(achievement_inputs_dir, "vote_map.csv"),
+  data_path = file.path(achievement_inputs_dir, "group_dataset.csv"),
+  achievements_path = file.path(achievement_inputs_dir, "achievements.csv"),
+  voting_data_path = file.path(achievement_inputs_dir, "voting_data.csv"),
+  output_dir = ach_output_dir,
+  max_awards = 3
+)
+
+# Quick sanity checks
+stopifnot(file.exists(file.path(ach_output_dir, "all_eligible_achievements.csv")))
+stopifnot(file.exists(file.path(ach_output_dir, "awarded_achievements.csv")))
+print(head(ach_results$awarded, 10))

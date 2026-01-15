@@ -63,7 +63,7 @@
 #' @param name_col The column with individual names (default: "names").
 #' @param color_col The column with hex color codes for nodes (default: NULL, uses 'skyblue').
 #' @param use_initials Logical. If TRUE, label nodes with initials (default: FALSE).
-#' @param connection_threshold Numeric [0,1]. Edges with absolute correlation below this are not shown.
+#' @param connection_threshold Numeric in `[0,1]`. Edges with absolute correlation below this are not shown.
 #' @param min_node_size Minimum node size for plotting (default: 8).
 #' @param max_node_size Maximum node size for plotting (default: 20).
 #' @param title String for the plot title.

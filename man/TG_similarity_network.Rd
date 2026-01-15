@@ -35,7 +35,7 @@ TG_similarity_network(
 
 \item{use_initials}{Logical. If TRUE, label nodes with initials (default: FALSE).}
 
-\item{connection_threshold}{Numeric \link{0,1}. Edges with absolute correlation below this are not shown.}
+\item{connection_threshold}{Numeric in \verb{[0,1]}. Edges with absolute correlation below this are not shown.}
 
 \item{min_node_size}{Minimum node size for plotting (default: 8).}
 
