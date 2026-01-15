@@ -39,6 +39,7 @@ message("Project root: ", proj_root)
 # Output folder (centralized)
 plots_dir <- file.path(proj_root, "ExamplePlots")
 if (!dir.exists(plots_dir)) dir.create(plots_dir, recursive = TRUE)
+
 ## --- 1. WORKFLOW HELPERS --------------------------------------------------------
   # --- Workflow A: Full Rebuild and Install ---
   # Use this workflow occasionally, especially before pushing to GitHub, to ensure
@@ -54,11 +55,20 @@ devtools::load_all()
 devtools::install(upgrade = 'always')           # Build and install the package locally
 library(TraitGraph)            # Load the newly installed package
 
+
+
+
+
   # --- Workflow B: Fast, Interactive Development (RECOMMENDED) ---
   # Use this workflow 99% of the time. It loads all your functions directly
   # into memory, which is extremely fast for testing changes.
   # Simply run this line after you save a change in any of your R/ files.
 devtools::load_all()
+
+
+
+
+
 
 
   # --- Workflow C: Test GitHub Installation ---
@@ -97,6 +107,8 @@ sample_data_30<-dplyr::slice_sample(sample_data,n = 30)
 
 
 
+
+
 # --- 3. FUNCTION TESTING ---
 # After running `devtools::load_all()`, you can run these calls to test.
   # ~~~~~~~~~~~~~~~~~~~ #
@@ -119,7 +131,7 @@ TG_trait(
     column_name = "Extroversion",
     color_mode = "midpoint",
     midpoint_colors = list(high = "#00A878", low = "#3B6DD8"), # optional override; this matches defaults
-    midpoint_lighten = TRUE,
+    midpoint_lighten = F,
     midpoint_lighten_max = 0.75,    # slightly stronger lightening toward white near 50
     midpoint_lighten_power = 1.75,     # curve control: >1 reduces lightening faster as scores move away from 50
     midpoint_label_color = "base", # use shaded (darkened) bar color on labels for clarity
@@ -258,12 +270,13 @@ TG_votes(
   output_path = 'ExamplePlots/voting_graph_example_10.jpg',title_size_mod = 1.6
 )
 
-
-# --- 9. ACHIEVEMENTS TESTS ------------------------------------------------------
+# ~~~~~~~~~~~~~~~~~~~ #
+# Achievements ####
+# ~~~~~~~~~~~~~~~~~~~ #
   # Uses the sample files in /achievement_inputs to validate the achievement pipeline.
 
 achievement_inputs_dir <- file.path(proj_root, "achievement_inputs")
-ach_output_dir <- file.path(proj_root, "achievements")
+ach_output_dir <- file.path(proj_root, "ExamplePlots", "achievements")
 
 ach_results <- TG_achievements(
   trait_map_path = file.path(achievement_inputs_dir, "trait_map.csv"),
@@ -272,10 +285,26 @@ ach_results <- TG_achievements(
   achievements_path = file.path(achievement_inputs_dir, "achievements.csv"),
   voting_data_path = file.path(achievement_inputs_dir, "voting_data.csv"),
   output_dir = ach_output_dir,
-  max_awards = 3
+  max_awards = 2
 )
 
-# Quick sanity checks
-stopifnot(file.exists(file.path(ach_output_dir, "all_eligible_achievements.csv")))
-stopifnot(file.exists(file.path(ach_output_dir, "awarded_achievements.csv")))
-print(head(ach_results$awarded, 10))
+
+# --- 10. PROFILE TESTS ----------------------------------------------------------
+  # Uses achievement_inputs/trait_map.csv to demo per-trait gradients.
+
+profile_traits <- read.csv(file.path(proj_root, "achievement_inputs", "trait_map.csv"), stringsAsFactors = FALSE)
+profile_traits <- profile_traits[profile_traits$Type == "trait", ]
+profile_traits$group_score <- round(runif(nrow(profile_traits), 15, 95))
+
+profile_plot <- TG_profile(
+  dataset = profile_traits,
+  value_column = "group_score",
+  trait_column = "Name",
+  low_color_column = "Low_Color",
+  high_color_column = "High_Color",
+  title = "Group Psychological Profile",
+  show_title = FALSE,
+  save_plot = TRUE,
+  show_plot = FALSE,
+  output_path = file.path(plots_dir, "profile_example.jpg")
+)

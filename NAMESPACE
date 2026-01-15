@@ -3,6 +3,7 @@
 export(TG_achievements)
 export(TG_doughnut_chart)
 export(TG_jung)
+export(TG_profile)
 export(TG_similarity_heatmap)
 export(TG_similarity_network)
 export(TG_similarity_table)

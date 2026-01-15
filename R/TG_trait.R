@@ -22,8 +22,8 @@
 #' @param name The name of the column containing unique identifiers.
 #' @param color The name of the column containing hex color codes.
 #' @param color_mode A string specifying how bar colors are chosen: `"favorite"` (default) uses the provided color column, `"midpoint"` applies trait-specific midpoint shading with optional lightening, and `"gradient"` simply interpolates between the low/high palette.
-#' @param midpoint_colors Optional list with `high` and `low` hex codes used when `color_mode = "midpoint"`. Defaults to `list(high = "#00A878", low = "#3B6DD8")`.
-#' @param midpoint_lighten Logical. If TRUE (default), midpoint mode lightens colors toward white as scores approach 50.
+#' @param midpoint_colors Optional list with `high`, `low`, and optional `mid` hex codes used when `color_mode = "midpoint"` or `"gradient"`. Defaults to `list(high = "#00A878", low = "#3B6DD8")`.
+#' @param midpoint_lighten Logical. If TRUE, midpoint mode lightens colors toward white as scores approach 50. Defaults to FALSE.
 #' @param midpoint_lighten_max Numeric between 0 and 1; maximum lightening toward white when `midpoint_lighten = TRUE`. Defaults to 0.3.
 #' @param midpoint_lighten_power Numeric >= 0 controlling the curve of lightening; values > 1 make lightening drop off faster as scores move away from 50.
 #' @param midpoint_label_color Choose `"base"` (default) to color labels with the prototypical high/low colors, or `"shade"` to color labels with the lightened/darkened bar color (darkened for readability) when `color_mode = "midpoint"`.
@@ -61,12 +61,12 @@ TG_trait <- function(
     show_title = TRUE,
     name = "name",
     color = "favourite_color",
-    color_mode = c("favorite", "midpoint", "gradient"),
+    color_mode = c("gradient", "favorite", "midpoint"),
     midpoint_colors = list(high = "#00A878", low = "#3B6DD8"),
-    midpoint_lighten = TRUE,
+    midpoint_lighten = FALSE,
     midpoint_lighten_max = 0.75,
     midpoint_lighten_power = 2,
-    midpoint_label_color = c("base", "shade"),
+    midpoint_label_color = c("shade", "base"),
     group_average_label = "Group\nAverage",
     group_average_color = NULL,
     group_average_label_fontface = NULL,
@@ -125,14 +125,21 @@ TG_trait <- function(
     result
   }
 
-  compute_gradient_colors <- function(values, high_hex, low_hex) {
+  compute_gradient_colors <- function(values, high_hex, low_hex, mid_hex = NA_character_) {
+    if (is.null(mid_hex)) {
+      mid_hex <- NA_character_
+    }
     clamped <- pmin(pmax(values, 0), 100)
     gradient <- rep(NA_character_, length(clamped))
     valid <- !is.na(clamped) & !is.na(high_hex) & !is.na(low_hex)
     if (!any(valid)) {
       return(gradient)
     }
-    ramp <- grDevices::colorRamp(c(low_hex, high_hex))
+    colors <- c(low_hex, high_hex)
+    if (!is.na(mid_hex) && nzchar(mid_hex)) {
+      colors <- c(low_hex, mid_hex, high_hex)
+    }
+    ramp <- grDevices::colorRamp(colors)
     rgb_values <- ramp(clamped[valid] / 100)
     gradient[valid] <- grDevices::rgb(
       rgb_values[, 1],
@@ -143,8 +150,8 @@ TG_trait <- function(
     gradient
   }
 
-  compute_midpoint_color <- function(values, high_hex, low_hex) {
-    colors <- compute_gradient_colors(values, high_hex, low_hex)
+  compute_midpoint_color <- function(values, high_hex, low_hex, mid_hex = NA_character_) {
+    colors <- compute_gradient_colors(values, high_hex, low_hex, mid_hex)
     if (!midpoint_lighten) {
       return(colors)
     }
@@ -287,14 +294,14 @@ TG_trait <- function(
     if (color_mode == "favorite") {
       group_average_fill <- average_hex_colors(plot_data$color[plot_data$id != group_average_label])
     } else if (color_mode == "midpoint") {
-      group_average_fill <- compute_midpoint_color(group_avg, midpoint_colors$high, midpoint_colors$low)
+      group_average_fill <- compute_midpoint_color(group_avg, midpoint_colors$high, midpoint_colors$low, midpoint_colors$mid)
     } else {
-      group_average_fill <- compute_gradient_colors(group_avg, midpoint_colors$high, midpoint_colors$low)
+      group_average_fill <- compute_gradient_colors(group_avg, midpoint_colors$high, midpoint_colors$low, midpoint_colors$mid)
     }
   }
 
   if (color_mode %in% c("midpoint", "gradient")) {
-    gradient_colors <- compute_gradient_colors(plot_data$value, midpoint_colors$high, midpoint_colors$low)
+    gradient_colors <- compute_gradient_colors(plot_data$value, midpoint_colors$high, midpoint_colors$low, midpoint_colors$mid)
     plot_data <- plot_data %>%
       dplyr::mutate(
         base_mid_color = dplyr::case_when(
@@ -307,7 +314,7 @@ TG_trait <- function(
           id == group_average_label,
           group_average_fill,
           if (color_mode == "midpoint") {
-            compute_midpoint_color(value, midpoint_colors$high, midpoint_colors$low)
+            compute_midpoint_color(value, midpoint_colors$high, midpoint_colors$low, midpoint_colors$mid)
           } else {
             gradient_colors
           }

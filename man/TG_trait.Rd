@@ -11,12 +11,12 @@ TG_trait(
   show_title = TRUE,
   name = "name",
   color = "favourite_color",
-  color_mode = c("favorite", "midpoint", "gradient"),
+  color_mode = c("gradient", "favorite", "midpoint"),
   midpoint_colors = list(high = "#00A878", low = "#3B6DD8"),
-  midpoint_lighten = TRUE,
+  midpoint_lighten = FALSE,
   midpoint_lighten_max = 0.75,
   midpoint_lighten_power = 2,
-  midpoint_label_color = c("base", "shade"),
+  midpoint_label_color = c("shade", "base"),
   group_average_label = "Group\\nAverage",
   group_average_color = NULL,
   group_average_label_fontface = NULL,
@@ -58,9 +58,9 @@ TG_trait(
 
 \item{color_mode}{A string specifying how bar colors are chosen: \code{"favorite"} (default) uses the provided color column, \code{"midpoint"} applies trait-specific midpoint shading with optional lightening, and \code{"gradient"} simply interpolates between the low/high palette.}
 
-\item{midpoint_colors}{Optional list with \code{high} and \code{low} hex codes used when \code{color_mode = "midpoint"}. Defaults to \code{list(high = "#00A878", low = "#3B6DD8")}.}
+\item{midpoint_colors}{Optional list with \code{high}, \code{low}, and optional \code{mid} hex codes used when \code{color_mode = "midpoint"} or \code{"gradient"}. Defaults to \code{list(high = "#00A878", low = "#3B6DD8")}.}
 
-\item{midpoint_lighten}{Logical. If TRUE (default), midpoint mode lightens colors toward white as scores approach 50.}
+\item{midpoint_lighten}{Logical. If TRUE, midpoint mode lightens colors toward white as scores approach 50. Defaults to FALSE.}
 
 \item{midpoint_lighten_max}{Numeric between 0 and 1; maximum lightening toward white when \code{midpoint_lighten = TRUE}. Defaults to 0.3.}
 
