@@ -68,15 +68,16 @@ devtools::load_all()
 
 
 
-
-
-
   # --- Workflow C: Test GitHub Installation ---
   # Use this to simulate a new user installing from your public repository.
   # It's best to run this in a completely fresh R session.
   # remove.packages("TraitGraph") # Ensure no local version is present
   # remotes::install_github("Onhech/TraitGraph")
 library(TraitGraph)
+
+
+
+
 
 
 # --- 2. CREATE SAMPLE DATA ---
@@ -211,6 +212,41 @@ TG_doughnut_chart(
 
 
 
+# ~~~~~~~~~~~~~~~~~~~ #
+# Vote-bar ####
+# ~~~~~~~~~~~~~~~~~~~ #
+# Simple vote bar chart with tie handling and footnotes.
+
+vote_data <- read.csv(file.path(proj_root, "achievement_inputs", "group_dataset.csv"), stringsAsFactors = FALSE)
+
+TG_vote_bar(
+  dataset = vote_data,
+  vote_column = "vote_q07",
+  name = "name",
+  palette = list(high = "#2F7D32", mid = "#E6F4E6"),
+  bar_width = 0.7,
+  label_size_single = 7,
+  label_size_tie2 = 6.5,
+  label_size_tien = 6.5,
+  tie_markers = c("✶", "◇", "▲"), #'   Defaults to `c("†", "‡", "§", "¶", "*")`.
+  marker_x_nudge = 0.02,
+  marker_y_nudge = 0.10,
+  marker_size = 4.5,
+  callout_x_nudge = 0.10,
+  callout_y_nudge = 0.00,
+  callout_size = 7,
+  footnote_x_nudge = -1.2,
+  footnote_y_nudge = 0.10,
+  footnote_size = 5,
+  footnote_marker_gap = 0.25,
+  footnote_color = "#2F7D32",
+  show_title = FALSE,
+  save_plot = TRUE,
+  show_plot = T,
+  output_path = file.path(plots_dir, "vote_bar_example.jpg")
+)
+
+
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
   # Similarity       ####
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -289,7 +325,9 @@ ach_results <- TG_achievements(
 )
 
 
-# --- 10. PROFILE TESTS ----------------------------------------------------------
+# ~~~~~~~~~~~~~~~~~~~ #
+# Profiles ####
+# ~~~~~~~~~~~~~~~~~~~ #
   # Uses achievement_inputs/trait_map.csv to demo per-trait gradients.
 
 profile_traits <- read.csv(file.path(proj_root, "achievement_inputs", "trait_map.csv"), stringsAsFactors = FALSE)
@@ -305,6 +343,8 @@ profile_plot <- TG_profile(
   title = "Group Psychological Profile",
   show_title = FALSE,
   save_plot = TRUE,
-  show_plot = FALSE,
+  show_plot = T,
   output_path = file.path(plots_dir, "profile_example.jpg")
 )
+
+

@@ -21,6 +21,7 @@ NULL
 #'   \item \code{\link{TG_jung}}: For creating charts for dichotomous traits (e.g., Introversion vs. Extroversion) with unique aesthetics.
 #'   \item \code{\\link{TG_achievements}}: For calculating and allocating achievement badges from cohort data.
 #'   \item \code{\\link{TG_profile}}: For displaying an individual or group trait profile with per-trait color gradients.
+#'   \item \code{\\link{TG_vote_bar}}: For simple vote bar charts with tie handling and footnotes.
 #' }
 #'
 #' @section Examples:
