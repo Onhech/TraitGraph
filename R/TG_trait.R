@@ -21,6 +21,8 @@
 #' @param show_title Logical: if TRUE (default), include the generated title in the plot.
 #' @param name The name of the column containing unique identifiers.
 #' @param color The name of the column containing hex color codes.
+#' @param palette Optional list with `high`, `low`, and optional `mid` colors used
+#'   for gradient or midpoint modes. When set, overrides `midpoint_colors`.
 #' @param color_mode A string specifying how bar colors are chosen: `"favorite"` (default) uses the provided color column, `"midpoint"` applies trait-specific midpoint shading with optional lightening, and `"gradient"` simply interpolates between the low/high palette.
 #' @param midpoint_colors Optional list with `high`, `low`, and optional `mid` hex codes used when `color_mode = "midpoint"` or `"gradient"`. Defaults to `list(high = "#00A878", low = "#3B6DD8")`.
 #' @param midpoint_lighten Logical. If TRUE, midpoint mode lightens colors toward white as scores approach 50. Defaults to FALSE.
@@ -61,6 +63,7 @@ TG_trait <- function(
     show_title = TRUE,
     name = "name",
     color = "favourite_color",
+    palette = NULL,
     color_mode = c("gradient", "favorite", "midpoint"),
     midpoint_colors = list(high = "#00A878", low = "#3B6DD8"),
     midpoint_lighten = FALSE,
@@ -95,8 +98,10 @@ TG_trait <- function(
   color_mode <- match.arg(color_mode)
   midpoint_label_color <- match.arg(midpoint_label_color)
   order_mode <- match.arg(order_mode)
-  default_midpoint_colors <- list(high = "#00A878", low = "#3B6DD8")
-  midpoint_colors <- utils::modifyList(default_midpoint_colors, midpoint_colors)
+  default_midpoint_colors <- list(high = "#00A878", low = "#3B6DD8", mid = NA_character_)
+  palette_input <- if (!is.null(palette)) palette else utils::modifyList(default_midpoint_colors, midpoint_colors)
+  # Normalize palette input with a grayscale fallback for missing/invalid colors.
+  midpoint_colors <- tg_normalize_palette(palette_input, context = "TG_trait palette", allow_mid_na = TRUE, warn_on_fallback = TRUE)
   midpoint_lighten_max <- pmax(0, pmin(midpoint_lighten_max, 1))
   midpoint_lighten_power <- pmax(0, midpoint_lighten_power)
   if (!is.null(random_seed)) {

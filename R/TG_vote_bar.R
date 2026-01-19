@@ -16,9 +16,11 @@
 #' @param dataset A data frame containing the vote data.
 #' @param vote_column Column name containing vote counts for the question.
 #' @param name Column name containing respondent names. Defaults to "name".
-#' @param palette A list with `high` and `mid` hex codes used for the bar gradient.
-#'   `mid` represents 0 votes and `high` represents the maximum votes. Defaults to
-#'   `list(high = "#1F7A1F", mid = "#E6E6E6")`.
+#' @param palette A list with `high`, `mid`, and `low` hex codes used for the bar gradient.
+#'   `mid` represents 0 votes and `high` (or `low`) represents the maximum votes.
+#'   Defaults to `list(high = "#1F7A1F", mid = "#E6E6E6", low = "#B3B3B3")`.
+#' @param palette_mode Controls which palette endpoints are used: "mid_high" (default)
+#'   uses midpoint to high, "mid_low" uses midpoint to low.
 #' @param max_bars Maximum number of unique vote counts to display. Defaults to 5.
 #' @param show_title Logical; if TRUE, include the title in the plot.
 #' @param title Optional title string.
@@ -32,7 +34,7 @@
 #'   Defaults to `c("†", "‡", "§", "¶", "*")`.
 #' @param font_family Font family for labels and callouts. Defaults to "sans".
 #' @param marker_font_family Font family for tie markers and footnote markers.
-#'   Defaults to "Arial Unicode MS".
+#'   Defaults to "DejaVu Sans".
 #' @param footnote_marker_gap Numeric; horizontal gap between marker and text (vote units).
 #'   Defaults to `0.06 * max_votes`.
 #' @param marker_x_nudge Numeric; horizontal nudge for tie markers relative to the
@@ -74,7 +76,8 @@ TG_vote_bar <- function(
     dataset,
     vote_column,
     name = "name",
-    palette = list(high = "#1F7A1F", mid = "#E6E6E6"),
+    palette = list(high = "#1F7A1F", mid = "#E6E6E6", low = "#B3B3B3"),
+    palette_mode = c("mid_high", "mid_low"),
     max_bars = 5,
     show_title = FALSE,
     title = NULL,
@@ -85,7 +88,7 @@ TG_vote_bar <- function(
     label_color = NULL,
     tie_markers = c("†", "‡", "§", "¶", "*"),
     font_family = "sans",
-    marker_font_family = "Arial Unicode MS",
+    marker_font_family = "DejaVu Sans",
     footnote_marker_gap = NULL,
     marker_x_nudge = NULL,
     marker_y_nudge = 0.25,
@@ -112,10 +115,11 @@ TG_vote_bar <- function(
     stop("name column not found in dataset: ", name)
   }
 
-  high <- palette$high
+  palette_mode <- match.arg(palette_mode)
+  # Normalize palette input and select which endpoint to use for the gradient.
+  palette <- tg_normalize_palette(palette, context = "TG_vote_bar palette", allow_mid_na = FALSE, warn_on_fallback = TRUE)
   mid <- palette$mid
-  if (is.null(high) || is.na(high) || !nzchar(high)) high <- "#1F7A1F"
-  if (is.null(mid) || is.na(mid) || !nzchar(mid)) mid <- "#E6E6E6"
+  high <- if (palette_mode == "mid_high") palette$high else palette$low
 
   data <- dataset %>%
     dplyr::select(
@@ -189,7 +193,7 @@ TG_vote_bar <- function(
     dplyr::arrange(dplyr::desc(votes), person)
 
   if (nrow(honorable) > 0) {
-    footnotes <- c(footnotes, paste0("Honourable mentions: ", paste(honorable$person, collapse = ", ")))
+    footnotes <- c(footnotes, paste0("Beyond top 5: ", paste(honorable$person, collapse = ", ")))
   }
 
   label_df <- label_df %>%

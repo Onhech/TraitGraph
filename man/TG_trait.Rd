@@ -11,6 +11,7 @@ TG_trait(
   show_title = TRUE,
   name = "name",
   color = "favourite_color",
+  palette = NULL,
   color_mode = c("gradient", "favorite", "midpoint"),
   midpoint_colors = list(high = "#00A878", low = "#3B6DD8"),
   midpoint_lighten = FALSE,
@@ -55,6 +56,9 @@ TG_trait(
 \item{name}{The name of the column containing unique identifiers.}
 
 \item{color}{The name of the column containing hex color codes.}
+
+\item{palette}{Optional list with \code{high}, \code{low}, and optional \code{mid} colors used
+for gradient or midpoint modes. When set, overrides \code{midpoint_colors}.}
 
 \item{color_mode}{A string specifying how bar colors are chosen: \code{"favorite"} (default) uses the provided color column, \code{"midpoint"} applies trait-specific midpoint shading with optional lightening, and \code{"gradient"} simply interpolates between the low/high palette.}
 

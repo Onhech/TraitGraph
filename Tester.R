@@ -131,7 +131,7 @@ TG_trait(
     show_title = F,
     column_name = "Extroversion",
     color_mode = "midpoint",
-    midpoint_colors = list(high = "#00A878", low = "#3B6DD8"), # optional override; this matches defaults
+    palette = list(high = "#00A878", mid = "#9ED9CC", low = "#3B6DD8"),
     midpoint_lighten = F,
     midpoint_lighten_max = 0.75,    # slightly stronger lightening toward white near 50
     midpoint_lighten_power = 1.75,     # curve control: >1 reduces lightening faster as scores move away from 50
@@ -148,7 +148,7 @@ TG_trait(
     show_title = F,
     column_name = "Agreeableness",
     color_mode = "gradient",
-    midpoint_colors = list(high = "#2BB49E", low = "#FF4C5B"),
+    palette = list(high = "#2BB49E", mid = "#F2B7B7", low = "#FF4C5B"),
     midpoint_lighten = FALSE,
     random_seed = 12345,
     save_plot = T, show_plot = T,
@@ -173,46 +173,6 @@ TG_jung(
 )
 
   # ~~~~~~~~~~~~~~~~~~~ #
-  # --- Doughnut Graph  ####
-  # ~~~~~~~~~~~~~~~~~~~ #
-  # Add another test case for descending order and no title
-TG_doughnut_chart(
-    dataset = sample_data,
-    column_name = "rsummedQ_1",
-    sort_order = "asc",
-    show_title = F, title = "Who would win the Nobel Prize and then apologize for taking up everyone's time during their acceptance speech?", title_size_mod = 1,
-    name_size_mod = 1,
-    save_plot = TRUE,
-    inner_label_threshold = 5,
-    footnote_text_width = 65,
-    footnote_hjust = 0,
-    footnote_vjust = 1,
-    #footnote_margin_t = -42,
-    show_plot = T,
-    title_color = "grey30",
-    output_path = "ExamplePlots/doughnut_chart_desc_no_title.jpeg",
-    plot_margin = -7,label_radius_base = 2.65, label_nudge_bottom = F
-  )
-
-# Midpoint color mode for doughnut (single base color, lightened by rank)
-TG_doughnut_chart(
-    dataset = sample_data,
-    column_name = "rsummedQ_1",
-    sort_order = "asc",
-    color_mode = "midpoint",
-    midpoint_color = "#3B6DD8",
-    midpoint_lighten_max = 0.9,   # dramatic lightening toward white for lower slices
-    midpoint_lighten_power = 0.8, # softer curve so mid slices lighten noticeably
-    midpoint_label_color = "shade",
-    show_title = FALSE,
-    show_plot = T,
-    save_plot = TRUE,
-    output_path = "ExamplePlots/doughnut_chart_midpoint.jpeg"
-  )
-
-
-
-# ~~~~~~~~~~~~~~~~~~~ #
 # Vote-bar ####
 # ~~~~~~~~~~~~~~~~~~~ #
 # Simple vote bar chart with tie handling and footnotes.
@@ -221,28 +181,15 @@ vote_data <- read.csv(file.path(proj_root, "achievement_inputs", "group_dataset.
 
 TG_vote_bar(
   dataset = vote_data,
-  vote_column = "vote_q07",
-  name = "name",
-  palette = list(high = "#2F7D32", mid = "#E6F4E6"),
-  bar_width = 0.7,
+  vote_column = "vote_q14",
+  palette = list(high = "#2F7D32", mid = "#E6F4E6", low = "#B3B3B3"),
+  palette_mode = "mid_high",
   label_size_single = 7,
-  label_size_tie2 = 6.5,
-  label_size_tien = 6.5,
-  tie_markers = c("✶", "◇", "▲"), #'   Defaults to `c("†", "‡", "§", "¶", "*")`.
-  marker_x_nudge = 0.02,
-  marker_y_nudge = 0.10,
-  marker_size = 4.5,
-  callout_x_nudge = 0.10,
-  callout_y_nudge = 0.00,
-  callout_size = 7,
-  footnote_x_nudge = -1.2,
-  footnote_y_nudge = 0.10,
-  footnote_size = 5,
-  footnote_marker_gap = 0.25,
+  marker_font_family = "DejaVu Sans",
+  tie_markers = c("*", "†", "‡"),
   footnote_color = "#2F7D32",
-  show_title = FALSE,
   save_plot = TRUE,
-  show_plot = T,
+  show_plot = TRUE,
   output_path = file.path(plots_dir, "vote_bar_example.jpg")
 )
 

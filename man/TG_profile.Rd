@@ -11,6 +11,7 @@ TG_profile(
   low_color_column = "Low_Color",
   mid_color_column = "Mid_Color",
   high_color_column = "High_Color",
+  palette = NULL,
   title = NULL,
   show_title = TRUE,
   color_opacity = 0.95,
@@ -46,6 +47,9 @@ TG_profile(
 \item{mid_color_column}{Optional column name for each trait's midpoint color (hex). Defaults to "Mid_Color".}
 
 \item{high_color_column}{Column name for each trait's high color (hex). Defaults to "High_Color".}
+
+\item{palette}{Optional fallback palette list with \code{high}, \code{low}, and optional \code{mid} colors.
+Used when any row is missing valid colors. Defaults to grayscale fallback.}
 
 \item{title}{A string for the plot's main title.}
 

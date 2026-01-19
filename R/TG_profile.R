@@ -20,6 +20,8 @@
 #' @param low_color_column Column name for each trait's low color (hex). Defaults to "Low_Color".
 #' @param mid_color_column Optional column name for each trait's midpoint color (hex). Defaults to "Mid_Color".
 #' @param high_color_column Column name for each trait's high color (hex). Defaults to "High_Color".
+#' @param palette Optional fallback palette list with `high`, `low`, and optional `mid` colors.
+#'   Used when any row is missing valid colors. Defaults to grayscale fallback.
 #' @param title A string for the plot's main title.
 #' @param show_title Logical: if TRUE (default), include the title in the plot.
 #' @param color_opacity Numeric between 0 and 1 controlling bar transparency. Defaults to 0.95.
@@ -64,6 +66,7 @@ TG_profile <- function(
     low_color_column = "Low_Color",
     mid_color_column = "Mid_Color",
     high_color_column = "High_Color",
+    palette = NULL,
     title = NULL,
     show_title = TRUE,
     color_opacity = 0.95,
@@ -125,6 +128,9 @@ TG_profile <- function(
     }
   }
 
+  # Normalize fallback palette once; row-level validation handled below.
+  fallback_palette <- tg_normalize_palette(palette, context = "TG_profile palette", allow_mid_na = TRUE, warn_on_fallback = FALSE)
+
   plot_data <- dataset %>%
     dplyr::rename(
       id = !!rlang::sym(trait_column),
@@ -135,7 +141,24 @@ TG_profile <- function(
     ) %>%
     dplyr::mutate(
       id = as.character(id),
-      value = round(as.numeric(value), 0),
+      value = round(as.numeric(value), 0)
+    )
+
+  high_ok <- vapply(plot_data$high_color, tg_color_valid, logical(1))
+  low_ok <- vapply(plot_data$low_color, tg_color_valid, logical(1))
+  mid_missing <- is.na(plot_data$mid_color) | !nzchar(trimws(plot_data$mid_color))
+  mid_ok <- mid_missing | vapply(plot_data$mid_color, tg_color_valid, logical(1))
+  if (any(!(high_ok & low_ok & mid_ok))) {
+    warning("TraitGraph: using grayscale fallback palette in TG_profile palette.")
+  }
+
+  # Apply fallback colors for any invalid rows while preserving optional mids.
+  plot_data$high_color <- ifelse(high_ok, plot_data$high_color, fallback_palette$high)
+  plot_data$low_color <- ifelse(low_ok, plot_data$low_color, fallback_palette$low)
+  plot_data$mid_color <- ifelse(mid_missing, NA_character_, ifelse(mid_ok, plot_data$mid_color, fallback_palette$mid))
+
+  plot_data <- plot_data %>%
+    dplyr::mutate(
       fill_color = mapply(compute_profile_color, value, high_color, low_color, mid_color),
       is_light = is_color_light(fill_color),
       dark_color = sapply(fill_color, darken_color),

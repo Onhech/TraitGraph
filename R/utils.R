@@ -48,6 +48,60 @@ darken_color <- function(hex, factor = 0.5) {
   grDevices::rgb(dark_rgb[1], dark_rgb[2], dark_rgb[3], maxColorValue = 255)
 }
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Palette Helpers ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+tg_palette_fallback <- function() {
+  list(high = "#4D4D4D", mid = "#B3B3B3", low = "#D9D9D9")
+}
+
+tg_color_valid <- function(color) {
+  if (is.na(color) || !nzchar(color)) return(FALSE)
+  tryCatch({
+    grDevices::col2rgb(color)
+    TRUE
+  }, error = function(e) FALSE)
+}
+
+tg_sanitize_color <- function(color, fallback) {
+  color <- trimws(color)
+  if (!tg_color_valid(color)) return(fallback)
+  color
+}
+
+tg_normalize_palette <- function(palette, context = "palette", allow_mid_na = TRUE, warn_on_fallback = TRUE) {
+  fallback <- tg_palette_fallback()
+  fallback_used <- FALSE
+
+  if (is.null(palette) || !is.list(palette)) {
+    fallback_used <- TRUE
+    result <- fallback
+  } else {
+    high <- tg_sanitize_color(palette$high, fallback$high)
+    low <- tg_sanitize_color(palette$low, fallback$low)
+    mid_raw <- palette$mid
+    mid_missing <- is.null(mid_raw) || is.na(mid_raw) || !nzchar(trimws(mid_raw))
+    if (allow_mid_na && mid_missing) {
+      mid <- NA_character_
+    } else {
+      mid <- tg_sanitize_color(mid_raw, fallback$mid)
+    }
+    if (!identical(high, palette$high) || !identical(low, palette$low)) {
+      fallback_used <- TRUE
+    }
+    if (!(allow_mid_na && mid_missing) && !identical(mid, palette$mid)) {
+      fallback_used <- TRUE
+    }
+    result <- list(high = high, mid = mid, low = low)
+  }
+
+  if (fallback_used && warn_on_fallback) {
+    warning(paste0("TraitGraph: using grayscale fallback palette in ", context, "."))
+  }
+  attr(result, "fallback_used") <- fallback_used
+  result
+}
+
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #

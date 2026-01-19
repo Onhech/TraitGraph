@@ -8,7 +8,8 @@ TG_vote_bar(
   dataset,
   vote_column,
   name = "name",
-  palette = list(high = "#1F7A1F", mid = "#E6E6E6"),
+  palette = list(high = "#1F7A1F", mid = "#E6E6E6", low = "#B3B3B3"),
+  palette_mode = c("mid_high", "mid_low"),
   max_bars = 5,
   show_title = FALSE,
   title = NULL,
@@ -19,7 +20,7 @@ TG_vote_bar(
   label_color = NULL,
   tie_markers = c("†", "‡", "§", "¶", "*"),
   font_family = "sans",
-  marker_font_family = "Arial Unicode MS",
+  marker_font_family = "DejaVu Sans",
   footnote_marker_gap = NULL,
   marker_x_nudge = NULL,
   marker_y_nudge = 0.25,
@@ -46,9 +47,12 @@ TG_vote_bar(
 
 \item{name}{Column name containing respondent names. Defaults to "name".}
 
-\item{palette}{A list with \code{high} and \code{mid} hex codes used for the bar gradient.
-\code{mid} represents 0 votes and \code{high} represents the maximum votes. Defaults to
-\code{list(high = "#1F7A1F", mid = "#E6E6E6")}.}
+\item{palette}{A list with \code{high}, \code{mid}, and \code{low} hex codes used for the bar gradient.
+\code{mid} represents 0 votes and \code{high} (or \code{low}) represents the maximum votes.
+Defaults to \code{list(high = "#1F7A1F", mid = "#E6E6E6", low = "#B3B3B3")}.}
+
+\item{palette_mode}{Controls which palette endpoints are used: "mid_high" (default)
+uses midpoint to high, "mid_low" uses midpoint to low.}
 
 \item{max_bars}{Maximum number of unique vote counts to display. Defaults to 5.}
 
@@ -73,7 +77,7 @@ Defaults to \code{c("†", "‡", "§", "¶", "*")}.}
 \item{font_family}{Font family for labels and callouts. Defaults to "sans".}
 
 \item{marker_font_family}{Font family for tie markers and footnote markers.
-Defaults to "Arial Unicode MS".}
+Defaults to "DejaVu Sans".}
 
 \item{footnote_marker_gap}{Numeric; horizontal gap between marker and text (vote units).
 Defaults to \code{0.06 * max_votes}.}
