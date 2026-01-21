@@ -90,7 +90,8 @@ TG_doughnut_chart <- function(dataset,
                               output_height = 7,
                               output_dpi = 300,
                               save_plot = TRUE,
-                              show_plot = TRUE) {
+                              show_plot = TRUE,
+    verbose = FALSE) {
 
   # --- 0. Check for necessary packages ---
   if (!requireNamespace("ggtext", quietly = TRUE)) {
@@ -355,7 +356,7 @@ TG_doughnut_chart <- function(dataset,
       height = output_height,
       units = "in"
     )
-    message("Plot saved to: ", output_path)
+    tg_log_plot_saved(output_path, verbose)
   }
 
   if (show_plot) {

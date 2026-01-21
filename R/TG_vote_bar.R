@@ -34,7 +34,7 @@
 #'   Defaults to `c("†", "‡", "§", "¶", "*")`.
 #' @param font_family Font family for labels and callouts. Defaults to "sans".
 #' @param marker_font_family Font family for tie markers and footnote markers.
-#'   Defaults to "DejaVu Sans".
+#'   Defaults to "Arial Unicode MS" when NULL.
 #' @param footnote_marker_gap Numeric; horizontal gap between marker and text (vote units).
 #'   Defaults to `0.06 * max_votes`.
 #' @param marker_x_nudge Numeric; horizontal nudge for tie markers relative to the
@@ -59,6 +59,7 @@
 #' @param output_dpi Output resolution.
 #' @param save_plot Logical. If TRUE, save the plot.
 #' @param show_plot Logical. If TRUE, print the plot.
+#' @param verbose Logical; if TRUE, emit a concise save message. Defaults to FALSE.
 #'
 #' @return Invisibly returns a list with the ggplot and footnote strings.
 #' @export
@@ -88,7 +89,7 @@ TG_vote_bar <- function(
     label_color = NULL,
     tie_markers = c("†", "‡", "§", "¶", "*"),
     font_family = "sans",
-    marker_font_family = "DejaVu Sans",
+    marker_font_family = "Arial Unicode MS",
     footnote_marker_gap = NULL,
     marker_x_nudge = NULL,
     marker_y_nudge = 0.25,
@@ -105,7 +106,8 @@ TG_vote_bar <- function(
     output_height = 5,
     output_dpi = 300,
     save_plot = FALSE,
-    show_plot = TRUE
+    show_plot = TRUE,
+    verbose = FALSE
 ) {
 
   if (!(vote_column %in% names(dataset))) {
@@ -116,6 +118,9 @@ TG_vote_bar <- function(
   }
 
   palette_mode <- match.arg(palette_mode)
+  if (is.null(marker_font_family) || is.na(marker_font_family) || !nzchar(marker_font_family)) {
+    marker_font_family <- "Arial Unicode MS"
+  }
   # Normalize palette input and select which endpoint to use for the gradient.
   palette <- tg_normalize_palette(palette, context = "TG_vote_bar palette", allow_mid_na = FALSE, warn_on_fallback = TRUE)
   mid <- palette$mid
@@ -305,6 +310,7 @@ TG_vote_bar <- function(
 
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")
+    tg_log_plot_saved(output_path, verbose)
   }
   if (show_plot) {
     print(p)

@@ -41,7 +41,8 @@ TG_trait(
   output_height = 5,
   output_dpi = 300,
   save_plot = FALSE,
-  show_plot = TRUE
+  show_plot = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -119,6 +120,8 @@ for gradient or midpoint modes. When set, overrides \code{midpoint_colors}.}
 \item{save_plot}{A logical value. If TRUE, the plot is saved to disk.}
 
 \item{show_plot}{A logical value. If TRUE, the plot is displayed.}
+
+\item{verbose}{Logical; if TRUE, emit a concise save message. Defaults to FALSE.}
 }
 \value{
 Invisibly returns the ggplot object.

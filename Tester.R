@@ -12,6 +12,7 @@ suppressPackageStartupMessages({
   library(tidyverse)
   library(here)
   library(withr)
+library(cli)
 })
 
 find_project_root <- function(start_dir = getwd()) {
@@ -39,6 +40,11 @@ message("Project root: ", proj_root)
 # Output folder (centralized)
 plots_dir <- file.path(proj_root, "ExamplePlots")
 if (!dir.exists(plots_dir)) dir.create(plots_dir, recursive = TRUE)
+
+
+
+
+
 
 ## --- 1. WORKFLOW HELPERS --------------------------------------------------------
   # --- Workflow A: Full Rebuild and Install ---
@@ -110,6 +116,44 @@ sample_data_30<-dplyr::slice_sample(sample_data,n = 30)
 
 
 
+# --- Progress Demo (batch) ---
+use_progress <- cli::is_dynamic_tty() && interactive()
+progress_demo <- if (use_progress) {
+  cli::cli_progress_bar(
+    format = "Generating Demo Plots {cli::pb_bar} {cli::pb_percent} | Current: {cli::pb_status}",
+    total = 3,
+    clear = FALSE,
+    show_after = 0
+  )
+} else {
+  NULL
+}
+
+demo_paths <- c(
+  "ExamplePlots/demo_trait_1.jpg",
+  "ExamplePlots/demo_trait_2.jpg",
+  "ExamplePlots/demo_trait_3.jpg"
+)
+
+for (i in seq_along(demo_paths)) {
+  TG_trait(
+    dataset = sample_data_20,
+    show_title = FALSE,
+    column_name = "Extroversion",
+    save_plot = TRUE,
+    show_plot = FALSE,
+    verbose = FALSE,
+    output_path = demo_paths[i]
+  )
+  current_name <- basename(demo_paths[i])
+  if (use_progress) {
+    cli::cli_progress_update(progress_demo, inc = 1, status = current_name)
+  } else {
+    message("Generating Demo Plots: ", current_name)
+  }
+}
+if (use_progress) cli::cli_progress_done(progress_demo)
+
 # --- 3. FUNCTION TESTING ---
 # After running `devtools::load_all()`, you can run these calls to test.
   # ~~~~~~~~~~~~~~~~~~~ #
@@ -138,6 +182,7 @@ TG_trait(
     midpoint_label_color = "base", # use shaded (darkened) bar color on labels for clarity
     random_seed = 12345,
     save_plot = T,show_plot = T,
+    verbose = TRUE,
     output_path = 'ExamplePlots/trait_graph_example_midpoint_rect_clip.jpg',
     plot_zoom_mod = 1.15,output_width = 6,output_height = 5
   )
@@ -152,6 +197,7 @@ TG_trait(
     midpoint_lighten = FALSE,
     random_seed = 12345,
     save_plot = T, show_plot = T,
+    verbose = TRUE,
     output_path = 'ExamplePlots/trait_graph_example_gradient.jpg',
     plot_zoom_mod = 0.6, output_width = 5.5, output_height = 4.5
   )
@@ -169,6 +215,7 @@ TG_jung(
   callout_text_color = "other",
   show_points = F,
   save_plot = TRUE,
+  verbose = TRUE,
   output_path = 'ExamplePlots/jung_graph_example_0.jpg'
 )
 
@@ -177,6 +224,31 @@ TG_jung(
 # ~~~~~~~~~~~~~~~~~~~ #
 # Simple vote bar chart with tie handling and footnotes.
 
+if (!exists("find_project_root", inherits = TRUE)) {
+  find_project_root <- function(start_dir = getwd()) {
+    dir <- normalizePath(start_dir, winslash = "/", mustWork = FALSE)
+    repeat {
+      rproj <- file.path(dir, "TraitGraph.Rproj")
+      desc <- file.path(dir, "DESCRIPTION")
+      if (file.exists(rproj)) return(dir)
+      if (file.exists(desc)) {
+        d1 <- readLines(desc, n = 1, warn = FALSE)
+        if (length(d1) == 1 && grepl("^Package: TraitGraph", d1)) return(dir)
+      }
+      parent <- dirname(dir)
+      if (parent == dir) break
+      dir <- parent
+    }
+    stop("Could not find TraitGraph project root from: ", start_dir)
+  }
+}
+if (!exists("proj_root", inherits = TRUE)) {
+  proj_root <- find_project_root()
+}
+if (!exists("plots_dir", inherits = TRUE)) {
+  plots_dir <- file.path(proj_root, "ExamplePlots")
+  if (!dir.exists(plots_dir)) dir.create(plots_dir, recursive = TRUE)
+}
 vote_data <- read.csv(file.path(proj_root, "achievement_inputs", "group_dataset.csv"), stringsAsFactors = FALSE)
 
 TG_vote_bar(
@@ -185,11 +257,12 @@ TG_vote_bar(
   palette = list(high = "#2F7D32", mid = "#E6F4E6", low = "#B3B3B3"),
   palette_mode = "mid_high",
   label_size_single = 7,
-  marker_font_family = "DejaVu Sans",
+  marker_font_family = "sans",
   tie_markers = c("*", "†", "‡"),
   footnote_color = "#2F7D32",
   save_plot = TRUE,
   show_plot = TRUE,
+  verbose = TRUE,
   output_path = file.path(plots_dir, "vote_bar_example.jpg")
 )
 
@@ -214,6 +287,7 @@ TG_vote_bar(
     #zoom_out_factor = 1.2,
     name = "name",
     save_plot = T,show_plot = T,
+    verbose = TRUE,
     output_path = "ExamplePlots/similarity_network.png"
   )
 
@@ -226,6 +300,7 @@ TG_vote_bar(
     save_plot = T,show_plot = T,
     show_title = FALSE,
     show_legend = F,
+    verbose = TRUE,
     output_path = "ExamplePlots/similarity_network.png"
   )
 

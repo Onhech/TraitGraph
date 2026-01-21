@@ -87,7 +87,8 @@ TG_profile <- function(
     output_height = 5,
     output_dpi = 300,
     save_plot = FALSE,
-    show_plot = TRUE
+    show_plot = TRUE,
+    verbose = FALSE
 ) {
 
   lighten_toward_white <- function(hex, amount) {
@@ -246,7 +247,7 @@ TG_profile <- function(
 
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")
-    message("Plot saved to: ", output_path)
+    tg_log_plot_saved(output_path, verbose)
   }
   if (show_plot) {
     print(p)

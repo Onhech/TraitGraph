@@ -58,7 +58,8 @@ TG_votes <- function(dataset,
                      output_height = 6,
                      output_dpi = 300,
                      save_plot = TRUE,
-                     show_plot = TRUE) {
+                     show_plot = TRUE,
+    verbose = FALSE) {
 
 
   if (is.null(title)) { title <- column_name }
@@ -125,7 +126,7 @@ TG_votes <- function(dataset,
     ggplot2::coord_polar(start = -pi / (nrow(plot_data))) +
     ggplot2::ggtitle(plot_title_text)
 
-  if (save_plot) { ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in"); message("Plot saved to: ", output_path) }
+  if (save_plot) { ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in"); tg_log_plot_saved(output_path, verbose) }
   if (show_plot) { print(p) }
   return(invisible(p))
 }

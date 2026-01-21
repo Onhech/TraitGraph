@@ -18,6 +18,7 @@ TG_similarity_heatmap(
   show_upper = FALSE,
   save_plot = TRUE,
   show_plot = TRUE,
+  verbose = FALSE,
   output_path = "similarity_heatmap.png"
 )
 }
@@ -47,6 +48,8 @@ TG_similarity_heatmap(
 \item{save_plot}{Logical. If \code{TRUE}, save the plot to \code{output_path}.}
 
 \item{show_plot}{Logical. If \code{TRUE}, print the plot to the active device.}
+
+\item{verbose}{Logical; if TRUE, emit a concise save message. Defaults to FALSE.}
 
 \item{output_path}{File path for saving the plot.}
 }

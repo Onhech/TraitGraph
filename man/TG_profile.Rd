@@ -32,7 +32,8 @@ TG_profile(
   output_height = 5,
   output_dpi = 300,
   save_plot = FALSE,
-  show_plot = TRUE
+  show_plot = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{

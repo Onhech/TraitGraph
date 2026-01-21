@@ -20,7 +20,7 @@ TG_vote_bar(
   label_color = NULL,
   tie_markers = c("†", "‡", "§", "¶", "*"),
   font_family = "sans",
-  marker_font_family = "DejaVu Sans",
+  marker_font_family = "Arial Unicode MS",
   footnote_marker_gap = NULL,
   marker_x_nudge = NULL,
   marker_y_nudge = 0.25,
@@ -37,7 +37,8 @@ TG_vote_bar(
   output_height = 5,
   output_dpi = 300,
   save_plot = FALSE,
-  show_plot = TRUE
+  show_plot = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -77,7 +78,7 @@ Defaults to \code{c("†", "‡", "§", "¶", "*")}.}
 \item{font_family}{Font family for labels and callouts. Defaults to "sans".}
 
 \item{marker_font_family}{Font family for tie markers and footnote markers.
-Defaults to "DejaVu Sans".}
+Defaults to "Arial Unicode MS" when NULL.}
 
 \item{footnote_marker_gap}{Numeric; horizontal gap between marker and text (vote units).
 Defaults to \code{0.06 * max_votes}.}
@@ -119,6 +120,8 @@ Defaults to 0.}
 \item{save_plot}{Logical. If TRUE, save the plot.}
 
 \item{show_plot}{Logical. If TRUE, print the plot.}
+
+\item{verbose}{Logical; if TRUE, emit a concise save message. Defaults to FALSE.}
 }
 \value{
 Invisibly returns a list with the ggplot and footnote strings.

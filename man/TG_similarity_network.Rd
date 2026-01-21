@@ -19,6 +19,7 @@ TG_similarity_network(
   save_plot = TRUE,
   show_plot = TRUE,
   show_legend = TRUE,
+  verbose = FALSE,
   output_path = "similarity_network.png",
   edge_width_power = 1,
   zoom_out_factor = 1.2
@@ -52,6 +53,8 @@ TG_similarity_network(
 \item{show_plot}{Logical. If \code{TRUE}, print the plot to the active device.}
 
 \item{show_legend}{Logical. If \code{TRUE}, display the color legend.}
+
+\item{verbose}{Logical; if TRUE, emit a concise save message. Defaults to FALSE.}
 
 \item{output_path}{File path for saving the plot.}
 

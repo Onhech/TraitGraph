@@ -103,6 +103,80 @@ tg_normalize_palette <- function(palette, context = "palette", allow_mid_na = TR
 }
 
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Trait Map Palette Helper ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+tg_palette_from_trait_map <- function(trait_map, trait_name, default_palette = NULL) {
+  if (is.null(default_palette)) {
+    default_palette <- tg_palette_fallback()
+  }
+  if (is.null(trait_name) || !nzchar(trait_name)) {
+    return(default_palette)
+  }
+  lookup_name <- gsub("^Direct_", "", trait_name)
+  trait_map <- trait_map[!is.na(trait_map$Column) & trait_map$Type == "trait", , drop = FALSE]
+  ordered_cols <- trait_map$Column[order(nchar(trait_map$Column), decreasing = TRUE)]
+  for (col in ordered_cols) {
+    if (nzchar(col) && startsWith(lookup_name, col)) {
+      row <- trait_map[trait_map$Column == col, , drop = FALSE]
+      if (nrow(row) && nzchar(row$High_Color) && nzchar(row$Low_Color)) {
+        mid_val <- if (!is.na(row$Mid_Color) && nzchar(row$Mid_Color)) row$Mid_Color else default_palette$mid
+        return(list(high = row$High_Color, mid = mid_val, low = row$Low_Color))
+      }
+    }
+  }
+  default_palette
+}
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Member Profile Builder ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+tg_build_member_profile <- function(row_df, trait_map) {
+  if (!nrow(row_df)) return(list())
+  row_list <- as.list(row_df[1, , drop = FALSE])
+  profile <- list()
+  main_traits <- trait_map %>% dplyr::filter(Type == "trait")
+  for (i in seq_len(nrow(main_traits))) {
+    parent_col <- main_traits$Column[i]
+    parent_name <- main_traits$Name[i]
+    if (!parent_col %in% names(row_list)) next
+    overall_val <- suppressWarnings(as.numeric(row_list[[parent_col]]))
+    if (is.na(overall_val)) next
+    trait_entry <- list(Overall = round(overall_val, 2))
+    subtrait_rows <- trait_map %>%
+      dplyr::filter(Type == "subtrait", startsWith(Column, paste0(parent_col, "_")))
+    if (nrow(subtrait_rows) > 0) {
+      sub_list <- list()
+      for (j in seq_len(nrow(subtrait_rows))) {
+        sub_col <- subtrait_rows$Column[j]
+        sub_name <- subtrait_rows$Name[j]
+        if (!sub_col %in% names(row_list)) next
+        sub_val <- suppressWarnings(as.numeric(row_list[[sub_col]]))
+        if (is.na(sub_val)) next
+        sub_list[[sub_name]] <- round(sub_val, 2)
+      }
+      if (length(sub_list)) {
+        trait_entry$Subfactors <- sub_list
+      }
+    }
+    profile[[parent_name]] <- trait_entry
+  }
+  profile
+}
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Logging Helpers ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+tg_log <- function(message_text, verbose = FALSE) {
+  if (isTRUE(verbose)) {
+    message(message_text)
+  }
+}
+
+tg_log_plot_saved <- function(output_path, verbose = FALSE) {
+  tg_log(paste0("Plot saved to: ", output_path), verbose)
+}
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 # Dynamic Text Function ####

@@ -94,7 +94,8 @@ TG_jung <- function(
     output_height = 6,
     output_dpi = 300,
     save_plot = TRUE,
-    show_plot = TRUE) {
+    show_plot = TRUE,
+    verbose = FALSE) {
 
   plot_data <- dataset %>%
     dplyr::rename(id = !!rlang::sym(name), value = !!rlang::sym(column_name), color = !!rlang::sym(color))
@@ -279,7 +280,7 @@ TG_jung <- function(
 
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, dpi = output_dpi, width = output_width, height = output_height, units = "in")
-    message("Plot saved to: ", output_path)
+    tg_log_plot_saved(output_path, verbose)
   }
   if (show_plot) {
     print(p)

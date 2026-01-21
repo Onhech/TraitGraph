@@ -41,7 +41,8 @@ TG_jung(
   output_height = 6,
   output_dpi = 300,
   save_plot = TRUE,
-  show_plot = TRUE
+  show_plot = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{

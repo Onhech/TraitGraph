@@ -72,6 +72,7 @@
 #' @param save_plot Logical. If `TRUE`, save the plot to `output_path`.
 #' @param show_plot Logical. If `TRUE`, print the plot to the active device.
 #' @param show_legend Logical. If `TRUE`, display the color legend.
+#' @param verbose Logical; if TRUE, emit a concise save message. Defaults to FALSE.
 #' @param output_path File path for saving the plot.
 #' @param edge_width_power Numeric. Power to which edge weights are raised for scaling width. Defaults to 1.
 #' @param zoom_out_factor Numeric scaling for plot limits to prevent clipping (default: 1.2 for a 20% margin).
@@ -104,6 +105,7 @@ TG_similarity_network <- function(dataset, columns, name_col = "names",
                                   subtitle = "Node size reflects average similarity to all others.",
                                   show_title = TRUE,
                                   save_plot = TRUE, show_plot = TRUE, show_legend = TRUE,
+                                  verbose = FALSE,
                                   output_path = "similarity_network.png",
                                   edge_width_power = 1,
                                   zoom_out_factor = 1.2) {
@@ -166,7 +168,7 @@ TG_similarity_network <- function(dataset, columns, name_col = "names",
 
   p <- ggraph::ggraph(layout) +
     ggraph::geom_edge_link(
-      aes(
+      ggplot2::aes(
         width = abs(weight)^edge_width_power,
         color = weight,
         alpha = ifelse(abs(weight) > connection_threshold, 0.7, 0)
@@ -201,7 +203,7 @@ TG_similarity_network <- function(dataset, columns, name_col = "names",
 
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, width = 10, height = 7, dpi = 300)
-    message("Plot saved to: ", output_path)
+    tg_log_plot_saved(output_path, verbose)
   }
 
   if (show_plot) {
@@ -234,6 +236,7 @@ TG_similarity_network <- function(dataset, columns, name_col = "names",
 #' @param show_upper Logical: if FALSE (default), hide the upper triangle (including diagonal) of the similarity matrix for a cleaner, non-redundant view.
 #' @param save_plot Logical. If `TRUE`, save the plot to `output_path`.
 #' @param show_plot Logical. If `TRUE`, print the plot to the active device.
+#' @param verbose Logical; if TRUE, emit a concise save message. Defaults to FALSE.
 #' @param output_path File path for saving the plot.
 #'
 #' @return A `ggplot` object representing the similarity heatmap (returned invisibly).
@@ -253,6 +256,7 @@ TG_similarity_heatmap <- function(dataset, columns, name_col = "names",
                                   show_title = TRUE,
                                   show_upper = FALSE,
                                   save_plot = TRUE, show_plot = TRUE,
+                                  verbose = FALSE,
                                   output_path = "similarity_heatmap.png") {
   correlation_matrix <- .calculate_similarity_matrix(dataset, columns, name_col = name_col)
 
@@ -297,7 +301,7 @@ TG_similarity_heatmap <- function(dataset, columns, name_col = "names",
 
   if (save_plot) {
     ggplot2::ggsave(filename = output_path, plot = p, width = 8, height = 7, dpi = 300)
-    message("Plot saved to: ", output_path)
+    tg_log_plot_saved(output_path, verbose)
   }
 
   if (show_plot) {
