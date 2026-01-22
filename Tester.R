@@ -12,7 +12,6 @@ suppressPackageStartupMessages({
   library(tidyverse)
   library(here)
   library(withr)
-library(cli)
 })
 
 find_project_root <- function(start_dir = getwd()) {
@@ -116,23 +115,17 @@ sample_data_30<-dplyr::slice_sample(sample_data,n = 30)
 
 
 
-# --- Progress Demo (batch) ---
-use_progress <- cli::is_dynamic_tty() && interactive()
-progress_demo <- if (use_progress) {
-  cli::cli_progress_bar(
-    format = "Generating Demo Plots {cli::pb_bar} {cli::pb_percent} | Current: {cli::pb_status}",
-    total = 3,
-    clear = FALSE,
-    show_after = 0
-  )
-} else {
-  NULL
-}
-
 demo_paths <- c(
   "ExamplePlots/demo_trait_1.jpg",
   "ExamplePlots/demo_trait_2.jpg",
   "ExamplePlots/demo_trait_3.jpg"
+)
+
+# --- Progress Demo (batch) ---
+progress_demo <- TraitGraph:::tg_progress_bar(
+  total = length(demo_paths),
+  label = "Generating %d Demo Plots",
+  interval_secs = 0.5
 )
 
 for (i in seq_along(demo_paths)) {
@@ -145,14 +138,9 @@ for (i in seq_along(demo_paths)) {
     verbose = FALSE,
     output_path = demo_paths[i]
   )
-  current_name <- basename(demo_paths[i])
-  if (use_progress) {
-    cli::cli_progress_update(progress_demo, inc = 1, status = current_name)
-  } else {
-    message("Generating Demo Plots: ", current_name)
-  }
+  progress_demo <- TraitGraph:::tg_progress_update(progress_demo)
 }
-if (use_progress) cli::cli_progress_done(progress_demo)
+TraitGraph:::tg_progress_done(progress_demo)
 
 # --- 3. FUNCTION TESTING ---
 # After running `devtools::load_all()`, you can run these calls to test.
@@ -368,5 +356,3 @@ profile_plot <- TG_profile(
   show_plot = T,
   output_path = file.path(plots_dir, "profile_example.jpg")
 )
-
-

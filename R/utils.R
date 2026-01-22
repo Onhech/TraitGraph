@@ -179,6 +179,74 @@ tg_log_plot_saved <- function(output_path, verbose = FALSE) {
 }
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Progress Helpers ####
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+tg_progress_bar <- function(total, label, interval_secs = 0.5) {
+  if (is.null(total) || total <= 0) return(NULL)
+  now <- Sys.time()
+  label_line <- if (grepl("%d", label, fixed = TRUE)) {
+    sprintf(label, total)
+  } else {
+    sprintf("%s %d", label, total)
+  }
+  cat(label_line, "\n")
+  list(
+    total = as.integer(total),
+    current = 0L,
+    label = label_line,
+    interval_secs = interval_secs,
+    last_emit = now,
+    start_time = now,
+    icons = rep("⚪", total)
+  )
+}
+
+tg_progress_update <- function(bar) {
+  if (is.null(bar)) return(NULL)
+  bar$current <- bar$current + 1L
+  now <- Sys.time()
+  elapsed_since <- as.numeric(difftime(now, bar$last_emit, units = "secs"))
+  should_emit <- elapsed_since >= bar$interval_secs || bar$current == bar$total
+  if (should_emit) {
+    elapsed_total <- as.numeric(difftime(now, bar$start_time, units = "secs"))
+    percent <- if (bar$total > 0) round((bar$current / bar$total) * 100) else 100
+    it_sec <- if (elapsed_total <= 0) 0 else round(bar$current / elapsed_total, 2)
+    eta <- if (it_sec <= 0) 0 else round(max(0, (bar$total - bar$current) / it_sec), 1)
+    if (bar$current >= bar$total) {
+      bar$icons[] <- "🟢"
+    } else {
+      if (bar$current > 1) {
+        bar$icons[seq_len(bar$current - 1)] <- "🟢"
+      }
+      bar$icons[bar$current] <- "🟡"
+    }
+    output <- sprintf(
+      "\rStatus: %s  %.1fs -- %d/%d (%d%%) | %.2f plots/s | ETA: %.1fs          ",
+      paste(bar$icons, collapse = " "),
+      elapsed_total,
+      bar$current,
+      bar$total,
+      percent,
+      it_sec,
+      eta
+    )
+    cat(output)
+    utils::flush.console()
+    bar$last_emit <- now
+  }
+  bar
+}
+
+tg_progress_done <- function(bar) {
+  if (is.null(bar)) return(invisible(NULL))
+  total_duration <- as.numeric(difftime(Sys.time(), bar$start_time, units = "secs"))
+  final_speed <- if (total_duration <= 0) 0 else round(bar$total / total_duration, 2)
+  cat("\r")
+  cat(sprintf("\n%d generated in %.1f seconds. %.2f plots per second\n", bar$total, total_duration, final_speed))
+  invisible(TRUE)
+}
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 # Dynamic Text Function ####
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 #' Adjust title properties based on text length
@@ -344,5 +412,4 @@ get_dynamic_title_doughnut <- function(title_text) {
 
   return(list(text = wrapped_title, size = font_size, vjust = final_vjust))
 }
-
 
