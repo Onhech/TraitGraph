@@ -181,6 +181,12 @@ tg_log_plot_saved <- function(output_path, verbose = FALSE) {
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 # Progress Helpers ####
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+#' Progress bar helper for batch plotting.
+#' @param total Total number of items.
+#' @param label Label template (supports %d).
+#' @param interval_secs Minimum seconds between updates.
+#' @return Progress bar state list.
+#' @export
 tg_progress_bar <- function(total, label, interval_secs = 0.5) {
   if (is.null(total) || total <= 0) return(NULL)
   now <- Sys.time()
@@ -201,6 +207,10 @@ tg_progress_bar <- function(total, label, interval_secs = 0.5) {
   )
 }
 
+#' Update the progress bar state.
+#' @param bar Progress bar state from `tg_progress_bar`.
+#' @return Updated progress bar state.
+#' @export
 tg_progress_update <- function(bar) {
   if (is.null(bar)) return(NULL)
   bar$current <- bar$current + 1L
@@ -237,6 +247,10 @@ tg_progress_update <- function(bar) {
   bar
 }
 
+#' Finalize the progress bar output.
+#' @param bar Progress bar state from `tg_progress_bar`.
+#' @return NULL invisibly.
+#' @export
 tg_progress_done <- function(bar) {
   if (is.null(bar)) return(invisible(NULL))
   total_duration <- as.numeric(difftime(Sys.time(), bar$start_time, units = "secs"))
@@ -412,4 +426,3 @@ get_dynamic_title_doughnut <- function(title_text) {
 
   return(list(text = wrapped_title, size = font_size, vjust = final_vjust))
 }
-
