@@ -1,0 +1,38 @@
+Column,Name,Type,Graph_Type,Description,High_Color,Low_Color
+NA,HEXACO,measure,NA,A six-factor model of personality structure.,,
+HEX_H,Honesty-Humility,trait,trait,The degree to which a person is fair and genuine in dealing with others. High scorers are sincere and modest; low scorers are deceitful and arrogant.,#2563EB,#5FC6D6
+HEX_H_F,Fairness,subtrait,trait,A tendency to be genuine and avoid fraud or corruption. High scorers play by the rules; low scorers are willing to exploit others.,#2563EB,#5FC6D6
+HEX_H_G,Greed-Avoidance,subtrait,trait,"The tendency to be uninterested in lavish wealth, high social status, or special treatment. High scorers are non-materialistic; low scorers desire wealth and status.",#2563EB,#5FC6D6
+HEX_H_M,Modesty,subtrait,trait,The tendency to be humble and unassuming. High scorers see themselves as ordinary people; low scorers feel superior and entitled.,#2563EB,#5FC6D6
+HEX_H_S,Sincerity,subtrait,trait,The tendency to be genuine and unwilling to manipulate others. High scorers are straightforward; low scorers can be deceitful or cunning.,#2563EB,#5FC6D6
+HEX_E,Emotionality,trait,trait,"The extent to which a person experiences fear, anxiety, and sentimentality. High scorers are more anxious and sentimental; low scorers are brave and emotionally stable.",#E35B8F,#356C8A
+HEX_E_A,Anxiety,subtrait,trait,The tendency to worry in a variety of contexts. High scorers are worriers; low scorers are relaxed and not easily stressed.,#E35B8F,#356C8A
+HEX_E_D,Dependence,subtrait,trait,The need for emotional support from others. High scorers seek reassurance; low scorers feel self-assured and independent.,#E35B8F,#356C8A
+HEX_E_F,Fearfulness,subtrait,trait,The tendency to avoid physical danger. High scorers are fearful and cautious; low scorers are brave and willing to take physical risks.,#E35B8F,#356C8A
+HEX_E_S,Sentimentality,subtrait,trait,The tendency to feel strong emotional bonds with others. High scorers are soft-hearted; low scorers are emotionally detached.,#E35B8F,#356C8A
+HEX_X,Extraversion,trait,trait,"The extent to which a person is outgoing, energetic, and sociable. High scorers are talkative and lively; low scorers are reserved and quiet.",#F97316,#7C2D12
+HEX_X_SE,Social Self-Esteem,subtrait,trait,A person's confidence and comfort in social situations. High scorers feel positively about themselves in social contexts; low scorers feel awkward or shy.,#F97316,#7C2D12
+HEX_X_L,Liveliness,subtrait,trait,"The tendency to be enthusiastic, energetic, and cheerful. High scorers are bubbly and upbeat; low scorers are more somber and serious.",#F97316,#7C2D12
+HEX_X_SB,Social Boldness,subtrait,trait,The tendency to be assertive and confident in leadership or group roles. High scorers are comfortable taking charge; low scorers avoid the spotlight.,#F97316,#7C2D12
+HEX_X_S,Sociability,subtrait,trait,The preference for being with other people. High scorers enjoy social gatherings; low scorers prefer solitude or small groups.,#F97316,#7C2D12
+HEX_A,Agreeableness,trait,trait,"The tendency to be compassionate, cooperative, and forgiving. High scorers are gentle and patient; low scorers are quick-tempered and critical.",#38BDF8,#F87171
+HEX_A_FL,Flexibility,subtrait,trait,The willingness to compromise and cooperate. High scorers are adaptable; low scorers are stubborn and argumentative.,#38BDF8,#F87171
+HEX_A_FO,Forgiveness,subtrait,trait,The tendency to forgive those who have caused harm. High scorers readily trust again; low scorers hold grudges.,#38BDF8,#F87171
+HEX_A_G,Gentleness,subtrait,trait,The tendency to be mild and lenient in judging others. High scorers avoid criticizing others; low scorers are harsh and critical.,#38BDF8,#F87171
+HEX_A_P,Patience,subtrait,trait,The ability to remain calm and control one's temper. High scorers are slow to anger; low scorers have a short fuse.,#38BDF8,#F87171
+HEX_C,Conscientiousness,trait,trait,"The degree to which a person is organized, diligent, and prudent. High scorers are disciplined and reliable; low scorers are disorganized and careless.",#312E81,#818CF8
+HEX_C_D,Diligence,subtrait,trait,The tendency to work hard and be committed to one's tasks. High scorers are industrious; low scorers are less motivated and may procrastinate.,#312E81,#818CF8
+HEX_C_O,Organization,subtrait,trait,The tendency to be tidy and systematic. High scorers like order and structure; low scorers are more messy and unstructured.,#312E81,#818CF8
+HEX_C_PE,Perfectionism,subtrait,trait,"The tendency to be meticulous and detail-oriented. High scorers strive for precision; low scorers are content with ""good enough.""",#312E81,#818CF8
+HEX_C_PR,Prudence,subtrait,trait,The tendency to be cautious and deliberate. High scorers think before they act; low scorers are more impulsive and reckless.,#312E81,#818CF8
+HEX_O,Openness to Experience,trait,trait,"The extent to which a person is creative, curious, and unconventional. High scorers enjoy art, ideas, and new experiences; low scorers prefer the conventional and familiar.",#00C2FF,#334155
+HEX_O_A,Aesthetic Appreciation,subtrait,trait,The enjoyment of beauty in art and nature. High scorers are moved by beauty; low scorers are less interested in aesthetics.,#00C2FF,#334155
+HEX_O_C,Creativity,subtrait,trait,The tendency to be imaginative and innovative. High scorers enjoy creating new things and ideas; low scorers are less imaginative.,#00C2FF,#334155
+HEX_O_I,Inquisitiveness,subtrait,trait,The desire to seek out new information and experiences. High scorers are curious and enjoy learning; low scorers are less intellectually curious.,#00C2FF,#334155
+HEX_O_U,Unconventionality,subtrait,trait,The willingness to accept the unusual. High scorers are receptive to novel ideas; low scorers are more traditional.,#00C2FF,#334155
+NA,Dark Tetrad,measure,NA,"A cluster of four socially aversive personality traits. High scores indicate tendencies towards manipulation, self-obsession, low empathy, and cruelty.",,
+DT,Dark Tetrad,trait,trait,The overall score for the four aversive traits.,#4B2672,#59607C
+DT_M,Machiavellianism,subtrait,trait,"The tendency to be cynical, strategic, and manipulative for personal gain. High scorers view others as tools to achieve their goals.",#0F3D3A,#6B7C8F
+DT_N,Narcissism,subtrait,trait,"The tendency to be grandiose, entitled, and require admiration from others. High scorers have an inflated sense of self-importance.",#F5C542,#8A7F86
+DT_P,Psychopathy,subtrait,trait,"Characterized by low empathy, impulsivity, and thrill-seeking. High scorers have a weak conscience and a disregard for others' feelings.",#DC2626,#475569
+DT_S,Sadism,subtrait,trait,The tendency to derive pleasure from the suffering of others. High scorers may enjoy being cruel or humiliating to others.,#C44A1A,#4A5AC0

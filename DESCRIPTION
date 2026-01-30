@@ -1,6 +1,8 @@
 Package: TraitGraph
 Title: Group Psychology Graph Maker
 Version: 0.0.0.9000
+Author: Lynden Jensen [aut, cre]
+Maintainer: Lynden Jensen <lynden.jensen@gmail.com>
 Authors@R: person("Lynden", "Jensen", email = "lynden.jensen@gmail.com", role = c("aut", "cre"),
                   comment = c(ORCID = "0000-0003-0668-2543"))
 Description: Provides a suite of functions to generate publication-quality
@@ -14,6 +16,7 @@ RoxygenNote: 7.3.3
 Imports:
     dplyr,
     ggplot2,
+    jsonlite,
     rlang,
     stringr,
     geomtextpath,

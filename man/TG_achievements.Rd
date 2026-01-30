@@ -11,7 +11,8 @@ TG_achievements(
   achievements_path,
   voting_data_path,
   output_dir = "achievements",
-  max_awards = 3
+  max_awards = 10,
+  write_qa = TRUE
 )
 }
 \arguments{
@@ -27,7 +28,9 @@ TG_achievements(
 
 \item{output_dir}{Directory where output CSVs should be written. Defaults to "achievements".}
 
-\item{max_awards}{Integer count of achievements to allocate per person. Defaults to 3.}
+\item{max_awards}{Integer count of achievements to allocate per person. Defaults to 10.}
+
+\item{write_qa}{Logical; when TRUE, write QA summary CSVs to output_dir.}
 }
 \value{
 A list with \code{all_eligible} and \code{awarded} data frames.
@@ -39,14 +42,15 @@ exclusivity rules. Outputs include a full eligibility list and a final allocatio
 }
 \examples{
 \dontrun{
+inputs_dir <- system.file("achievement_inputs", package = "TraitGraph")
 TG_achievements(
-  trait_map_path = "achievement_inputs/trait_map.csv",
-  vote_map_path = "achievement_inputs/vote_map.csv",
-  data_path = "achievement_inputs/group_dataset.csv",
-  achievements_path = "achievement_inputs/achievements.csv",
-  voting_data_path = "achievement_inputs/voting_data.csv",
+  trait_map_path = file.path(inputs_dir, "trait_map.csv"),
+  vote_map_path = file.path(inputs_dir, "vote_map.csv"),
+  data_path = file.path(inputs_dir, "group_dataset.csv"),
+  achievements_path = file.path(inputs_dir, "achievements.csv"),
+  voting_data_path = file.path(inputs_dir, "voting_data.csv"),
   output_dir = "achievements",
-  max_awards = 3
+  max_awards = 10
 )
 }
 }

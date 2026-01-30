@@ -142,7 +142,7 @@ for (i in seq_along(demo_paths)) {
 }
 TraitGraph:::tg_progress_done(progress_demo)
 
-# --- 3. FUNCTION TESTING ---
+  # --- 3. FUNCTION TESTING ---
 # After running `devtools::load_all()`, you can run these calls to test.
   # ~~~~~~~~~~~~~~~~~~~ #
   # --- Trait Example   ####
@@ -156,6 +156,25 @@ TG_trait(
     #color_opacity = .,
     output_path = 'ExamplePlots/trait_graph_example.jpg'
   )
+
+
+# ~~~~~~~~~~~~~~~~~~~ #
+# Achievements ####
+# ~~~~~~~~~~~~~~~~~~~ #
+ach_inputs <- file.path(proj_root, "achievement_inputs")
+ach_output <- file.path(proj_root, "ExamplePlots", "achievements_test")
+if (!dir.exists(ach_output)) dir.create(ach_output, recursive = TRUE)
+
+TG_achievements(
+  trait_map_path = file.path(ach_inputs, "trait_map.csv"),
+  vote_map_path = file.path(ach_inputs, "vote_map.csv"),
+  data_path = file.path(ach_inputs, "group_dataset.csv"),
+  achievements_path = file.path(ach_inputs, "achievements.csv"),
+  voting_data_path = file.path(ach_inputs, "voting_data.csv"),
+  output_dir = ach_output,
+  max_awards = 10,
+  write_qa = F
+)
 
 # Midpoint color mode example (leans high/low instead of favorite colors)
 TG_trait(
@@ -315,25 +334,6 @@ TG_votes(
   save_plot = T,
   output_path = 'ExamplePlots/voting_graph_example_10.jpg',title_size_mod = 1.6
 )
-
-# ~~~~~~~~~~~~~~~~~~~ #
-# Achievements ####
-# ~~~~~~~~~~~~~~~~~~~ #
-  # Uses the sample files in /achievement_inputs to validate the achievement pipeline.
-
-achievement_inputs_dir <- file.path(proj_root, "achievement_inputs")
-ach_output_dir <- file.path(proj_root, "ExamplePlots", "achievements")
-
-ach_results <- TG_achievements(
-  trait_map_path = file.path(achievement_inputs_dir, "trait_map.csv"),
-  vote_map_path = file.path(achievement_inputs_dir, "vote_map.csv"),
-  data_path = file.path(achievement_inputs_dir, "group_dataset.csv"),
-  achievements_path = file.path(achievement_inputs_dir, "achievements.csv"),
-  voting_data_path = file.path(achievement_inputs_dir, "voting_data.csv"),
-  output_dir = ach_output_dir,
-  max_awards = 2
-)
-
 
 # ~~~~~~~~~~~~~~~~~~~ #
 # Profiles ####
