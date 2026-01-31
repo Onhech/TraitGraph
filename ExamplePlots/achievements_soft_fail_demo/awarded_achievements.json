@@ -79,19 +79,19 @@
         "desirability_rank": 18
       },
       {
-        "achievement_id": "28",
-        "title": "Ugly Duckling",
-        "description": "Perhaps adopted, Allison's average similarity was closest to zero.",
-        "image": "ach_duck",
-        "image_file": "ach_duck.svg",
-        "color_hex": "#AB2A98",
+        "achievement_id": "30",
+        "title": "Enigma",
+        "description": "Unique build, Allison was no one's #1 match.",
+        "image": "ach_maze",
+        "image_file": "ach_maze.svg",
+        "color_hex": "#2AAB66",
         "type": "Similarity",
-        "subtype": "similarity-average",
+        "subtype": "similarity-top-match-count",
         "framing": "Negative",
-        "exclusive_group": "similarity-average",
+        "exclusive_group": "similarity-top-match-count",
         "shared_person_name": null,
         "shared_person_id": null,
-        "desirability_rank": 10
+        "desirability_rank": 17
       },
       {
         "achievement_id": "21",
@@ -250,21 +250,6 @@
         "desirability_rank": 19
       },
       {
-        "achievement_id": "61",
-        "title": "Prime Time",
-        "description": "9-to-5 energy, Emily submitted during working hours.",
-        "image": "ach_tv",
-        "image_file": "ach_tv.svg",
-        "color_hex": "#6BAB2A",
-        "type": "Survey Completion",
-        "subtype": "completion-time-of-day",
-        "framing": "Positive",
-        "exclusive_group": "completion-time",
-        "shared_person_name": null,
-        "shared_person_id": null,
-        "desirability_rank": 70
-      },
-      {
         "achievement_id": "74",
         "title": "Completionist",
         "description": "Come in 1st, 2nd, & 3rd place in votes at least once.",
@@ -308,6 +293,21 @@
         "shared_person_name": null,
         "shared_person_id": null,
         "desirability_rank": 59
+      },
+      {
+        "achievement_id": "43",
+        "title": "I win",
+        "description": "Better than the rest, Emily won a first-place vote.",
+        "image": "arc_ribbon",
+        "image_file": "arc_ribbon.svg",
+        "color_hex": "#2A8DAB",
+        "type": "Voting Results",
+        "subtype": "vote-podium",
+        "framing": "Positive",
+        "exclusive_group": "vote-podium",
+        "shared_person_name": null,
+        "shared_person_id": null,
+        "desirability_rank": 61
       }
     ]
   },
@@ -391,21 +391,6 @@
         "desirability_rank": 55
       },
       {
-        "achievement_id": "61",
-        "title": "Prime Time",
-        "description": "9-to-5 energy, Ismael submitted during working hours.",
-        "image": "ach_tv",
-        "image_file": "ach_tv.svg",
-        "color_hex": "#6BAB2A",
-        "type": "Survey Completion",
-        "subtype": "completion-time-of-day",
-        "framing": "Positive",
-        "exclusive_group": "completion-time",
-        "shared_person_name": null,
-        "shared_person_id": null,
-        "desirability_rank": 70
-      },
-      {
         "achievement_id": "74",
         "title": "Completionist",
         "description": "Come in 1st, 2nd, & 3rd place in votes at least once.",
@@ -464,6 +449,21 @@
         "shared_person_name": null,
         "shared_person_id": null,
         "desirability_rank": 59
+      },
+      {
+        "achievement_id": "43",
+        "title": "I win",
+        "description": "Better than the rest, Ismael won a first-place vote.",
+        "image": "arc_ribbon",
+        "image_file": "arc_ribbon.svg",
+        "color_hex": "#2A8DAB",
+        "type": "Voting Results",
+        "subtype": "vote-podium",
+        "framing": "Positive",
+        "exclusive_group": "vote-podium",
+        "shared_person_name": null,
+        "shared_person_id": null,
+        "desirability_rank": 61
       }
     ]
   },
@@ -658,19 +658,19 @@
         "desirability_rank": 8
       },
       {
-        "achievement_id": "48",
-        "title": "Stormtrooper",
-        "description": "Shots missed, Klaus guessed most X least accurately.",
-        "image": "ach_blaster",
-        "image_file": "ach_blaster.svg",
-        "color_hex": "#2A4AAB",
-        "type": "Voting Results",
-        "subtype": "vote-accuracy",
+        "achievement_id": "28",
+        "title": "Ugly Duckling",
+        "description": "Perhaps adopted, Klaus's average similarity was closest to zero.",
+        "image": "ach_duck",
+        "image_file": "ach_duck.svg",
+        "color_hex": "#AB2A98",
+        "type": "Similarity",
+        "subtype": "similarity-average",
         "framing": "Negative",
-        "exclusive_group": "vote-accuracy",
+        "exclusive_group": "similarity-average",
         "shared_person_name": null,
         "shared_person_id": null,
-        "desirability_rank": 14
+        "desirability_rank": 10
       },
       {
         "achievement_id": "5",
@@ -686,6 +686,36 @@
         "shared_person_name": null,
         "shared_person_id": null,
         "desirability_rank": 24
+      },
+      {
+        "achievement_id": "48",
+        "title": "Stormtrooper",
+        "description": "Shots missed, Klaus guessed most X least accurately.",
+        "image": "ach_blaster",
+        "image_file": "ach_blaster.svg",
+        "color_hex": "#2A4AAB",
+        "type": "Voting Results",
+        "subtype": "vote-accuracy",
+        "framing": "Negative",
+        "exclusive_group": "vote-accuracy",
+        "shared_person_name": null,
+        "shared_person_id": null,
+        "desirability_rank": 14
+      },
+      {
+        "achievement_id": "24",
+        "title": "The Specialist",
+        "description": " Klaus went all-in on one stat, with a solitary trait reaching the 10% extreme.",
+        "image": "ach_wrench",
+        "image_file": "ach_wrench.svg",
+        "color_hex": "#2A4DAB",
+        "type": "Trait Results",
+        "subtype": "trait-spike",
+        "framing": "Positive",
+        "exclusive_group": "trait-pattern",
+        "shared_person_name": null,
+        "shared_person_id": null,
+        "desirability_rank": 41
       },
       {
         "achievement_id": "31",
@@ -718,49 +748,19 @@
         "desirability_rank": 19
       },
       {
-        "achievement_id": "24",
-        "title": "The Specialist",
-        "description": " Klaus went all-in on one stat, with a solitary trait reaching the 10% extreme.",
-        "image": "ach_wrench",
-        "image_file": "ach_wrench.svg",
-        "color_hex": "#2A4DAB",
+        "achievement_id": "7",
+        "title": "Apex Peacemaker",
+        "description": "Highest Agreeableness in the group.",
+        "image": "ach_peace",
+        "image_file": "ach_peace.svg",
+        "color_hex": "#AB892A",
         "type": "Trait Results",
-        "subtype": "trait-spike",
+        "subtype": "trait-peak",
         "framing": "Positive",
-        "exclusive_group": "trait-pattern",
+        "exclusive_group": "apex",
         "shared_person_name": null,
         "shared_person_id": null,
-        "desirability_rank": 41
-      },
-      {
-        "achievement_id": "42",
-        "title": "Photo Finish",
-        "description": "Split the top spot, Klaus tied for 1st place.",
-        "image": "ach_camera",
-        "image_file": "ach_camera.svg",
-        "color_hex": "#33AB2A",
-        "type": "Voting Results",
-        "subtype": "vote-podium",
-        "framing": "Positive",
-        "exclusive_group": "vote-podium",
-        "shared_person_name": null,
-        "shared_person_id": null,
-        "desirability_rank": 49
-      },
-      {
-        "achievement_id": "45",
-        "title": "Contrarian",
-        "description": "Off the beat, Klaus voted for winners least often.",
-        "image": "ach_finger_up",
-        "image_file": "ach_finger_up.svg",
-        "color_hex": "#2AAB4A",
-        "type": "Voting Results",
-        "subtype": "vote-alignment",
-        "framing": "Negative",
-        "exclusive_group": "vote-alignment",
-        "shared_person_name": null,
-        "shared_person_id": null,
-        "desirability_rank": 56
+        "desirability_rank": 26
       },
       {
         "achievement_id": "52",
@@ -874,21 +874,6 @@
         "desirability_rank": 17
       },
       {
-        "achievement_id": "46",
-        "title": "Kingmaker",
-        "description": "Winner picker, Lorena voted for winners most often.",
-        "image": "ach_crown",
-        "image_file": "ach_crown.svg",
-        "color_hex": "#57AB2A",
-        "type": "Voting Results",
-        "subtype": "vote-alignment",
-        "framing": "Positive",
-        "exclusive_group": "vote-alignment",
-        "shared_person_name": null,
-        "shared_person_id": null,
-        "desirability_rank": 57
-      },
-      {
         "achievement_id": "38",
         "title": "Third Wheel",
         "description": "Your closest match, Jelem, Maggie, is even closer to someone else.",
@@ -902,6 +887,21 @@
         "shared_person_name": "Jelem, Maggie",
         "shared_person_id": "28, 31",
         "desirability_rank": 55
+      },
+      {
+        "achievement_id": "12",
+        "title": "Apex Realist",
+        "description": "Lowest Openness to Experience in the group.",
+        "image": "ach_magnifying_glass",
+        "image_file": "ach_magnifying_glass.svg",
+        "color_hex": "#2A59AB",
+        "type": "Trait Results",
+        "subtype": "trait-peak",
+        "framing": "Positive",
+        "exclusive_group": "apex",
+        "shared_person_name": null,
+        "shared_person_id": null,
+        "desirability_rank": 31
       },
       {
         "achievement_id": "51",
@@ -1030,21 +1030,6 @@
         "desirability_rank": 42
       },
       {
-        "achievement_id": "42",
-        "title": "Photo Finish",
-        "description": "Split the top spot, Maggie tied for 1st place.",
-        "image": "ach_camera",
-        "image_file": "ach_camera.svg",
-        "color_hex": "#33AB2A",
-        "type": "Voting Results",
-        "subtype": "vote-podium",
-        "framing": "Positive",
-        "exclusive_group": "vote-podium",
-        "shared_person_name": null,
-        "shared_person_id": null,
-        "desirability_rank": 49
-      },
-      {
         "achievement_id": "34",
         "title": "Besties",
         "description": "Maggie and Jelem are each other's #1 match.",
@@ -1073,6 +1058,21 @@
         "shared_person_name": null,
         "shared_person_id": null,
         "desirability_rank": 29
+      },
+      {
+        "achievement_id": "40",
+        "title": "Always the bridesmaid",
+        "description": "Runner-up champ, Maggie had the most 2nd-place votes.",
+        "image": "ach_bouquet",
+        "image_file": "ach_bouquet.svg",
+        "color_hex": "#86AB2A",
+        "type": "Voting Results",
+        "subtype": "vote-podium",
+        "framing": "Negative",
+        "exclusive_group": "vote-podium",
+        "shared_person_name": null,
+        "shared_person_id": null,
+        "desirability_rank": 43
       },
       {
         "achievement_id": "52",
@@ -1156,6 +1156,21 @@
         "desirability_rank": 20
       },
       {
+        "achievement_id": "53",
+        "title": "Ride-or-Die",
+        "description": "Rachel's loyalty is unquestionable, casting 6+ votes for .",
+        "image": "ach_bike",
+        "image_file": "ach_bike.svg",
+        "color_hex": "#392AAB",
+        "type": "Voting Results",
+        "subtype": "vote-relationship",
+        "framing": "Positive",
+        "exclusive_group": "vote-relationship",
+        "shared_person_name": null,
+        "shared_person_id": null,
+        "desirability_rank": 59
+      },
+      {
         "achievement_id": "24",
         "title": "The Specialist",
         "description": " Rachel went all-in on one stat, with a solitary trait reaching the 10% extreme.",
@@ -1186,36 +1201,6 @@
         "desirability_rank": 48
       },
       {
-        "achievement_id": "54",
-        "title": "Caboose",
-        "description": "Last across the line, Rachel submitted after everyone else.",
-        "image": "ach_train",
-        "image_file": "ach_train.svg",
-        "color_hex": "#4AAB2A",
-        "type": "Survey Completion",
-        "subtype": "completion-order",
-        "framing": "Negative",
-        "exclusive_group": "completion-order",
-        "shared_person_name": null,
-        "shared_person_id": null,
-        "desirability_rank": 44
-      },
-      {
-        "achievement_id": "57",
-        "title": "The Thinker",
-        "description": "Took their time, Rachel had the longest completion time.",
-        "image": "ach_brain",
-        "image_file": "ach_brain.svg",
-        "color_hex": "#AB2A55",
-        "type": "Survey Completion",
-        "subtype": "completion-duration",
-        "framing": "Positive",
-        "exclusive_group": "completion-duration",
-        "shared_person_name": null,
-        "shared_person_id": null,
-        "desirability_rank": 50
-      },
-      {
         "achievement_id": "51",
         "title": "Double Jinx",
         "description": "Rachel is part of a three-way voting triangle with Allison, Emily, Ismael, Jelem, Klaus, Lorena, Maggie.",
@@ -1226,9 +1211,24 @@
         "subtype": "vote-relationship",
         "framing": "Negative",
         "exclusive_group": "vote-relationship",
-        "shared_person_name": "Emily",
-        "shared_person_id": "26",
+        "shared_person_name": "Allison, Emily, Ismael, Jelem, Klaus, Lorena, Maggie",
+        "shared_person_id": "25, 26, 27, 28, 29, 30, 31",
         "desirability_rank": 19
+      },
+      {
+        "achievement_id": "9",
+        "title": "Apex Planner",
+        "description": "Highest Conscientiousness in the group.",
+        "image": "ach_calendar",
+        "image_file": "ach_calendar.svg",
+        "color_hex": "#2AAB2A",
+        "type": "Trait Results",
+        "subtype": "trait-peak",
+        "framing": "Positive",
+        "exclusive_group": "apex",
+        "shared_person_name": null,
+        "shared_person_id": null,
+        "desirability_rank": 28
       },
       {
         "achievement_id": "52",

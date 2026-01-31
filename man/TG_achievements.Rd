@@ -12,7 +12,8 @@ TG_achievements(
   voting_data_path,
   output_dir = "achievements",
   max_awards = 10,
-  write_qa = TRUE
+  write_qa = TRUE,
+  soft_fail = TRUE
 )
 }
 \arguments{
@@ -31,6 +32,9 @@ TG_achievements(
 \item{max_awards}{Integer count of achievements to allocate per person. Defaults to 10.}
 
 \item{write_qa}{Logical; when TRUE, write QA summary CSVs to output_dir.}
+
+\item{soft_fail}{Logical; when TRUE, missing inputs/columns emit warnings and
+return empty outputs instead of stopping.}
 }
 \value{
 A list with \code{all_eligible} and \code{awarded} data frames.

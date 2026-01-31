@@ -176,6 +176,42 @@ TG_achievements(
   write_qa = F
 )
 
+# --- Achievements soft-fail demo (missing columns) ---
+ach_demo_dir <- file.path(proj_root, "ExamplePlots", "achievements_soft_fail_demo")
+if (!dir.exists(ach_demo_dir)) dir.create(ach_demo_dir, recursive = TRUE)
+
+demo_inputs <- file.path(ach_demo_dir, "inputs")
+if (!dir.exists(demo_inputs)) dir.create(demo_inputs, recursive = TRUE)
+
+file.copy(file.path(ach_inputs, "trait_map.csv"), file.path(demo_inputs, "trait_map.csv"), overwrite = TRUE)
+file.copy(file.path(ach_inputs, "vote_map.csv"), file.path(demo_inputs, "vote_map.csv"), overwrite = TRUE)
+file.copy(file.path(ach_inputs, "achievements.csv"), file.path(demo_inputs, "achievements.csv"), overwrite = TRUE)
+file.copy(file.path(ach_inputs, "voting_data.csv"), file.path(demo_inputs, "voting_data.csv"), overwrite = TRUE)
+
+# Create a broken group_dataset.csv by dropping required timing + a trait column.
+demo_people <- read.csv(file.path(ach_inputs, "group_dataset.csv"), stringsAsFactors = FALSE)
+demo_people$start_time <- NULL
+demo_people$completion_time <- NULL
+demo_people$total_duration_sec <- NULL
+if ("HEX_E_S" %in% names(demo_people)) {
+  demo_people$HEX_E_S <- NULL
+}
+write.csv(demo_people, file.path(demo_inputs, "group_dataset.csv"), row.names = FALSE)
+
+# Soft-fail: should warn + write achievements_input_issues.csv in output_dir.
+TG_achievements(
+  trait_map_path = file.path(demo_inputs, "trait_map.csv"),
+  vote_map_path = file.path(demo_inputs, "vote_map.csv"),
+  data_path = file.path(demo_inputs, "group_dataset.csv"),
+  achievements_path = file.path(demo_inputs, "achievements.csv"),
+  voting_data_path = file.path(demo_inputs, "voting_data.csv"),
+  output_dir = ach_demo_dir,
+  max_awards = 10,
+  write_qa = FALSE,
+  soft_fail = TRUE
+)
+
+
 # Midpoint color mode example (leans high/low instead of favorite colors)
 TG_trait(
     dataset = sample_data_20,

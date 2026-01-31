@@ -1,0 +1,4 @@
+"source","issue"
+"/Users/lyndenjensen/Library/CloudStorage/GoogleDrive-lynden.jensen@gmail.com/My Drive/Work/PsychologyReports/Product/Reports/TraitGraph/ExamplePlots/achievements_soft_fail_demo/inputs/group_dataset.csv","missing_cols:start_time,completion_time,total_duration_sec"
+"/Users/lyndenjensen/Library/CloudStorage/GoogleDrive-lynden.jensen@gmail.com/My Drive/Work/PsychologyReports/Product/Reports/TraitGraph/ExamplePlots/achievements_soft_fail_demo/inputs/group_dataset.csv","missing_trait_cols:NA,HEX_E_S"
+"/Users/lyndenjensen/Library/CloudStorage/GoogleDrive-lynden.jensen@gmail.com/My Drive/Work/PsychologyReports/Product/Reports/TraitGraph/ExamplePlots/achievements_soft_fail_demo/inputs/group_dataset.csv","missing_values:completion_time_or_duration_all_na"

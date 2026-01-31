@@ -1,0 +1,73 @@
+Vote_Column,Trait_Name,Question_Text
+vote_q01,Direct_HEX_Hon,Who is the most honest?
+vote_q02,HEX_Hon,"If your new haircut looks awful, who would actually tell you the truth?"
+vote_q03,Direct_HEX_Hum,Who is the most humble?
+vote_q04,HEX_Hum,Who'd happily volunteer to be the back half of a two-person horse costume?
+vote_q05,Direct_HEX_H_S,Who is the most sincere?
+vote_q06,HEX_H_S,Who'd have an existential crisis about lying to a telemarketer?
+vote_q07,Direct_HEX_H_F,Who is the most fair?
+vote_q08,HEX_H_F,Who'd weigh each slice of cake to make sure everyone's portion was equal?
+vote_q09,Direct_HEX_H_G,Who avoids greed the most?
+vote_q10,HEX_H_G,Who'd spend lottery winnings on a group vacation instead of themselves?
+vote_q11,Direct_HEX_H_M,Who is the most modest?
+vote_q12,HEX_H_M,Who'd win a huge award and still apologize during their speech?
+vote_q13,Direct_HEX_E,Who is the most emotional?
+vote_q14,HEX_E,Who'd take a personal day to grieve the death of a fictional character?
+vote_q15,Direct_HEX_E_F,Who is the most fearful?
+vote_q16,HEX_E_F,There's a suspicious noise in the basement. Who's definitely not going down there?
+vote_q17,Direct_HEX_E_A,Who is the most anxious?
+vote_q18,HEX_E_A,Who lies awake at night reliving awkward comments made years ago?
+vote_q19,Direct_HEX_E_D,Who is the most dependent?
+vote_q20,HEX_E_D,Who can't make a decision without getting a fifth opinion?
+vote_q21,Direct_HEX_E_S,Who is the most sentimental?
+vote_q22,HEX_E_S,Who gets nostalgic halfway through an event that isn't even over yet?
+vote_q23,Direct_HEX_X,Who is the most extraverted?
+vote_q24,HEX_X,Who considers a quiet weekend a wasted opportunity?
+vote_q25,Direct_HEX_X_SE,Who has the most social self-esteem?
+vote_q26,HEX_X_SE,"Who could walk into the wrong party, realize it, and stay?"
+vote_q27,Direct_HEX_X_SB,Who is the most socially bold?
+vote_q28,HEX_X_SB,"If someone cut in front of you in a line, who would call them out?"
+vote_q29,Direct_HEX_X_S,Who is the most sociable?
+vote_q30,HEX_X_S,Who could strike up a conversation with a tree and get its full life story?
+vote_q31,Direct_HEX_X_L,Who is the most lively?
+vote_q32,HEX_X_L,Whose presence makes the whole room louder?
+vote_q33,Direct_HEX_A,Who is the most agreeable?
+vote_q34,HEX_A,Who would apologize to a chair after bumping into it?
+vote_q35,Direct_HEX_A_FO,Who is the most forgiving?
+vote_q36,HEX_A_FO,Who would lend you their favorite sweater after you shrunk their last one?
+vote_q37,Direct_HEX_A_G,Who is the most gentle?
+vote_q38,HEX_A_G,Who could tell you you're wrong and still make you feel good about it?
+vote_q39,Direct_HEX_A_FL,Who is the most flexible?
+vote_q40,HEX_A_FL,"If the restaurant brings the wrong meal, who happily digs in?"
+vote_q41,Direct_HEX_A_P,Who is the most patient?
+vote_q42,HEX_A_P,Who actively listens as their nephew unpacks the entire Paw Patrol cinematic universe?
+vote_q43,Direct_HEX_C,Who is the most conscientious?
+vote_q44,HEX_C,Who actually reads all the instructions before opening the box?
+vote_q45,Direct_HEX_C_O,Who is the most organized?
+vote_q46,HEX_C_O,Who'd make a PowerPoint just to plan a hangout?
+vote_q47,Direct_HEX_C_D,Who is the most diligent?
+vote_q48,HEX_C_D,Who'd actually keep their New Year's resolution past February?
+vote_q49,Direct_HEX_C_PE,Who is the biggest perfectionist?
+vote_q50,HEX_C_PE,Who can't pass a crooked picture without fixing it?
+vote_q51,Direct_HEX_C_PR,Who is the most prudent?
+vote_q52,HEX_C_PR,"Who actually reads all the ""Terms and Conditions""?"
+vote_q53,Direct_HEX_O,Who is the most open to experience?
+vote_q54,HEX_O,Who treats the unfamiliar like it's an invitation?
+vote_q55,Direct_HEX_O_A,Who has the most aesthetic appreciation?
+vote_q56,HEX_O_A,Who interrupts themselves mid-conversation to admire the view?
+vote_q57,Direct_HEX_O_I,Who is the most inquisitive?
+vote_q58,HEX_O_I,Who hears a random fact and immediately needs to learn everything about it?
+vote_q59,Direct_HEX_O_C,Who is the most creative?
+vote_q60,HEX_O_C,Who's always one shower away from a brilliantly unnecessary invention?
+vote_q61,Direct_HEX_O_U,Who is the most unconventional?
+vote_q62,HEX_O_U,Who takes being called 'weird' as a compliment?
+vote_q63,Direct_DT,Who is the most dark?
+vote_q64,DT,Who'd choose to be a cackling villain over the noble hero just for the chaos?
+vote_q65,Direct_DT_M,Who is the most Machiavellian?
+vote_q66,DT_M,Who could plant an idea in someone's head and make them believe it was their own?
+vote_q67,Direct_DT_P,Who displays psychopathy the most?
+vote_q68,DT_P,There's a glowing red button marked 'DO NOT PRESS.' Who presses it?
+vote_q69,Direct_DT_S,Who is the most sadistic?
+vote_q70,DT_S,Who'd pull the 'friendship-ending' move just to win a game?
+vote_q71,Direct_DT_N,Who is the most narcissistic?
+vote_q72,DT_N,Who holds up the group for 'just one more' photo until they look perfect?

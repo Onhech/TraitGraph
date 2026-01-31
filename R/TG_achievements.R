@@ -13,6 +13,8 @@
 #' @param output_dir Directory where output CSVs should be written. Defaults to "achievements".
 #' @param max_awards Integer count of achievements to allocate per person. Defaults to 10.
 #' @param write_qa Logical; when TRUE, write QA summary CSVs to output_dir.
+#' @param soft_fail Logical; when TRUE, missing inputs/columns emit warnings and
+#'   return empty outputs instead of stopping.
 #'
 #' @return A list with `all_eligible` and `awarded` data frames.
 #' @export
@@ -38,31 +40,110 @@ TG_achievements <- function(
   voting_data_path,
   output_dir = "achievements",
   max_awards = 10,
-  write_qa = TRUE
+  write_qa = TRUE,
+  soft_fail = TRUE
 ) {
   start_time <- Sys.time()
   summary_warnings <- character()
+  issues <- data.frame(source = character(), issue = character(), stringsAsFactors = FALSE)
+
+  rel_path <- function(path) {
+    if (is.null(path) || !nzchar(path)) return(path)
+    wd <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+    p <- normalizePath(path, winslash = "/", mustWork = FALSE)
+    if (startsWith(p, paste0(wd, "/")) || p == wd) {
+      return(sub(paste0("^", gsub("([.\\+\\*\\?\\^\\$\\(\\)\\[\\]\\{\\}\\|\\\\])", "\\\\\\1", wd), "/?"), "", p))
+    }
+    path
+  }
+
+  add_issue <- function(source, issue) {
+    issues <<- rbind(issues, data.frame(source = rel_path(source), issue = issue, stringsAsFactors = FALSE))
+  }
+
+  write_issue_log <- function() {
+    if (nrow(issues) == 0) return(invisible(NULL))
+    if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
+    issues_path <- file.path(output_dir, "achievements_input_issues.csv")
+    utils::write.csv(issues, issues_path, row.names = FALSE)
+    warning(paste("Achievements warnings: missing inputs detected. See", rel_path(issues_path)))
+  }
+
+  safe_read_csv <- function(path) {
+    if (!file.exists(path)) {
+      if (!soft_fail) {
+        stop(paste("Missing input file:", path))
+      }
+      add_issue(path, "file_missing")
+      return(NULL)
+    }
+    tryCatch(
+      read.csv(path, stringsAsFactors = FALSE),
+      error = function(e) {
+        if (!soft_fail) {
+          stop(paste("Failed to read input file:", path, "-", e$message))
+        }
+        add_issue(path, paste0("read_error:", e$message))
+        NULL
+      }
+    )
+  }
   # ---- Inputs ----
-  achievements <- read.csv(achievements_path, stringsAsFactors = FALSE)
-  people <- read.csv(data_path, stringsAsFactors = FALSE)
-  trait_map <- read.csv(trait_map_path, stringsAsFactors = FALSE)
-  vote_map <- read.csv(vote_map_path, stringsAsFactors = FALSE)
-  voting_data <- read.csv(voting_data_path, stringsAsFactors = FALSE)
+  achievements <- safe_read_csv(achievements_path)
+  people <- safe_read_csv(data_path)
+  trait_map <- safe_read_csv(trait_map_path)
+  vote_map <- safe_read_csv(vote_map_path)
+  voting_data <- safe_read_csv(voting_data_path)
 
   # ---- Output Folder ----
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
   # ---- Validation ----
+  if (is.null(achievements) || is.null(people) || is.null(trait_map) ||
+      is.null(vote_map) || is.null(voting_data)) {
+    if (soft_fail) {
+      write_issue_log()
+      return(list(all_eligible = data.frame(), awarded = data.frame()))
+    }
+  }
   required_ach_cols <- c("id", "Title", "desirability_rank", "exclusive_group")
   missing_ach_cols <- setdiff(required_ach_cols, names(achievements))
   if (length(missing_ach_cols) > 0) {
-    stop(paste("Missing achievement columns:", paste(missing_ach_cols, collapse = ", ")))
+    if (!soft_fail) {
+      stop(paste("Missing achievement columns:", paste(missing_ach_cols, collapse = ", ")))
+    }
+    add_issue(achievements_path, paste0("missing_cols:", paste(missing_ach_cols, collapse = ",")))
+    write_issue_log()
+    return(list(all_eligible = data.frame(), awarded = data.frame()))
   }
 
   required_people_cols <- c("name", "user_id", "start_time", "completion_time", "total_duration_sec")
   missing_people_cols <- setdiff(required_people_cols, names(people))
   if (length(missing_people_cols) > 0) {
-    stop(paste("Missing participant columns:", paste(missing_people_cols, collapse = ", ")))
+    if (!soft_fail) {
+      stop(paste("Missing participant columns:", paste(missing_people_cols, collapse = ", ")))
+    }
+    add_issue(data_path, paste0("missing_cols:", paste(missing_people_cols, collapse = ",")))
+    essential_people_cols <- c("name", "user_id")
+    missing_essential <- setdiff(essential_people_cols, names(people))
+    if (length(missing_essential) > 0) {
+      write_issue_log()
+      return(list(all_eligible = data.frame(), awarded = data.frame()))
+    }
+    for (col in setdiff(required_people_cols, names(people))) {
+      people[[col]] <- NA
+    }
+  }
+
+  required_vote_cols <- c("voter_name", "item_id", "voted_for")
+  missing_vote_cols <- setdiff(required_vote_cols, names(voting_data))
+  if (length(missing_vote_cols) > 0) {
+    if (!soft_fail) {
+      stop(paste("voting_data.csv missing columns:", paste(missing_vote_cols, collapse = ", ")))
+    }
+    add_issue(voting_data_path, paste0("missing_cols:", paste(missing_vote_cols, collapse = ",")))
+    write_issue_log()
+    return(list(all_eligible = data.frame(), awarded = data.frame()))
   }
 
   # ---- Helpers ----
@@ -134,6 +215,13 @@ TG_achievements <- function(
   factor_cols <- c("HEX_H","HEX_E","HEX_X","HEX_A","HEX_C","HEX_O")
   subtrait_cols <- trait_map$Column[trait_map$Type == "subtrait"]
   subtrait_cols <- subtrait_cols[subtrait_cols %in% names(people)]
+  missing_trait_cols <- setdiff(unique(c(factor_cols, trait_columns)), names(people))
+  if (length(missing_trait_cols) > 0) {
+    add_issue(data_path, paste0("missing_trait_cols:", paste(missing_trait_cols, collapse = ",")))
+    if (!soft_fail) {
+      stop(paste("Missing trait columns in data:", paste(missing_trait_cols, collapse = ", ")))
+    }
+  }
 
   if (!("extreme_response_ratio" %in% names(people))) {
     extreme_cols <- if (length(subtrait_cols) > 0) subtrait_cols else factor_cols
@@ -335,6 +423,9 @@ TG_achievements <- function(
   # ---- Eligibility ----
   # Survey Completion
   if (all(c("completion_time", "completion_duration_sec") %in% names(people))) {
+    if (all(is.na(people$completion_time)) || all(is.na(people$completion_duration_sec))) {
+      add_issue(data_path, "missing_values:completion_time_or_duration_all_na")
+    } else {
     open_time <- min(people$completion_time, na.rm = TRUE)
     close_time <- max(people$completion_time, na.rm = TRUE)
 
@@ -366,6 +457,7 @@ TG_achievements <- function(
     for (idx in seq_len(nrow(people))) {
       eligible <- add_eligible(eligible, people$name[idx], people$user_id[idx], "Mystery Gift")
       eligible <- add_eligible(eligible, people$name[idx], people$user_id[idx], "Participation Trophy")
+    }
     }
   }
 
@@ -1130,6 +1222,8 @@ TG_achievements <- function(
     summary_warnings <<- c(summary_warnings, msg)
     warning(msg)
   }
+
+  write_issue_log()
 
   # ---- Summary Output ----
   duration <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
