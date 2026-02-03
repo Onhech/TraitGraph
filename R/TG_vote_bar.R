@@ -279,33 +279,36 @@ TG_vote_bar <- function(
       idx = seq_along(footnotes),
       stringsAsFactors = FALSE
     )
-    footnote_df$marker <- substr(footnote_df$line, 1, 1)
-    footnote_df$text <- trimws(sub("^.", "", footnote_df$line))
+    footnote_df$marker <- ifelse(substr(footnote_df$line, 1, 1) %in% tie_markers, substr(footnote_df$line, 1, 1), "")
+    footnote_df$text <- ifelse(footnote_df$marker == "", footnote_df$line, trimws(sub("^.", "", footnote_df$line)))
     footnote_df$y <- footnote_y_nudge - (footnote_df$idx - 1) * 0.25
     footnote_df$marker_x <- footnote_x_nudge
     if (is.null(footnote_marker_gap)) {
       footnote_marker_gap <- 0.06 * max_votes
     }
-    footnote_df$text_x <- footnote_x_nudge + footnote_marker_gap
+    footnote_df$text_x <- ifelse(footnote_df$marker == "", footnote_x_nudge, footnote_x_nudge + footnote_marker_gap)
 
-    p <- p + ggplot2::geom_text(
-      data = footnote_df,
-      ggplot2::aes(x = marker_x, y = y, label = marker),
-      hjust = 0,
-      vjust = 0,
-      size = footnote_size,
-      color = footnote_color,
-      family = marker_font_family
-    ) +
-      ggplot2::geom_text(
-        data = footnote_df,
-        ggplot2::aes(x = text_x, y = y, label = text),
+    marker_df <- footnote_df[footnote_df$marker != "", , drop = FALSE]
+    if (nrow(marker_df) > 0) {
+      p <- p + ggplot2::geom_text(
+        data = marker_df,
+        ggplot2::aes(x = marker_x, y = y, label = marker),
         hjust = 0,
         vjust = 0,
         size = footnote_size,
         color = footnote_color,
-        family = font_family
+        family = marker_font_family
       )
+    }
+    p <- p + ggplot2::geom_text(
+      data = footnote_df,
+      ggplot2::aes(x = text_x, y = y, label = text),
+      hjust = 0,
+      vjust = 0,
+      size = footnote_size,
+      color = footnote_color,
+      family = font_family
+    )
   }
 
   if (save_plot) {

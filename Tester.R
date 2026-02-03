@@ -87,7 +87,7 @@ library(TraitGraph)
 
 # --- 2. CREATE SAMPLE DATA ---
 # Create one master sample data frame for testing.
-set.seed(42) # for reproducibility
+#set.seed(42) # for reproducibility
 
 # Generate the main sample data
 sample_data <- tibble::tibble(
@@ -107,6 +107,7 @@ sample_data <- tibble::tibble(
 sample_data<-dplyr::slice_sample(sample_data,n = 15) # Default (ideal) size
 sample_data_5<-dplyr::slice_sample(sample_data,n = 5)
 sample_data_15<-dplyr::slice_sample(sample_data,n = 15)
+sample_data_18<-dplyr::slice_sample(sample_data,n = 18)
 sample_data_20<-dplyr::slice_sample(sample_data,n = 20)
 sample_data_25<-dplyr::slice_sample(sample_data,n = 25)
 sample_data_30<-dplyr::slice_sample(sample_data,n = 30)
@@ -144,9 +145,9 @@ TraitGraph:::tg_progress_done(progress_demo)
 
   # --- 3. FUNCTION TESTING ---
 # After running `devtools::load_all()`, you can run these calls to test.
-  # ~~~~~~~~~~~~~~~~~~~ #
-  # --- Trait Example   ####
-  # ~~~~~~~~~~~~~~~~~~~ #
+# ~~~~~~~~~~~~~~~~~~~ #
+# --- Trait Example   ####
+# ~~~~~~~~~~~~~~~~~~~ #
 TG_trait(
     dataset = sample_data_20,
     show_title = F,
@@ -156,6 +157,42 @@ TG_trait(
     #color_opacity = .,
     output_path = 'ExamplePlots/trait_graph_example.jpg'
   )
+
+# Experimental inside/outside value labels (no callout boxes)
+TG_trait_test(
+    dataset = sample_data_18,
+    color_opacity = 100,
+    show_title = F,
+    column_name = "Extroversion",
+    random_seed = 12345,
+    callout_inside_threshold = 30,
+    callout_outside_nudge = 15,
+    callout_text_size = 3.4,
+    callout_text_size_group = 3.4,
+    callout_text_face = "bold",
+    callout_style = "boxed",
+    save_plot = TRUE,
+    show_plot = T,
+    output_path = 'ExamplePlots/trait_graph_example_label_test_boxed.jpg'
+  )
+
+TG_trait_test(
+  dataset = sample_data_18,
+  color_opacity = 100,
+  show_title = F,
+  column_name = "Extroversion",
+  random_seed = 12345,
+  callout_inside_threshold = 30,
+  callout_outside_nudge = 13,
+  callout_text_size = 3.8,
+  callout_text_size_group = 3.8,
+  callout_text_face = "bold",
+  callout_style = "inside_outside",
+  save_plot = TRUE,
+  show_plot = T,
+  output_path = 'ExamplePlots/trait_graph_example_label_test_unboxed.jpg'
+)
+
 
 
 # ~~~~~~~~~~~~~~~~~~~ #
@@ -211,40 +248,6 @@ TG_achievements(
   soft_fail = TRUE
 )
 
-
-# Midpoint color mode example (leans high/low instead of favorite colors)
-TG_trait(
-    dataset = sample_data_20,
-    show_title = F,
-    column_name = "Extroversion",
-    color_mode = "midpoint",
-    palette = list(high = "#00A878", mid = "#9ED9CC", low = "#3B6DD8"),
-    midpoint_lighten = F,
-    midpoint_lighten_max = 0.75,    # slightly stronger lightening toward white near 50
-    midpoint_lighten_power = 1.75,     # curve control: >1 reduces lightening faster as scores move away from 50
-    midpoint_label_color = "base", # use shaded (darkened) bar color on labels for clarity
-    random_seed = 12345,
-    save_plot = T,show_plot = T,
-    verbose = TRUE,
-    output_path = 'ExamplePlots/trait_graph_example_midpoint_rect_clip.jpg',
-    plot_zoom_mod = 1.15,output_width = 6,output_height = 5
-  )
-
-# --- Gradient color mode (direct interpolation between high/low colors) ----------
-TG_trait(
-    dataset = sample_data_20,
-    show_title = F,
-    column_name = "Agreeableness",
-    color_mode = "gradient",
-    palette = list(high = "#2BB49E", mid = "#F2B7B7", low = "#FF4C5B"),
-    midpoint_lighten = FALSE,
-    random_seed = 12345,
-    save_plot = T, show_plot = T,
-    verbose = TRUE,
-    output_path = 'ExamplePlots/trait_graph_example_gradient.jpg',
-    plot_zoom_mod = 0.6, output_width = 5.5, output_height = 4.5
-  )
-
 # ~~~~~~~~~~~~~~~~~~~ #
 # Jungian ####
 # ~~~~~~~~~~~~~~~~~~~ #
@@ -262,7 +265,7 @@ TG_jung(
   output_path = 'ExamplePlots/jung_graph_example_0.jpg'
 )
 
-  # ~~~~~~~~~~~~~~~~~~~ #
+# ~~~~~~~~~~~~~~~~~~~ #
 # Vote-bar ####
 # ~~~~~~~~~~~~~~~~~~~ #
 # Simple vote bar chart with tie handling and footnotes.
