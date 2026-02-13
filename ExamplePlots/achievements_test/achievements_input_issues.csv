@@ -1,2 +1,2 @@
 "source","issue"
-"achievement_inputs/group_dataset.csv","missing_trait_cols:NA"
+"achievement_inputs/voting_data.csv","missing_cols:voter_name"

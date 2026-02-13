@@ -1,4 +1,3 @@
 "source","issue"
 "ExamplePlots/achievements_soft_fail_demo/inputs/group_dataset.csv","missing_cols:start_time,completion_time,total_duration_sec"
-"ExamplePlots/achievements_soft_fail_demo/inputs/group_dataset.csv","missing_trait_cols:NA,HEX_E_S"
-"ExamplePlots/achievements_soft_fail_demo/inputs/group_dataset.csv","missing_values:completion_time_or_duration_all_na"
+"ExamplePlots/achievements_soft_fail_demo/inputs/voting_data.csv","missing_cols:voter_name"

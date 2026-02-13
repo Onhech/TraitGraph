@@ -283,6 +283,10 @@ TG_similarity_heatmap <- function(dataset, columns, name_col = "names",
     ) +
     ggplot2::theme_minimal(base_size = 12) +
     ggplot2::theme(
+      panel.background = ggplot2::element_rect(fill = "transparent", color = NA),
+      plot.background = ggplot2::element_rect(fill = "transparent", color = NA),
+      legend.background = ggplot2::element_rect(fill = "transparent", color = NA),
+      legend.box.background = ggplot2::element_rect(fill = "transparent", color = NA),
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
       axis.ticks = ggplot2::element_blank(), panel.grid = ggplot2::element_blank(),
       plot.title = if (isTRUE(show_title)) ggplot2::element_text(hjust = 0.5, face = "bold") else ggplot2::element_blank(),
@@ -300,7 +304,14 @@ TG_similarity_heatmap <- function(dataset, columns, name_col = "names",
   }
 
   if (save_plot) {
-    ggplot2::ggsave(filename = output_path, plot = p, width = 8, height = 7, dpi = 300)
+    ggplot2::ggsave(
+      filename = output_path,
+      plot = p,
+      width = 8,
+      height = 7,
+      dpi = 300,
+      bg = "transparent"
+    )
     tg_log_plot_saved(output_path, verbose)
   }
 
@@ -309,6 +320,65 @@ TG_similarity_heatmap <- function(dataset, columns, name_col = "names",
   }
 
   invisible(p)
+}
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# USER-FACING FUNCTION 2B: SIMILARITY DATA
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Create a Psychological Similarity Data Payload
+#'
+#' @description
+#' Returns a lightweight similarity payload for downstream visualization.
+#' Optionally writes JSON to disk for HTML renderers.
+#'
+#' @param dataset A `data.frame` or `tibble`.
+#' @param columns A character vector of column names.
+#' @param name_col Column with individual names (default: "names").
+#' @param scale Output scale: "minus100_100" (default) or "zero_100".
+#' @param format Output format: "list" (default) or "json".
+#' @param output_path Optional file path for JSON output when format = "json".
+#'
+#' @return A list with `names`, `matrix`, `scale`, `min`, and `max` (or JSON written to file).
+#' @export
+TG_similarity_data <- function(dataset, columns, name_col = "names",
+                               scale = c("minus100_100", "zero_100"),
+                               digits = 1,
+                               format = c("list", "json"),
+                               output_path = NULL) {
+  scale <- match.arg(scale)
+  format <- match.arg(format)
+
+  correlation_matrix <- .calculate_similarity_matrix(dataset, columns, name_col = name_col)
+
+  similarity_matrix <- if (scale == "zero_100") {
+    (correlation_matrix + 1) / 2 * 100
+  } else {
+    correlation_matrix * 100
+  }
+
+  diag(similarity_matrix) <- NA
+
+  if (is.finite(digits)) {
+    similarity_matrix <- round(similarity_matrix, digits)
+  }
+
+  payload <- list(
+    names = rownames(similarity_matrix),
+    matrix = similarity_matrix,
+    scale = if (scale == "zero_100") "0-100" else "-100..100",
+    min = suppressWarnings(min(similarity_matrix, na.rm = TRUE)),
+    max = suppressWarnings(max(similarity_matrix, na.rm = TRUE))
+  )
+
+  if (format == "json") {
+    if (is.null(output_path) || !nzchar(output_path)) {
+      rlang::abort("`output_path` is required when format = \"json\".")
+    }
+    jsonlite::write_json(payload, output_path, auto_unbox = TRUE, pretty = TRUE)
+    return(invisible(payload))
+  }
+
+  payload
 }
 
 

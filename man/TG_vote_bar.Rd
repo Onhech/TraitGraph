@@ -18,7 +18,7 @@ TG_vote_bar(
   label_size_tie2 = 5,
   label_size_tien = 5,
   label_color = NULL,
-  tie_markers = c("†", "‡", "§", "¶", "*"),
+  tie_markers = c("<U+2020>", "<U+2021>", "<U+00A7>", "<U+00B6>", "*"),
   font_family = "sans",
   marker_font_family = "Arial Unicode MS",
   footnote_marker_gap = NULL,

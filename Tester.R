@@ -107,6 +107,8 @@ sample_data <- tibble::tibble(
 sample_data<-dplyr::slice_sample(sample_data,n = 15) # Default (ideal) size
 sample_data_5<-dplyr::slice_sample(sample_data,n = 5)
 sample_data_15<-dplyr::slice_sample(sample_data,n = 15)
+sample_data_16<-dplyr::slice_sample(sample_data,n = 16)
+sample_data_17<-dplyr::slice_sample(sample_data,n = 17)
 sample_data_18<-dplyr::slice_sample(sample_data,n = 18)
 sample_data_20<-dplyr::slice_sample(sample_data,n = 20)
 sample_data_25<-dplyr::slice_sample(sample_data,n = 25)
@@ -192,6 +194,27 @@ TG_trait_test(
   show_plot = T,
   output_path = 'ExamplePlots/trait_graph_example_label_test_unboxed.jpg'
 )
+
+# ~~~~~~~~~~~~~~~~~~~ #
+# Similarity Data ####
+# ~~~~~~~~~~~~~~~~~~~ #
+sim_data <- TG_similarity_data(
+  dataset = sample_data_15,
+  columns = c("HonestyHumility", "Emotionality", "Extroversion", "Agreeableness", "Conscientiousness", "Openness"),
+  name_col = "name"
+)
+print(names(sim_data))
+print(dim(sim_data$matrix))
+
+sim_json_path <- file.path(proj_root, "ExamplePlots", "similarity_data_example.json")
+TG_similarity_data(
+  dataset = sample_data_15,
+  columns = c("HonestyHumility", "Emotionality", "Extroversion", "Agreeableness", "Conscientiousness", "Openness"),
+  name_col = "name",
+  format = "json",
+  output_path = sim_json_path
+)
+message("Wrote similarity JSON: ", sim_json_path)
 
 
 
